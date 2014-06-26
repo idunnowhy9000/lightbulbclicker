@@ -140,22 +140,46 @@ function resetGame(){
 	a(amountUpgrade,upgrades);
 }
 function initGame(){
-	//if( /*check saved*/ ){
+	if( localStorage.getItem("player") === null ){
 	resetGame();
-	//}
-	updateView();
+	}
+	updateTable();
+	updateSideBar();
 }
-function updateView(){
-	function a(x,y,z){
+function alertS(thing){
+	var x=$("#status");
+	x.hide().text(thing).fadeIn();
+	setTimeout(function(){x.fadeOut()},20000)
+}
+function buy(a,b,c){
+console.log(a);
+	cost = calcCost(a.cost,b[c]);
+	console.log(cost);
+	console.log(b[c]);
+	if(volt < cost){
+		alertS("Not Enough Volts");
+	}
+	else{
+		volt-=cost;
+		b[c]++;
+	} updateTable();
+}
+function updateTable(){
+	function a(x,y,z,xy){
 		var n = "";
 		for(i=0;i<y.length;++i){
-			n += "<div class=buildingObj><div class=buildingAmount>"+z[i]+"</div><div class=buildingInfo><div class=buildingName>"+y[i].name+"</div><div id=buildingCost>"+calcCost(y[i].cost,z[i])+"</div></div></div>";
+			n += "<div class=buildingObj onclick='buy("+x+"["+i+"]"+","+xy+","+i+");' id="+x+i+"><div class=buildingAmount>"+z[i]+"</div><div class=buildingInfo><div class=buildingName>"+y[i].name+"</div><div id=buildingCost>"+calcCost(y[i].cost,z[i])+"</div></div></div>";
+			
 		}
 		$("#"+x).html(n);
 	}
-	a("building",lightbulb,amountBulb);
+	a("lightbulb",lightbulb,amountBulb,'amountBulb');
 	
-	$("#count").text(volt.toString() + " volts");
+}
+function updateSideBar(){
+	$("#count").text(Math.round(volt) + " volts");
+	document.title = Math.round(volt) + " volts";
+	$('#vps').text(calcVPS().toFixed(2) + " volts/second");
 }
 function calcCost(x,y){
 	return Math.round(x * Math.pow(1.15,y))
@@ -165,11 +189,11 @@ function calcVPS(){
 	boost=1;
 	for (i = 0; i < lightbulb.length; ++i)	{
 		n=1;
-		for(iA=0;iA<upgrades.length;++iA){
+		/*for(iA=0;iA<upgrades.length;++iA){
 			if(amountUpgrade[iA]==1 && (upgrades[iA].boost[0] == i || upgrades[iA].boost[0]=="all")){
 				n += upgrades.boost[iA][1];
 			}
-		}
+		}*/
 		a = lightbulb[i];
 		x += (a.vps * n) * amountBulb[i];
 	}
@@ -188,7 +212,7 @@ function calcVPS(){
 function addVolt(v){
 	volt += v;
 	volttot +=v;
-	updateView();
+	updateSideBar();
 }
 function cheatCode(){
 	// before 0.4: i can't believe you spent all your time making this game but you still didn't add cheat codes
@@ -245,18 +269,11 @@ function loadGame(n){
 	//try{
 		saveSplit = n.split("!");
 		sVersion = parseFloat(saveSplit[0]);
-		sVolt = saveSplit[1];
-		sVolttot = saveSplit[2];
-		sPrestiege = saveSplit[3];
-		function tempF1(thing){
-			var temp=[];
-			for(i = 0;i<thing.length;++i){
-				temp.push(thing[i]);
-			}
-			return temp;
-		}
-		sAmountBulb = tempF1(saveSplit[4]);
-		sAmountUpgrade = tempF1(saveSplit[5]);
+		sVolt = parseFloat(saveSplit[1]);
+		sVolttot = parseFloat(saveSplit[2]);
+		sPrestiege = parseFloat(saveSplit[3]);
+		sAmountBulb = saveSplit[4];
+		sAmountUpgrade = saveSplit[5];
 		// checks
 		if (sVersion < version){
 			// check compatibility
@@ -267,32 +284,24 @@ function loadGame(n){
 				return;
 			}
 		} else if (sVersion > version){// what are you? from the future?
-			function a(b,c){
-				if(b.length > c.length){
-					var diff = b.length - c.length;
-					for (i=0; i<diff.length; ++i){
-						c.push(0);
-					}
-				}
-			}
-			a(sAmountBulb,amountBulb);
-			a(sAmountUpgrade,amountUpgrade);
+			
 		}
 		console.log('pass');
 		// begin import
-		volt = parseInt(sVolt);
+		volt = parseFloat(sVolt);
 		console.log(volt);
 		console.log(parseInt(sVolt));
 		
-		volttot = parseInt(sVolttot);
+		volttot = parseFloat(sVolttot);
 		prestiege = sPrestiege;
 		amountBulb = JSON.parse(sAmountBulb);
 		amountUpgrade = JSON.parse(sAmountUpgrade);
+		updateTable();
 	/*} catch (e){
 		vex.dialog.alert("ERROR: "+e.toString()+".\nIf any more errors occur, PM <a href='http://www.reddit.com/message/compose/?to=idunnowhy9000'>/u/idunnowhy9000 on reddit</a>");
 	}*/
 }
-function saveGame(n){
+function saveGame(){
 	var x = "";
 	x+=version + "!";
 	x+=volt + "!";
@@ -300,6 +309,7 @@ function saveGame(n){
 	x+=prestiege + "!";
 	x+=JSON.stringify(amountBulb)+"!";
 	x+=JSON.stringify(amountUpgrade)+"!";
+	console.log(x);
 	return x;
 }
 function startGame(){
@@ -316,11 +326,12 @@ function shuffle(o){ //v1.0
     for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
 }; // courtesy of google
+////////////
 $("#bulb").click(function(){
 	addVolt(1 * clickBoost)
 });
 $("#credits").click(function(){credits()});
-$("#saveG").click(function(){saveGame()});
+$("#saveG").click(function(){localStorage.setItem("player",saveGame())});
 $("#resetG").click(function(){resetGame()});
 $("#importG").click(function(){importGame()});
 $("#exportG").click(function(){exportGame()});
@@ -331,13 +342,9 @@ $(function(){
 // save every 1 min
 setInterval(function(){
 	saveGame();
-	// check if player has >1200 volts
-	if(volt > 1200){ // start gaining
-		items.push(genItem());
-	}
+	
 }, 60000);
 // increment every second
 setInterval(function(){
 	addVolt(calcVPS());
-	updateView();
 },1000);
