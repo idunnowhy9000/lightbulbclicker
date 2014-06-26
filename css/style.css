@@ -1,0 +1,111 @@
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/Lato-Regular.ttf');
+}
+@font-face {
+    font-family: 'Fond';
+    src: url('../fonts/Fondamento-Regular.ttf');
+}
+*{
+margin:0;
+padding:0;
+}
+body{
+font-family: 'Lato', sans-serif;
+overflow:hidden;
+}
+#firstcol{
+width:75%;
+height:100vh;
+}
+#seccol{
+width:25%;
+top:0;
+right:0;
+position:fixed;
+text-align:center;
+height:100vh;
+-webkit-box-shadow: -5px 0px 5px 0px rgba(112,111,112,1);
+-moz-box-shadow: -5px 0px 5px 0px rgba(112,111,112,1);
+box-shadow: -5px 0px 5px 0px rgba(112,111,112,1);
+}
+#count{
+font-size:36px;
+font-family:'Fond',sans-serif;
+}
+#vps{
+font-size:16px;
+}
+#bulb{
+width:250px;
+height:400px;
+border:1px solid black;
+margin:40px auto;
+}
+.buildingObj{
+width:250px;
+position:relative;
+min-height:40px;
+}
+.buildingObj .buildingAmount{
+
+float:left;
+width:25%;
+}
+.buildingObj .buildingInfo{
+float:right;
+width:75%;
+}
+.center{
+width: 50%;
+  height: 50%;
+  overflow: auto;
+  margin: auto;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+.dialog{
+-webkit-box-shadow: 10px 11px 42px -8px rgba(0,0,0,0.75);
+-moz-box-shadow: 10px 11px 42px -8px rgba(0,0,0,0.75);
+box-shadow: 10px 11px 42px -8px rgba(0,0,0,0.75);
+}
+.dialogContent{
+padding:25px;
+overflow:auto;
+position:relative;
+min-height:65%;
+max-height:65%;
+}
+.dialogTop{
+height:10%;
+background-color:blue;
+position:relative;
+}
+.btnClose{
+width:50px;
+height:100%;
+top:0;
+left:0;
+background-color:green;
+position:absolute;
+}
+.acc{
+margin: 2px 8px;
+width:75%;
+}
+.down{
+position:absolute;
+bottom:0;
+right:5px;
+}
+.centered{
+margin:0 auto;
+}
+#options p{
+cursor:pointer;
+color:blue;
+text-decoration:underline;
+}
+.left{
+text-align:right;
+}
