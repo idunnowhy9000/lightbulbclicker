@@ -147,9 +147,9 @@ function initGame(){
 	updateSideBar();
 }
 function alertS(thing){
-	var x=$("#status");
-	x.hide().text(thing).fadeIn();
-	setTimeout(function(){x.fadeOut()},20000)
+	var x="status";
+	$("#" + x).hide().text(thing).fadeIn();
+	setTimeout(function(){$("#"+x).fadeOut()},3000)
 }
 function buy(a,b,c){
 console.log(a);
@@ -328,7 +328,19 @@ function shuffle(o){ //v1.0
 }; // courtesy of google
 ////////////
 $("#bulb").click(function(){
-	addVolt(1 * clickBoost)
+	clicks =1 * clickBoost; 
+	addVolt(clicks);
+	// click effect
+	curBulb = $("#bulb");
+	cNums = ".clickNums";
+	$("#bulbContainer").append("<div class=clickNums>"+clicks+"</div>");
+	$(cNums+":last-child").css({
+		left:getRandomArbitrary(0,250),
+		top:getRandomArbitrary(0,400)
+	});
+	setTimeout(function(){
+		$(cNums).fadeOut(400,function(){$(this).remove();});
+	},3000);
 });
 $("#credits").click(function(){credits()});
 $("#saveG").click(function(){localStorage.setItem("player",saveGame())});

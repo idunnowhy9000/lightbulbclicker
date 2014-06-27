@@ -37,12 +37,25 @@ font-family:'Fond',sans-serif;
 font-size:16px;
 }
 #bulb{
-width:250px;
-height:400px;
-margin:40px auto;
+width:100%;
+height:100%;
 background-image:url(../img/lightbulb.png);
 background-size:contain;
 cursor:pointer;
+position:absolute;
+top:0;
+left:0;
+}
+#bulbContainer{
+width:250px;
+height:400px;
+margin:40px auto;
+position:relative;
+}
+.clickNums{
+position:absolute;
+pointer-events: none;
+color:red;
 }
 #bulb:active{
 background-image:url(../img/lightbulb_clicked.png);
