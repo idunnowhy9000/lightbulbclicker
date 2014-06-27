@@ -39,8 +39,13 @@ font-size:16px;
 #bulb{
 width:250px;
 height:400px;
-border:1px solid black;
 margin:40px auto;
+background-image:url(../img/lightbulb.png);
+background-size:contain;
+cursor:pointer;
+}
+#bulb:active{
+background-image:url(../img/lightbulb_clicked.png);
 }
 .buildingObj{
 width:100%;
