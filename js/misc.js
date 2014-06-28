@@ -1,3 +1,4 @@
+/*
 function cheatCode(){
 	// before 0.4: i can't believe you spent all your time making this game but you still didn't add cheat codes
 	var c = "";
@@ -46,9 +47,11 @@ function exportGame(){
 		input: '<input type=text value="'+saveGame()+'">',
 	});
 }
+*/
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
+/*
 function resetGame(){
 	function a(x,y){
 		for(i=0;i<y.length;++i){
@@ -65,21 +68,27 @@ function initGame(){
 	updateTable();
 	updateSideBar();
 }
-function calcCost(x,y){
-	return Math.round(x * Math.pow(1.15,y))
+*/
+function calcCost(x){
+	return Math.round(x.cost * Math.pow(1.15,x.amount))
 }
 function calcVPS(){
 	x=0;
 	boost=1;
-	for (i = 0; i < lightbulb.length; ++i)	{
+	/*for(b in 
 		n=1;
 		/*for(iA=0;iA<upgrades.length;++iA){
 			if(amountUpgrade[iA]==1 && (upgrades[iA].boost[0] == i || upgrades[iA].boost[0]=="all")){
 				n += upgrades.boost[iA][1];
 			}
-		}*/
+		}
 		a = lightbulb[i];
 		x += (a.vps * n) * amountBulb[i];
+	}*/
+	for (b in lightbulb){
+		n = 1;
+		a = lightbulb[b];
+		x+= (a.vps * n) * a.amount;
 	}
 	// boost
 	// date boost
@@ -94,11 +103,10 @@ function calcVPS(){
 	return x*boost;
 }
 
-function addVolt(v){
+/*function addVolt(v){
 	volt += v;
 	volttot +=v;
-	updateSideBar();
-}
+}*/
 function shuffle(o){ //v1.0
     for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
@@ -110,4 +118,7 @@ function alertStatus(thing){
 	var x="status";
 	$("#" + x).hide().text(thing).fadeIn();
 	setTimeout(function(){$("#"+x).fadeOut()},3000)
+}
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

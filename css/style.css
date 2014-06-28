@@ -84,31 +84,6 @@ width: 50%;
   position: fixed;
   top: 0; left: 0; bottom: 0; right: 0;
 }
-.dialog{
--webkit-box-shadow: 10px 11px 42px -8px rgba(0,0,0,0.75);
--moz-box-shadow: 10px 11px 42px -8px rgba(0,0,0,0.75);
-box-shadow: 10px 11px 42px -8px rgba(0,0,0,0.75);
-}
-.dialogContent{
-padding:25px;
-overflow:auto;
-position:relative;
-min-height:65%;
-max-height:65%;
-}
-.dialogTop{
-height:10%;
-background-color:blue;
-position:relative;
-}
-.btnClose{
-width:50px;
-height:100%;
-top:0;
-left:0;
-background-color:green;
-position:absolute;
-}
 .acc{
 margin: 2px 8px;
 width:75%;
