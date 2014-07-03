@@ -18,6 +18,12 @@ function calcVPS(){
 	for (b in lightbulb){
 		n = 1;
 		a = lightbulb[b];
+		for(u in upgrades){
+			uG = upgrades[u];
+			if(uG.amount == 1 && uG.boost[0] == b){
+				n+=uG.boost[1]
+			}
+		}
 		x+= (a.vps * n) * a.amount;
 	}
 	// boost
