@@ -2,7 +2,7 @@ var upgrades = {
 	// incandescent bulbs
 	"incandescentcy":{
 			amount:0,
-			name:"Incandescentcy",
+			name:"Thomas Edison",
 			cost:0,
 			boost:["incandescent",0.1]
 		},
@@ -11,6 +11,13 @@ var upgrades = {
 			cost:0,
 			boost:["incandescent",0.1]
 		},
+	"inventor":{
+		amount:0,
+		name:"Albert Einstein Clone",
+		cost:0,
+		desc:"Hire a clone and he'll (probably) help you out!",
+		boost:["incandescent",0.1]
+	},
 	// bulb smasher
 	"experimentroom":{amount:0,
 			name:"Experimentation Room",
@@ -42,7 +49,14 @@ var upgrades = {
 			cost:0,
 			boost:["bacterial",0.1]
 		},
-		// human
+	// dinosaur
+	"megadinos":{amount:0,
+			name:"Mega DinoBulbs",
+			cost:0,
+			boost:["dinosaur",0.1],
+			desc:"Still better than keys"
+		},
+	// human
 	"evo":{amount:0,
 			name:"EVOLUTION!",
 			cost:0,
@@ -73,12 +87,6 @@ var upgrades = {
 		cost:0,
 		boost:["human",0.1]
 	},
-	// dinosaur
-	"megadinos":{amount:0,
-			name:"Mega DinoBulbs",
-			cost:0,
-			boost:["dinosaur",0.1]
-		},
 	// boosts all
 	"diode":{amount:0,
 			name:"Diode",
