@@ -69,39 +69,6 @@ function initGame(){
 	updateSideBar();
 }
 */
-function calcCost(x){
-	return Math.round(x.cost * Math.pow(1.15,x.amount))
-}
-function calcVPS(){
-	x=0;
-	boost=1;
-	/*for(b in 
-		n=1;
-		/*for(iA=0;iA<upgrades.length;++iA){
-			if(amountUpgrade[iA]==1 && (upgrades[iA].boost[0] == i || upgrades[iA].boost[0]=="all")){
-				n += upgrades.boost[iA][1];
-			}
-		}
-		a = lightbulb[i];
-		x += (a.vps * n) * amountBulb[i];
-	}*/
-	for (b in lightbulb){
-		n = 1;
-		a = lightbulb[b];
-		x+= (a.vps * n) * a.amount;
-	}
-	// boost
-	// date boost
-	thisYear = today.getYear()
-	boostDates=[new Date(thisYear,21,3)];
-	for(i=0;i<boostDates.length;++i){
-		if(today == boostDates[i]){
-			boost += 0.01;
-		}
-	}
-	
-	return x*boost;
-}
 
 /*function addVolt(v){
 	volt += v;
@@ -122,3 +89,17 @@ function alertStatus(thing){
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+function buy(a,b,c){
+	console.log(a);
+	cost = calcCost(a.cost,b[c]);
+	console.log(cost);
+	console.log(b[c]);
+	if(volt < cost){
+		alertS("Not Enough Volts");
+	}
+	else{
+		volt-=cost;
+		b[c]++;
+	} updateTable();
+}
+//

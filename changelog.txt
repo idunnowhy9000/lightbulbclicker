@@ -10,8 +10,7 @@ BEGIN 0.4 aka 0.01 REBOOT EDITION
 0.42 24/6/2014: ...
 0.43 25/6/2014: cheat codes (there's alot of easter eggs), no more jquery ui, fonts, major stuff (buildings, upgrades (partial)), item collection (concept)
 0.44 26/6/2014: item collection(partial), stars,
-0.45 --/-/----: star event (explode -> supernova -> hypernova -> blackholes)
-0.46 --/-/----: scientific experimentation room
+0.45 28/6/2014: buying buildings now possible
 -------------
 PLANNED
 -------------
