@@ -47,8 +47,6 @@ function initGame(){
 		updateSidebar(vps);
 		document.title = Math.round(volt) + " volt" + (volt <= 1 ? "" : "s");
 	},1000);
-	// initialize menu
-	$("#credits").click(function(){credits();});
 	// update
 	updateTable();
 }
