@@ -58,16 +58,16 @@ var upgrades = {
 		},
 	// human
 	"evo":{amount:0,
-			name:"EVOLUTION!",
+			name:"Lightbulb Charles Darwin",
 			cost:0,
 			boost:["human",0.1],
-			desc:"CREATIONISM!"
+			desc:"Fun fact: The Greeks actually proposed the theory before Charles Darwin"
 		},
 	"creation":{amount:0,
-			name:"CREATIONISM!",
+			name:"Worship",
 			cost:0,
 			boost:["human",0.1],
-			desc:"EVOLUTION!"
+			desc:"Somehow human lightbulbs also worship a \"Supreme Being\", coincident?"
 		},
 	"woodtools":{amount:0,
 			name:"Wooden Tools",
@@ -78,6 +78,12 @@ var upgrades = {
 			name:"Stone Tools",
 			cost:0,
 			boost:["human",0.1]
+	},
+	"irontools":{
+	amount:0,
+	name:"Iron Tools",
+	cost:0,
+	boost:["human",0.1]
 	},"ironres":{amount:0,
 		name:"Iron Research Facillity",
 		cost:0,
@@ -93,14 +99,15 @@ var upgrades = {
 			cost:0,
 			boost:["all",0.1]
 		},
-	"factweb":{amount:0,
-			name:"Factory Website",
+	"fact":{amount:0,
+			name:"Factories",
 			cost:0,
 			boost:["all",0.1]
 		},
 	"tvads":{amount:0,
-			name:"TV advertisement",
+			name:"ShamWow Guy",
 			cost:0,
+			desc:"Hires the ShamWow Guy to advertise lightbulbs",
 			boost:["all",0.1]
 		},
 	"redditbot":{amount:0,

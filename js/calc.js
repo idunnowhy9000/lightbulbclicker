@@ -1,4 +1,3 @@
-
 function calcCost(x){
 	return Math.round(x.cost * Math.pow(1.15,x.amount))
 }
@@ -18,15 +17,15 @@ function calcVPS(){
 	for (b in lightbulb){
 		n = 1;
 		a = lightbulb[b];
-		for(u in upgrades){
+		// upgrades boost
+		for (u in upgrades){
 			uG = upgrades[u];
-			if(uG.amount == 1 && uG.boost[0] == b){
-				n+=uG.boost[1]
+			if (uG.boost[0] == b && uG.amount == 1){
+				n+=uG.boost[1];
 			}
 		}
 		x+= (a.vps * n) * a.amount;
 	}
-	// boost
 	// date boost
 	thisYear = today.getYear();
 	boostDates=[new Date(thisYear,21,3)];

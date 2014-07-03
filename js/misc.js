@@ -78,9 +78,9 @@ function shuffle(o){ //v1.0
     for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
 }; // courtesy of google
-/*function credits(){
+function credits(){
 	vex.dialog.alert("<p><a href='http://somerandomdude.com/work/iconic/'>Iconic</a> - Lightbulb icon<br><a href='http://icons8.com/'>Icons8</a> - Power Icon<br><a href='http://www.w3schools.com'>W3Schools</a> - Teaching me how to code<br><a href='http://orteil.dashnet.org/cookieclicker/'>Cookie Clicker</a> - Inspiration<br>Phill Ostroff's <a href='http://flic.kr/p/ejocSE'>image</a> - Space Image<br>Dinosaur Lightbulb (not really an inspiration but its mega forme is): Bulbasaur, <del>Ivysaur</del>, Venusaur, Venusaurite, Mega Venusaur - Nintendo, Creatures Inc, Game Freak</p><p><strong>I DO NOT OWN ANY OF THESE, MOST CONTENT ARE COPYRIGHTED OR IN A GENERAL PUBLIC LICENSE / CREATIVE COMMONS BY THEIR RESPECTIVE OWNERS.</strong></p><br><p><a href='changelog.txt'>Change log</a></p>");
-}*/
+}
 function alertStatus(thing){
 	var x="status";
 	$("#" + x).hide().text(thing).fadeIn();

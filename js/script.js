@@ -33,7 +33,7 @@ function initGame(){
 				updateTable();
 			}
 		}
-		$("#upgrade").append("<div class='upgradesBox' id='"+b+"'><img src='img/upgrades/"+b+".png'></div>");
+		$("#upgrade").append("<div class='upgradesBox' id='upgrades-"+b+"'><img src='img/upgrades/"+b+".png'></div>");
 		$("#" + b).click(bU(b))
 	};
 	// earn volts per click
@@ -47,6 +47,8 @@ function initGame(){
 		updateSidebar(vps);
 		document.title = Math.round(volt) + " volt" + (volt <= 1 ? "" : "s");
 	},1000);
+	// initialize menu
+	$("#credits").click(function(){credits();});
 	// update
 	updateTable();
 }
@@ -90,7 +92,7 @@ function updateTable(){
 		uG = upgrades[u];
 		if(uG.amount == 1){continue;}
 		else{
-			$("#" + u).tooltipster({
+			$("#upgrades-" + u).tooltipster({
 				content:uG.name + "<br>"+((typeof uG.desc == "undefined") ? "..." :uG.desc)+" <br>Costs "+numberWithCommas(uG.cost)+" volts.",
 				contentAsHTML:true
 			});
