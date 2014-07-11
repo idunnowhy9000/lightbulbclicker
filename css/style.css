@@ -135,3 +135,34 @@ float:left;
 .yel{
 color:#FFFFCC;
 }
+.achievementImg{
+width:64px;
+height:64px;
+float:left;
+border:1px solid black;
+}
+.achievementInfo{
+width:75%;
+float:right;
+text-align:center;
+padding:2px 0;
+}
+.achievementNote{
+color:#00CC00;
+font-weight:bold;
+}
+.achievementName{
+color:#fff;
+}
+.achievement{
+position:absolute;
+bottom: 0;
+right:0;
+height:64px;
+width:300px;
+background-color:black;
+}
+.upgradeDesc{
+font-style:italic;
+color:#FFFF00;
+}
