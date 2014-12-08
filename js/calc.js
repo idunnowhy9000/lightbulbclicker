@@ -1,39 +1,31 @@
-function calcCost(x){
-	return Math.round(x.cost * Math.pow(1.15,x.amount))
-}
-function calcVPS(){
-	x=0;
-	boost=1;
-	/*for(b in 
-		n=1;
-		/*for(iA=0;iA<upgrades.length;++iA){
-			if(amountUpgrade[iA]==1 && (upgrades[iA].boost[0] == i || upgrades[iA].boost[0]=="all")){
-				n += upgrades.boost[iA][1];
+var calc = {
+	calcCost: function (x){
+		return Math.round(x.cost * Math.pow(x.increase,x.amount))
+	},
+	calcVPS: function (buildings){
+		var x=0,
+			boost=1,
+			boostAll = 1;
+		// date boost
+		var today = new Date();
+		var boostDates=[new Date(today.getYear(),21,3)];
+		for(i=0;i<boostDates.length;++i){
+			if(today == boostDates[i]){
+				boostAll += 0.01;
 			}
 		}
-		a = lightbulb[i];
-		x += (a.vps * n) * amountBulb[i];
-	}*/
-	for (b in lightbulb){
-		n = 1;
-		a = lightbulb[b];
-		// upgrades boost
-		for (u in upgrades){
-			uG = upgrades[u];
-			if (uG.boost[0] == b && uG.amount == 1){
-				n+=uG.boost[1];
-			}
+		// calculate
+		for (b in buildings) {
+			a = buildings[b];
+			x += (a.vps * boost * boostAll) * a.amount;
 		}
-		x+= (a.vps * n) * a.amount;
+		
+		return x*boost;
+	},
+	rand: function (min, max) {
+		return Math.floor(Math.random() * (max - min)) + min;
+	},
+	subtractDays: function (date1, date2) {
+		return new Date().parse(date1.valueOf() - date2.valueOf())/(24*60*60*1000);
 	}
-	// date boost
-	thisYear = today.getYear();
-	boostDates=[new Date(thisYear,21,3)];
-	for(i=0;i<boostDates.length;++i){
-		if(today == boostDates[i]){
-			boost += 0.01;
-		}
-	}
-	
-	return x*boost;
 }

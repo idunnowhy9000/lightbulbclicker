@@ -1,0 +1,20 @@
+<script src="js/JSLitmus.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src='js/buildings.data.js'></script>
+<script src='js/upgrades.data.js'></script>
+<script src='js/achievements.data.js'></script>
+<script src='js/buildings.js'></script>
+<!--script src='js/upgrades.data.js'></script>
+<script src='js/achievements.data.js'></script-->
+<script src='js/calc.js'></script>
+<script src='js/saveload.js'></script>
+<script src='js/script.js'></script>
+<script>
+function t(x,y) {JSLitmus.test(x,y)}
+t('Game Load', function () { Game.init() });
+t('Game Update', function () { Game._update() });
+t('Buildings Load', function () { Building(buildingsD[0]).init(); });
+t('Buildings Update', function () { Building(buildingsD[0]).update(); });
+</script>
