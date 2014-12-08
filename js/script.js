@@ -24,6 +24,7 @@ var Game = {
 	button: undefined,
 	count: undefined,
 	store: undefined,
+	upgradeStore: undefined,
 	vpsDisplay: undefined,
 	levelDisplay: undefined,
 	expDisplay: undefined,
@@ -49,6 +50,7 @@ var Game = {
 	
 	// helper objects
 	Building: undefined,
+	Upgrade: undefined,
 	Level: undefined,
 	calc: undefined,
 	saveload: undefined,
@@ -58,6 +60,7 @@ var Game = {
 		this.calc = calc;
 		this.saveload = saveload;
 		this.Building = Building;
+		this.Upgrade = Upgrade;
 		
 		this.evoData = evoD;
 		this.Level = new Level(this.evoData);
@@ -65,6 +68,7 @@ var Game = {
 		this.button = $('#bulb');
 		this.count = $('#count');
 		this.store = $('#lightbulb');
+		this.upgradeStore = $('#upgrade');
 		this.vpsDisplay = $('#vps');
 		this.levelDisplay = $('#level');
 		this.lvlExpDisplay = $('#lvlExp');
@@ -86,7 +90,12 @@ var Game = {
 		
 		for (var _building in buildingsD) {
 			var newBuilding = this.Building(buildingsD[_building]).init();
-			self.buildings.push(newBuilding);
+			this.buildings.push(newBuilding);
+		}
+		
+		for (var _upgrade in upgradesD) {
+			var newUpgrade = this.Upgrade(upgradesD[_upgrade]).init();
+			this.upgrades.push(newUpgrade);
 		}
 		
 		this.saveG.click(function() {
