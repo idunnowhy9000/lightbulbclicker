@@ -277,6 +277,9 @@ var Game = {
 			this.buildings[b].check();
 			this.buildings[b].update();
 		}
+		for (var u in this.upgrades) {
+			this.upgrades[u].update();
+		}
 		this.count.text(this.beautify(parseInt(this.volts)));
 		this.vpsDisplay.text(this._vps.toFixed(2));
 		this.Level.update();

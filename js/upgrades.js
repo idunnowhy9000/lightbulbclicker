@@ -28,6 +28,14 @@ var Upgrade = function(options) {
 		var self = this;
 		this.button = $("<div class='upgradeObj btn btn-primary' id="+self.id+"></div>")
 			.html("<div class='upgradeInfo'><div id='upgradeName'>"+self.name+"</div><div class='upgradeCost'>"+Game.beautify(self.cost)+" volts</div>")
+			.attr({
+				"data-toggle": "tooltip",
+				"data-placement": "bottom",
+				"data-title": "" + this.description + "",
+			})
+			.tooltip({
+				html: true
+			})
 			.click(function () {
 				self.buy()
 			})
