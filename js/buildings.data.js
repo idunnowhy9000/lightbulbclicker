@@ -11,7 +11,7 @@ var buildingsD = [
 		cost:100,
 		vps:0.5,
 		description:"Hires some muscular guys to smash bulbs.",
-		displayAt: 20,
+		displayAt: 50,
 	},
 	{
 		name:"Thunder Collector",

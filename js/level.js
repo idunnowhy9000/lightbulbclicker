@@ -1,7 +1,7 @@
 var Level = function (evoData) {
-	this.level = 0;
+	this.level = 1;
 	this.exp = 0;
-	this.toNextLevel = 0;
+	this.toNextLevel = 100;
 	this.levelTotalExp = 0;
 	this.levelCap = 100;
 	this.levelN = {};
@@ -12,17 +12,17 @@ var Level = function (evoData) {
 		this.evolve();
 	}
 	this.gainExp = function (exp) {
-		exp = parseInt(exp);
+		//exp = parseInt(exp);
+		var _results = [];
 		this.exp += exp;
 		if (this.level >= this.levelCap && this.exp > this.levelTotalExp) {
 			this.exp = this.levelTotalExp;
 		}
-		_results = [];
 		while (this.exp >= this.levelTotalExp + this.toNextLevel && this.level < this.levelCap) {
 			_results.push(this.levelUp());
 		}
 		this.update();
-		//return _results;
+		return _results;
 	}
 	this.evolve = function () {
 		for (var i in evoData) {

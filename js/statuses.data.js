@@ -6,6 +6,6 @@ var statusesD = {
 				id: "thundercollector",
 				boost: 0.1
 			}
-		];
+		]
 	}
 }

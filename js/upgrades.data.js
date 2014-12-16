@@ -3,24 +3,24 @@ var upgradesD = [
 	// incandescent bulbs
 	{
 		name: "Thomas Edison",
-		cost: 0,
+		cost: 100,
 		boost: [["incandescent", 0.1]],
 		displayAt: -1
 	},
 	{
 		name: "Joseph Swan",
-		cost: 0,
-		boost: [["incandescent", 0.1]]
+		cost: 400,
+		boost: [["incandescent", "x2"]]
 	},
 	{
 		name: "Hiram Maxim",
-		cost: 0,
-		boost: [["incandescent", 0.1]]
+		cost: 10000,
+		boost: [["incandescent", "x2"]]
 	},
 	{
 		name: "Blueprints",
-		cost: 0,
-		boost: [["incandescent", 0.1]]
+		cost: 500000,
+		boost: [["incandescent", "x2"]]
 	},
 	{
 		name: "Albert Einstein Clone",
@@ -67,7 +67,7 @@ var upgradesD = [
 	},
 	// human
 	{
-		name: "Lightbulb Charles Darwin",
+		name: "Evolution",
 		cost: 0,
 		boost: [["human", 0.1]],
 		description: "Fun fact: The Greeks actually proposed the theory before Charles Darwin"
@@ -104,7 +104,7 @@ var upgradesD = [
 		boost: [["human", 0.1]]
 	},
 	{
-		name:"Abominabulb",
+		name:"Snowball",
 		cost: 0,
 		description:"I hope this guy's not Olaf",
 		boost: [["human", 0.1]]
@@ -136,6 +136,19 @@ var upgradesD = [
 		cost: 0,
 		boost: [["all", 0.1]]
 	},
-	// 
-	
+	// misc
+	{
+		name: "Time Machine"
+	},
+	{
+		name: "Prism",
+		cost: 0,
+		description: "Converts photon particles into experience.",
+	},
+	{
+		name: "Hyperspace Travelling Machine"
+	},
+	{
+		name: "Hyperspace Travelling Machine"
+	},
 ];

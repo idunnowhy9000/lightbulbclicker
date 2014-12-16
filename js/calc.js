@@ -2,25 +2,34 @@ var calc = {
 	calcCost: function (x){
 		return Math.round(x.cost * Math.pow(x.increase,x.amount))
 	},
-	calcVPS: function (buildings){
-		var x=0,
-			boost=1,
-			boostAll = 1;
-		// date boost
-		var today = new Date();
-		var boostDates=[new Date(today.getYear(),21,3)];
-		for(i=0;i<boostDates.length;++i){
-			if(today == boostDates[i]){
-				boostAll += 0.01;
-			}
-		}
+	calcVPS: function (){
+		var total=0,
+			boostAll = 1,
+			
+			buildings = Game.buildings,
+			upgrades = Game.upgrades;
 		// calculate
-		for (b in buildings) {
+		for (b in buildings) { // buildings
 			a = buildings[b];
-			x += (a.vps * boost * boostAll) * a.amount;
+			var bdBoost = 0, timesboost = 1;
+			for (u in upgrades) {
+				u = upgrades[u];
+				for (ups in u.boost) {
+					if (u.boost[ups][0] === a.id || u.boost[ups][0] === 'all') {
+						var _b = u.boost[ups][1];
+						if (!typeof _b === 'number') {
+							if (_b.substring(0,1) === 'x') {
+								timesboost += _b.substring(1,_b.length);
+							}
+						}
+						else { bdBoost += _b; }
+					}
+				}
+			}
+			total += ((a.vps + bdBoost) * timesboost) * a.amount;
 		}
 		
-		return x*boost;
+		return total*boostAll;
 	},
 	rand: function (min, max) {
 		return Math.floor(Math.random() * (max - min)) + min;

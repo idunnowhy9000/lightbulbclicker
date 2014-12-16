@@ -1,11 +1,11 @@
 var Upgrade = function(options) {
 	if (!options.name) options.name = 'None';
 	if (!options.id) options.id = Game.toId(options.name);
-	if (!options.description) options.description = '';
+	if (!options.description) options.description = '...';
 	if (!options.cost) options.cost = 10;
 	if (!options.vps) options.boost = [["all",0]];
 	options.amount = 0;
-	if (!options.displayAt) options.displayAt = 1;
+	if (!options.displayAt) options.displayAt = 0;
 	options.displayed = false;
 	options.button = undefined;
 	options.buy = function() {
@@ -13,6 +13,7 @@ var Upgrade = function(options) {
 		Game._remove(this.cost);
 		
 		this.amount = 1;
+		Game._calcVPS();
 		this.update();
 	}
 	options.update = function () {
@@ -26,15 +27,24 @@ var Upgrade = function(options) {
 	}
 	options.init = function() {
 		var self = this;
-		this.button = $("<div class='upgradeObj btn btn-primary' id="+self.id+"></div>")
-			.html("<div class='upgradeInfo'><div id='upgradeName'>"+self.name+"</div><div class='upgradeCost'>"+Game.beautify(self.cost)+" volts</div>")
+		this.button = $("<div class='upgradeObj' id="+self.id+"></div>")
+			//.html("<div class='upgradeInfo'><div id='upgradeName'>"+self.name+"</div><div class='upgradeCost'>"+Game.beautify(self.cost)+" volts</div>")
+			.css({
+				"background-image": "img/upgrades/" + self.id + ".png",
+				"width": 64,
+				"height": 64,
+				"float": "left"
+			})
 			.attr({
 				"data-toggle": "tooltip",
 				"data-placement": "bottom",
-				"data-title": "" + this.description + "",
+				"title": this.name,
+				"data-content": "<p class='upFunc'>" + this.description + "</p><p>Costs <span id='upCost'>" + this.cost + "</span> volts</p>",
 			})
-			.tooltip({
-				html: true
+			.popover({
+				trigger: 'hover',
+				html: true,
+				container:'body'
 			})
 			.click(function () {
 				self.buy()
@@ -42,6 +52,7 @@ var Upgrade = function(options) {
 			//.hide()
 		this.update();
 		Game.upgradeStore.append(this.button);
+		//this.check();
 		return this;
 	}
 	return options;

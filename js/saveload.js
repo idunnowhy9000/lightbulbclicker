@@ -1,43 +1,9 @@
 var saveload = {
-	/*loadGame: function (n){
-		try {
-			saveSplit = n.split("!");
-			sVersion = parseFloat(saveSplit[0]);
-			sVolt = parseFloat(saveSplit[1]);
-			sVolttot = parseFloat(saveSplit[2]);
-			sPrestiege = parseFloat(saveSplit[3]);
-			sAmountBulb = saveSplit[4];
-			sAmountUpgrade = saveSplit[5];
-			// checks
-			if (sVersion < version){
-				// check compatibility
-				if (sVersion <= 0.38 && sVersion > 0.20){
-					convertSaveFile(n);return;
-				} else if(sVersion < 0.20){
-					alert("This version is not supported");
-					return;
-				}
-			} else if (sVersion > version){
-				
-			}
-			console.log('pass');
-			// begin import
-			volt = parseFloat(sVolt);
-			console.log(volt);
-			console.log(parseInt(sVolt));
-			
-			volttot = parseFloat(sVolttot);
-			prestiege = sPrestiege;
-			amountBulb = JSON.parse(sAmountBulb);
-			amountUpgrade = JSON.parse(sAmountUpgrade);
-			updateTable();
-		} catch (e){
-		}
-	},*/
 	loadGame: function (saveData) {
 		var G = Game;
 		try {
-			saveSplit = saveData.split("!");
+			saveDecode = window.atob(saveData);
+			saveSplit = saveDecode.split("!");
 			version = parseFloat(saveSplit[0]);
 			volts = parseFloat(saveSplit[1]);
 			voltsTot = parseFloat(saveSplit[2]);
@@ -48,24 +14,25 @@ var saveload = {
 			sessionStarted = saveSplit[7];
 			gameStart = saveSplit[8];
 			gameStarted = saveSplit[9];
-			clicekd = saveSplit[10];
+			clicked = saveSplit[10];
 			if (version < G.version){
 				// check compatibility
-				if (version >= 0.38) {
-					return this.convertSaveFile(saveData);
-				}
 			}
 			// begin import
 			G.volts = parseFloat(volts);
 			G.voltsTot = parseFloat(voltsTot);
 			G.prestiege = parseFloat(prestiege);
-			G.sessionStart = sessionStart;
+			G.sessionStart = new Date(sessionStart);
 			G.sessionStarted = sessionStarted;
-			G.gameStart = gameStart;
+			G.gameStart = new Date(gameStart);
+			G.gameStarted = gameStarted;
 			G.clicked = clicked;
 			for (var b in G.buildings) {
 				G.buildings[b].amount = buildings.split(',')[b];
 			}
+			/*for (var b in G.upgrades) {
+				G.upgrades[b].amount = upgrades.split(',')[b];
+			}*/
 			// update
 			Game._update();
 			return true;
@@ -89,15 +56,16 @@ var saveload = {
 		}
 		saveData += buildings + "!";
 		// stats
-		saveData += G.sessionStart.toString() + "!";
+		saveData += G.sessionStart + "!";
 		saveData += G.sessionStarted + "!";
-		saveData += G.gameStart.toString() + "!";
+		saveData += G.gameStart + "!";
 		saveData += G.gameStarted + "!";
 		saveData += G.clicked + "!";
+		// encode
+		saveData = window.btoa(saveData);
 		return saveData;
 	},
 	convertSaveFile: function (n){
-
 	},
 	reset: function (hard) {
 		Game.volts = 0;
@@ -117,7 +85,7 @@ var saveload = {
 			Game.prestiege = 0;
 			Game.voltsTotAll = 0;
 			Game.clicked = 0;
-			window.localStorage.removeItem("LBClicker.saveFile")
+			window.localStorage.removeItem("saveFile")
 		}
 		Game._update();
 		return;

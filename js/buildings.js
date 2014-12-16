@@ -6,27 +6,17 @@ var Building = function(options) {
 	if (!options.vps) options.vps = 1;
 	options.amount = 0;
 	if (!options.increase) options.increase = 1.15;
-	if (!options.displayAt) options.displayAt = 1;
+	if (!options.displayAt) options.displayAt = 10;
 	options.type = 'building';
 	options.displayed = false;
 	options.button = undefined;
-	options.check = function () {
-		var self = this;
-		if (this.cost > Game.volts) {
-			this.button.addClass('disabled')
-		} else {
-			this.button.removeClass('disabled', 200);
-			$('body').on('click', "#" + this.id, function() {
-				self.buy();
-			});
-		}
-	}
 	options.buy = function() {
 		if (this.cost > Game.volts) { return false; }
 		Game._remove(this.cost);
 		
 		this.amount++;
 		this.cost = Game.calc.calcCost(this);
+		Game._calcVPS();
 		this.update();
 	}
 	options.update = function () {
@@ -44,16 +34,24 @@ var Building = function(options) {
 		this.button = $("<div class='buildingObj btn btn-primary' id="+self.id+"></div>")
 			.html("<div class='buildingAmount'>"+self.amount+"</div><div class='buildingInfo'><div id='buildingName'>"+self.name+"</div><div class='buildingCost'>"+Game.beautify(self.cost)+" volts</div>")
 			.attr({
-				"data-toggle": "tooltip",
+				"data-toggle": "popover",
 				"data-placement": "bottom",
-				"data-title": "" + this.description + "",
+				"title": this.name,
+				"data-content": "<span class='upDesc'>" + this.description + "</span><br>Costs <span id='upCost'>" + this.cost + "</span> volts",
 			})
-			.tooltip({
-				html: true
+			.popover({
+				trigger: 'hover',
+				html: true,
+				container:'body',
+				delay: {
+					//"hide": 500
+				},
+			})
+			.click(function () {
+				self.buy()
 			});
 		this.update();
 		Game.store.append(this.button);
-		this.check();
 		return this;
 	}
 	return options;
