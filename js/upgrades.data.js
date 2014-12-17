@@ -4,137 +4,137 @@ var upgradesD = [
 	{
 		name: "Thomas Edison",
 		cost: 100,
-		boost: [["incandescent", 0.1]],
+		boost: [["incandescentlightbulb", 0.1]],
 		displayAt: -1
 	},
 	{
 		name: "Joseph Swan",
 		cost: 400,
-		boost: [["incandescent", "x2"]]
+		boost: [["incandescentlightbulb", "x2"]]
 	},
 	{
 		name: "Hiram Maxim",
 		cost: 10000,
-		boost: [["incandescent", "x2"]]
+		boost: [["incandescentlightbulb", "x2"]]
 	},
 	{
 		name: "Blueprints",
 		cost: 500000,
-		boost: [["incandescent", "x2"]]
+		boost: [["incandescentlightbulb", "x2"]]
 	},
 	{
 		name: "Albert Einstein Clone",
-		cost: 0,
+		cost: 50000000,
 		description: "Hire a clone and he'll (probably) help you out!",
-		boost: [["incandescent", 0.1]]
+		boost: [["incandescentlightbulb", "x2"]]
 	},
 	// bulb smasher
 	{
 		name: "Experimentation Room",
-		cost: 0,
-		boost: [["smasher", 0.1]]
+		cost: 1000,
+		boost: [["lightbulbsmasher", 0.3]]
 	},
 	{
 		name: "Big Hammer",
-		cost: 0,
-		boost: ["smasher", 0.1],
+		cost: 10000,
+		boost: ["lightbulbsmasher", "x2"],
 	},
 	// thundercollector
 	{
 		name: "Electron Relaxation",
-		cost: 0,
-		boost: [["thundercol", 0.1]],
+		cost: 5000,
+		boost: [["thundercollector", 1]],
 	},
 	{
 		name: "Electron Excitation",
 		description: "The ultimate Electric Party!",
-		cost: 0,
-		boost: [["thundercol", 0.1]],
+		cost: 500000,
+		boost: [["thundercollector", "x2"]],
 	},
 	// bacterial
 	{
 		name: "Fungus",
 		description: "I have to say, I'm a fungi!",
-		cost: 0,
-		boost: [["bacterial", 0.1]]
+		cost: 30000,
+		boost: [["bacteriallightbulb", 3]]
 	},
 	// dinosaur
 	{
 		name: "Mega DinoBulbs",
-		cost: 0,
-		boost: [["dinosaur", 0.1]],
+		cost: 100000,
+		boost: [["dinosaurlightbulb", 9]],
 		description: "Still better than keys"
 	},
 	// human
 	{
 		name: "Evolution",
-		cost: 0,
-		boost: [["human", 0.1]],
+		cost: 400000,
+		boost: [["humanlightbulb", 27]],
 		description: "Fun fact: The Greeks actually proposed the theory before Charles Darwin"
 	},
 	{
 		name: "Worship",
-		cost: 0,
-		boost: [["human", 0.1]],
+		cost: 400000000,
+		boost: [["humanlightbulb", "x2"]],
 		description: 'All God does is watch us and kill us when we get boring.'
 	},
 	{
 		name: "Wooden Tools",
-		cost: 0,
-		boost: [["human", 0.1]]
+		cost: 4000000000,
+		boost: [["humanlightbulb", "x2"]]
 	},
 	{
 		name: "Stone Tools",
-		cost: 0,
-		boost: [["human", 0.1]]
+		cost: 2000000000,
+		boost: [["humanlightbulb", "x2"]]
 	},
 	{
 		name: "Iron Tools",
-		cost: 0,
-		boost: [["human", 0.1]]
+		cost: 30000000000,
+		boost: [["humanlightbulb", "x2"]]
 	},
 	{
 		name: "Gold Tools",
-		cost: 0,
-		boost: [["human", 0.1]],
+		cost: 40000000000000,
+		boost: [["humanlightbulb", "x2"]],
 	},
 	{
 		name: "Hi Tech",
-		cost: 0,
-		boost: [["human", 0.1]]
+		cost: 1500000000000000,
+		boost: [["humanlightbulb", "x2"]]
 	},
 	{
-		name:"Snowball",
-		cost: 0,
+		name:"Snowman",
+		cost: 1225000000000000,
 		description:"I hope this guy's not Olaf",
-		boost: [["human", 0.1]]
+		boost: [["humanlightbulb", "x2"]]
 	},
 	// boosts all
 	{
 		name: "Diode",
-		cost: 0,
-		boost: [["all", 0.1]]
+		cost: 99999999,
+		boost: [["all", "5%"]]
 	},
 	{
 		name: "ShamWow Guy",
-		cost: 0,
+		cost: 999999999,
 		description: "Hires the ShamWow Guy to advertise lightbulbs",
-		boost: [["all", 0.1]]
+		boost: [["all", "5%"]]
 	},
 	{
 		name: "Reddit BotBulb",
-		cost: 0,
-		boost: [["all", 0.1]]
+		cost: 99999999999,
+		boost: [["all", "5%"]]
 	},
 	{
 		name: "Bulb Convention",
-		cost: 0,
-		boost: [["all", 0.1]]
+		cost: 9999999999999,
+		boost: [["all", "5%"]]
 	},
 	{
 		name: "Lightbulb Warzone",
-		cost: 0,
-		boost: [["all", 0.1]]
+		cost: 99999999999999,
+		boost: [["all", "5%"]]
 	},
 	// misc
 	{
@@ -144,9 +144,6 @@ var upgradesD = [
 		name: "Prism",
 		cost: 0,
 		description: "Converts photon particles into experience.",
-	},
-	{
-		name: "Hyperspace Travelling Machine"
 	},
 	{
 		name: "Hyperspace Travelling Machine"

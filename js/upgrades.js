@@ -39,7 +39,7 @@ var Upgrade = function(options) {
 				"data-toggle": "tooltip",
 				"data-placement": "bottom",
 				"title": this.name,
-				"data-content": "<p class='upFunc'>" + this.description + "</p><p>Costs <span id='upCost'>" + this.cost + "</span> volts</p>",
+				"data-content": "<p class='upFunc'>" + this.description + "</p><p>Costs <span id='upCost'>" + Game.beautify(this.cost) + "</span> volts</p>",
 			})
 			.popover({
 				trigger: 'hover',

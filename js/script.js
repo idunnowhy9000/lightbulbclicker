@@ -124,7 +124,7 @@ var Game = {
 		
 		for (var _upgrade in upgradesD) {
 			var newUpgrade = this.Upgrade(upgradesD[_upgrade]).init();
-			this.upgrades[newUpgrade] = newUpgrade;
+			this.upgrades[newUpgrade.id] = newUpgrade;
 		}
 		
 		this.timer = {elasped : 0, lastFrame: Date.now()};
