@@ -7,9 +7,17 @@ var Building = function(options) {
 	options.amount = 0;
 	if (!options.increase) options.increase = 1.15;
 	if (!options.displayAt) options.displayAt = 10;
-	options.type = 'building';
+	if (!options.onBuy) options.onBuy = function () {}
 	options.displayed = false;
 	options.button = undefined;
+	options.check = function () {
+		var self = this;
+		if (this.cost > Game.volts) {
+			this.button.addClass('fakeDisable')
+		} else {
+			this.button.removeClass('fakeDisable', 200);
+		}
+	}
 	options.buy = function() {
 		if (this.cost > Game.volts) { return false; }
 		Game._remove(this.cost);
@@ -17,6 +25,7 @@ var Building = function(options) {
 		this.amount++;
 		this.cost = Game.calc.calcCost(this);
 		Game._calcVPS();
+		this.onBuy();
 		this.update();
 	}
 	options.update = function () {
@@ -28,6 +37,10 @@ var Building = function(options) {
 		}
 		$("#" + self.id + " .buildingAmount").text(self.amount);
 		$("#" + self.id + " .buildingCost").text(Game.beautify(self.cost) + ' volts');
+		var amountps = Game.calc.calcBdVPS(self) * self.amount;
+		this.button.attr({
+			"data-content": "<span class='bdDesc'>" + this.description + "</span><br>Costs <span class='bdCost'>" + this.cost + "</span> volts<br><span class='bdProduceAmount'>" + this.amount + "</span> <span class='bdProduceName'>" + this.name + (this.amount > 1 ? "s" : "") + "</span> producing <span class='bdProduce'>" + amountps + "</span> volt" + (amountps > 1 ? "s" : "") + " per second<br>",
+		});
 	}
 	options.init = function() {
 		var self = this;
@@ -37,21 +50,18 @@ var Building = function(options) {
 				"data-toggle": "popover",
 				"data-placement": "bottom",
 				"title": this.name,
-				"data-content": "<span class='upDesc'>" + this.description + "</span><br>Costs <span id='upCost'>" + this.cost + "</span> volts",
 			})
 			.popover({
 				trigger: 'hover',
 				html: true,
 				container:'body',
-				delay: {
-					//"hide": 500
-				},
 			})
 			.click(function () {
 				self.buy()
 			});
 		this.update();
 		Game.store.append(this.button);
+		this.check();
 		return this;
 	}
 	return options;

@@ -87,6 +87,10 @@ var saveload = {
 			Game.clicked = 0;
 			window.localStorage.removeItem("saveFile")
 		}
+		// soft
+		if (!hard) {
+			if (Game.upgrades['prestiegemode'].amount === 1) Game.prestiege += Game.calc.calcPrestiege();
+		}
 		Game._update();
 		return;
 	}

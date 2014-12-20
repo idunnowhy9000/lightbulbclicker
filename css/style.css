@@ -15,12 +15,19 @@ cursor:pointer;
 width:180px;
 height:300px;
 margin: 5px auto;
+background-image: url('../img/lightbulb_clicked.png');
 background-image: url('../img/lightbulb.png');
 background-repeat: no-repeat;
 background-size: 180px 300px;
+-webkit-transition: -webkit-transform .2s;
+-moz-transition: -moz-transform .2s;
+transition: transform .2s;
 }
 #bulb:active{
 background-image: url('../img/lightbulb_clicked.png');
+-webkit-transform: scale(0.97);
+-moz-transform: scale(0.97);
+transform: scale(0.97);
 }
 #col1, #col2, #col3{
 text-align: center;
@@ -28,6 +35,12 @@ padding: 5px 2px;
 min-height:100vh;
 max-height:100vh;
 overflow:auto;
+-webkit-user-select: none;  /* Chrome all / Safari all */
+-moz-user-select: none;     /* Firefox all */
+-ms-user-select: none;      /* IE 10+ */
+/* No support for these yet, use at own risk */
+-o-user-select: none;
+user-select: none;       
 }
 #col2{
 overflow:hidden;
@@ -68,4 +81,10 @@ margin:0;
 }
 .fond{
 font-family: 'Fond', sans-serif;
+}
+.fakeDisable{
+filter: alpha(opacity=65);
+-webkit-box-shadow: none;
+box-shadow: none;
+opacity: .65;
 }

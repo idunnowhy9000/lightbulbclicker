@@ -1,6 +1,6 @@
 var Game = {
 	// system's data var
-	version: 1.1,
+	version: 1.2,
 	// vars
 	volts: 0, // volts
 	voltsTot: 0, // total volts
@@ -48,8 +48,7 @@ var Game = {
 	// data
 	buildings: [],
 	upgrades: [],
-	achievements: [],
-	evoData: [],
+	achievements: [],	
 	
 	// helper objects
 	Building: undefined,
@@ -65,8 +64,7 @@ var Game = {
 		this.Building = Building;
 		this.Upgrade = Upgrade;
 		
-		this.evoData = evoD;
-		this.Level = new Level(this.evoData);
+		this.Level = new Level();
 		
 		this.button = $('#bulb');
 		this.count = $('#count');
@@ -240,14 +238,6 @@ var Game = {
 	
 	_stats: function () {
 		var self = this;
-		function getNumBulbs () {
-			var num = 0;
-			for (var i in this.buildings) {
-				num += this.buildings.amount;
-			}
-			if (isNaN(num)) return 0;
-			return num;
-		}
 		bootbox.dialog({
 			title: "Stats",
 			message: "Volts in bank: " + self.beautify(parseInt(self.volts)) + "<br>" +
@@ -255,7 +245,7 @@ var Game = {
 					"Total volts (all time): " + self.beautify(parseInt(self.voltsTotAll)) + "<br>" +
 					"Session Started: " + self.sessionStart + "<br>" +
 					"Game Started: " + self.gameStart + "<br>" +
-					"Bulbs created: " + getNumBulbs() + "<br>" +
+					"Bulbs created: " + self.getNumThing(0) + "<br>" +
 					"Clicked " + self.beautify(self.clicked) + " times<br>" +
 					 self.beautify(parseInt(self.voltsTot)) + " bulbs gained per second<br>" +
 					 self.beautify(parseInt(self.voltsTot)) + " bulbs gained per click<br><br>" +
@@ -300,6 +290,21 @@ var Game = {
 	},
 	
 	// other
+	getNumThing: function(option) {
+		var num = 0;
+		if (option === 0) {
+			for (var i in this.buildings) {
+				num += this.buildings[i].amount;
+			}
+		}
+		if (option === 1) {
+			for (var i in this.upgrades) {
+				num += this.upgrades[i].amount;
+			}
+		}
+		if (isNaN(num)) return 0;
+		return num;
+	},
 	_notify: function (type, message) {
 		var typeClass = {0: 'alert-info', 1: 'alert-danger', 2: 'alert-success'};
 		var alert = $("<div class='alert'></div>")
@@ -309,14 +314,28 @@ var Game = {
 		$('#alertContainer').append(alert);
 	},
 	
+	_sortUpgrades: function () { // updates upgrades
+		var self = this;
+		this.upgradeStore.sort(function (a,b) {
+			var upgradeA = self.upgrades[a.getAtrribute('id')],
+				upgradeB = self.upgrades[b.getAtrribute('id')];
+			if (upgradeA.cost > upgradeB.cost) return 1;
+			if (upgradeA.cost < upgradeB.cost) return -1;
+			return 0;
+		});
+	},
+	
 	_update: function () { // updates the UI
 		for (var b in this.buildings) {
+			this.buildings[b].check();
 			this.buildings[b].update();
 		}
 		for (var u in this.upgrades) {
+			this.upgrades[u].check();
 			this.upgrades[u].update();
+			this._sortUpgrades();
 		}
-		this.count.text(this.beautify(parseInt(this.volts)) + " volt" + (this.volts > 0 ? "s" : ""));
+		this.count.text(this.beautify(parseInt(this.volts)) + " volt" + (this.volts > 1 ? "s" : ""));
 		this.vpsDisplay.text(this._vps.toFixed(2));
 		this.Level.update();
 	},
