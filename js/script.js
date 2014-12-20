@@ -207,8 +207,10 @@ var Game = {
 		var self = this;
 		bootbox.dialog({
 			title: "Import",
-			message: "<p class='center'>Enter import data:<br>" +
-					'<input type="text" name="import"></p>',
+			message: '<form id="importData">' +
+					"<p class='center'>Enter import data:<br>" +
+					'<input type="text" name="import" class="form-control input-md"></p>' +
+					'</form>',
 			buttons: {
 				success: {
 					label: "Import",
@@ -225,8 +227,10 @@ var Game = {
 		var self = this;
 		bootbox.dialog({
 			title: "Export",
-			message: "<p class='center'>Here's your export data:<br>" +
-					'<input type="text" name="export" value=' + self.saveload.saveGame() + '></p>',
+			message: '<form id="exportData">' +
+					"<p class='center'>Here's your export data:<br>" +
+					'<input type="text" name="export" value=' + self.saveload.saveGame() + ' class="form-control input-md"></p>' +
+					'</form>',
 			buttons: {
 				success: {
 					label: "OK",
