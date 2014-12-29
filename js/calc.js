@@ -1,8 +1,8 @@
 (function (window) {
 	"use strict";
 	window.Game.calc = {
-		calcCost: function (x){
-			return Math.round(x.cost * Math.pow(x.increase,x.amount))
+		calcCost: function (num) {
+			return Math.round(num.cost * Math.pow(num.increase,num.amount))
 		},
 		calcBdVPS: function (bd) {
 			var bdBoost = 0, timesboost = 1;
@@ -22,19 +22,20 @@
 			}
 			return (bd.vps + bdBoost) * timesboost;
 		},
-		calcVPS: function (){
+		calcVPS: function () {
 			var total=0,
 				boostAll = 1;
+
 			// calculate
 			for (var b in Game.buildings) { // buildings
 				var a = Game.buildings[b];
 				total += this.calcBdVPS(a) * a.amount;
 			}
+			total *= boostAll;
 			
-			return total*boostAll;
+			return total;
 		},
 		calcPrestiege: function () {
-			//return Math.floor((Math.sqrt(6 + 6 * (Game.voltsTotAll / 13 ^ 12)) - 3) / 5);
 			return 0; // todo : fill this in
 		},
 		calcClick: function () {

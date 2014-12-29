@@ -14,15 +14,35 @@
 		}
 		Tools.l = function (thing) { return document.querySelector(thing); }
 		Tools.log = function (thing) { return console.log(thing); } // for debugging purposes
+		Tools.ajax = function ajax(url, callback) {
+			var httpRequest;
+			if (window.XMLHttpRequest) {
+				httpRequest = new XMLHttpRequest();
+				if (callback) {
+					httpRequest.onreadystatechange = function () {
+						if(httpRequest.readyState === 4) {
+							callback(httpRequest.responseText);
+						}
+					};
+				}
+				httpRequest.open('GET', url);
+				httpRequest.send();
+			} else {
+				// i would've had an activex fallback here
+				// but i don't... yet(?)
+				// jokes aside, it's because i or we don't support ie6 anymore
+			}
+		}
 		
 		window.Tools = Tools;
 		window.l = Tools.l;
 		window.log = Tools.log;
+		window.ajax = Tools.ajax;
 		
 		// polyfills
 		// requestAnimationFrame polyfill by paul irish
 		window.requestAnimFrame = (function(){
-		  return window.requestAnimationFrame ||
+			return window.requestAnimationFrame ||
 				window.webkitRequestAnimationFrame ||
 				window.mozRequestAnimationFrame ||
 				function( callback ){

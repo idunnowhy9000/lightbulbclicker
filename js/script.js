@@ -23,6 +23,10 @@
 		this._vps = 0; // vps (used for displaying vps)
 		this._expps = 0; // exp per second
 		this.perClick = 0; // per clicks (used for upgrades)
+		this.curDate = undefined; // launched date
+		
+		this.baseWeather = undefined;
+		this.curWeather = undefined;
 		
 		// stats
 		this.clicked = 0;
@@ -66,6 +70,7 @@
 		this.buildingsD = [];
 		this.upgradesD = [];
 		this.achievementsD = [];
+		this.weatherD = [];
 		
 		// loaded data
 		this.buildings = [];
@@ -76,11 +81,15 @@
 		this.Building = undefined;
 		this.Upgrade = undefined;
 		this.Level = undefined;
+		this.WeatherHandler = undefined;
 		this.calc = undefined;
 		this.saveload = undefined;
 		// functions
 		this.init = function () {
 			this.loaded = true;
+			
+			this.curDate = new Date();
+			
 			this.draw();
 			
 			var self = this;
@@ -112,21 +121,27 @@
 			
 			this.refresh();
 
+			// doms
 			this.bulb.addEventListener("click", function () {
 				self.bulbClick();
 			});
 			
+			// buildings
 			for (var _building in this.buildingsD) {
 				var newBuilding = new this.Building(this.buildingsD[_building]);
 				this.buildings[newBuilding.id] = newBuilding;
 				this.buildings[newBuilding.id].draw();
 			}
 			
+			// upgrades
 			for (var _upgrade in this.upgradesD) {
 				var newUpgrade = new this.Upgrade(this.upgradesD[_upgrade]);
 				this.upgrades[newUpgrade.id] = newUpgrade;
 				this.upgrades[newUpgrade.id].draw();
 			}
+			
+			// weather
+			
 
 			this.loop();
 			this.refresh();
@@ -308,7 +323,6 @@
 			for (var _upgrade in this.upgrades) {
 				this.upgrades[_upgrade].refresh();
 			}
-			this.sortUpgrades();
 		}
 		
 		this.logic = function () { // logic tick

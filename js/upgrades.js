@@ -1,6 +1,7 @@
 (function (window) {
 	"use strict";
 	window.Game.Upgrade = function(options) {
+		var Game = window.Game;
 		if (!options.name) options.name = 'None';
 		if (!options.id) options.id = Tools.toId(options.name);
 		if (!options.description) options.description = '...';
@@ -31,8 +32,9 @@
 				canDisplay = true;
 			}
 			if (canDisplay) {
-				//this.button.fadeIn(400).css("display","");
 				this.displayed = true;
+				
+				Game.sortUpgrades();
 				this.button.classList.remove('hidden');
 				this.button.classList.add('fading');
 			}
