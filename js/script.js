@@ -54,7 +54,6 @@
 		this.pbarDisplay = undefined;
 		this.factNameDisplay = undefined;
 		this.gameContainer = undefined;
-		this.weatherStore = undefined;
 		// options
 		this.saveG = undefined;
 		this.resetG = undefined;
@@ -104,7 +103,6 @@
 			this.stats = l('#stats');
 			this.factNameDisplay = l('#factNameDisplay');
 			this.gameContainer = l('#gameContainer');
-			this.weatherStore = l('#weatherStore');
 			
 			this.date = Date.now();
 			this.logicElasped = 0;
@@ -157,21 +155,6 @@
 				var store = document.createElement('div');
 				store.setAttribute('id', 'lightbulb');
 				lightbulbListContainer.appendChild(store);
-				// drawed in Buildings.draw
-
-				var weatherListContainer = document.createElement('div');
-				weatherListContainer.setAttribute('id', 'weatherListContainer');
-				colLeft.appendChild(weatherListContainer);
-				
-				var weatherListTitle = document.createElement('p');
-				weatherListTitle.setAttribute('id', 'weatherListTitle');
-				weatherListTitle.appendChild(document.createTextNode('Weather Workers'));
-				weatherListTitle.setAttribute('class', 'large');
-				weatherListContainer.appendChild(weatherListTitle);
-				
-				var weatherStore = document.createElement('div');
-				weatherStore.setAttribute('id', 'weatherStore');
-				weatherListContainer.appendChild(weatherStore);
 				// drawed in Buildings.draw
 				
 				// colMid
@@ -326,7 +309,6 @@
 				this.upgrades[_upgrade].refresh();
 			}
 			this.sortUpgrades();
-			// weather worker handler: todo
 		}
 		
 		this.logic = function () { // logic tick

@@ -11,7 +11,6 @@
 		if (!options.description) options.description = '';
 		if (!options.cost) options.cost = 0;
 		if (!options.vps) options.vps = 1;
-		if (!options.type) options.type = 'buildings';
 		options.amount = 0;
 		if (!options.increase) options.increase = 1.15;
 		if (!options.displayAt) options.displayAt = 100;
@@ -62,8 +61,7 @@
 			this.button = tempBtn;
 			this.bdCost = bdCost;
 			this.bdAmount = bdAmount;
-			if (this.type === "weather") Game.weatherStore.appendChild(this.button);
-			else Game.store.appendChild(this.button);
+			Game.store.appendChild(this.button);
 		}
 		options.refresh = function () {
 			if (!options.displayed) this.button.classList.add('hidden');

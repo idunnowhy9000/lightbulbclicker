@@ -74,41 +74,5 @@
 			description:"Every human will now obey your commmands",
 			displayAt:871995
 		},
-		// weather workers
-		{
-			name:"Rainy Clouds",
-			type: "weather",
-			displayable: false
-		},
-		{
-			name:"Thunder",
-			type: "weather",
-			displayable: false
-		},
-		{
-			name:"Aurora Beam",
-			type: "weather",
-			displayable: false
-		},
-		{
-			name:"Plasma Beam",
-			type: "weather",
-			displayable: false
-		},
-		{
-			name:"Lasers",
-			type: "weather",
-			displayable: false
-		},
-		{
-			name:"Extreme Magnets",
-			type: "weather",
-			displayable: false
-		},
-		{
-			name:"Nuclear Lightbulb Factories",
-			type: "weather",
-			displayable: false
-		}
 	];
 })(window);
