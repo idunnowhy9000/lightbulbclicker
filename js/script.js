@@ -1,393 +1,366 @@
-var Game = {
-	// system's data var
-	version: 1.2,
-	// vars
-	volts: 0, // volts
-	voltsTot: 0, // total volts
-	voltsTotAll: 0, // total volts all time
-	prestiege: 0, // self exclamatory
-	_vps: 0, // vps (used for displaying vps)
-	_expps: 0, // exp per second
-	perClick: 0, // per clicks (used for upgrades)
-	
-	// stats
-	clicked: 0,
-	sessionStart: undefined,
-	sessionStarted: false,
-	gameStart: undefined,
-	gameStarted: false,
-	factName: "",
-	nameSettable: false,
-	
-	// timer
-	timer: undefined,
-	fps: 30,
-	ticks: 0,
-
-	// DOM elements
-	// buttons,...
-	button: undefined,
-	count: undefined,
-	store: undefined,
-	upgradeStore: undefined,
-	vpsDisplay: undefined,
-	levelDisplay: undefined,
-	expDisplay: undefined,
-	levelNDisplay: undefined,
-	toNextLevelDisplay: undefined,
-	pbarDisplay: undefined,
-	factNameDisplay: undefined,
-	// options
-	saveG: undefined,
-	resetG: undefined,
-	hresetG: undefined,
-	importG: undefined,
-	exportG: undefined,
-	stats: undefined,
-
-	// data
-	buildings: [],
-	upgrades: [],
-	achievements: [],	
-	
-	// helper objects
-	Building: undefined,
-	Upgrade: undefined,
-	Level: undefined,
-	calc: undefined,
-	saveload: undefined,
-	// functions
-	init: function () {
-		var self = this;
-		this.calc = calc;
-		this.saveload = saveload;
-		this.Building = Building;
-		this.Upgrade = Upgrade;
-		
-		this.Level = new Level();
-		
-		this.button = $('#bulb');
-		this.count = $('#count');
-		this.store = $('#lightbulb');
-		this.upgradeStore = $('#upgrade');
-		this.vpsDisplay = $('#vps');
-		this.levelDisplay = $('#level');
-		this.lvlExpDisplay = $('#lvlExp');
-		this.levelNDisplay = $('#levelN');
-		this.toNextLevelDisplay = $('#toNextLevel');
-		this.pbarDisplay = $('#pbar');
-		this.saveG = $('#saveG');
-		this.resetG = $('#resetG');
-		this.hresetG = $('#hresetG');
-		this.importG = $('#importG');
-		this.exportG = $('#exportG');
-		this.stats = $('#stats');
-		this.factNameDisplay = $('#factNameDisplay');
-		
-		this.factNameDisplay.text(self.factName || "Your Factory").click(function () {
-			if (self.nameSettable) {
-				self._factName();
-			}
-		});
-		
-		this.button.click(function() {
-			self._earn(1);
-			self.Level.gainExp(1);
-			self.clicked++;
-		});
-		
-		this.saveG.click(function() {
-			self._saveFile();
-		});
-		this.resetG.click(function() {
-			self._reset();
-		});
-		this.hresetG.click(function() {
-			self._hardReset();
-		});
-		this.importG.click(function() {
-			self._import();
-		});
-		this.exportG.click(function() {
-			self._export();
-		});
-		this.stats.click(function() {
-			self._stats();
-		});
-		
-		for (var _building in buildingsD) {
-			var newBuilding = this.Building(buildingsD[_building]).init();
-			this.buildings[newBuilding.id] = newBuilding;
-		}
-		
-		for (var _upgrade in upgradesD) {
-			var newUpgrade = this.Upgrade(upgradesD[_upgrade]).init();
-			this.upgrades[newUpgrade.id] = newUpgrade;
-		}
-		
-		this.timer = {elasped : 0, lastFrame: Date.now()};
-		this._loop();
-		// load
-		this._loadSaveFile();
-		// date
-		if (!this.sessionStarted) {
-			this.sessionStart = new Date();
-		} if (!this.gameStarted) {
-			this.gameStart = new Date();
-		}
-		this._update();
-	},
-	
-	// dialogs
-	_saveFile: function () {
-		var saveFile = self.saveload.saveGame();
-			window.localStorage.setItem("saveFile",saveFile)
-		this._notify("Save file complete.");
-	},
-	
-	_loadSaveFile: function () {
-		if (localStorage["saveFile"]) var loadGame = this.saveload.loadGame(localStorage["saveFile"]);
-		this._notify("Load file complete.");
-	},
-	
-	_reset: function () {
-		var self = this;
-		bootbox.dialog({
-			title: "Reset",
-			message: "Are you sure you want to reset?",
-			buttons: {
-				success: {
-					label: "Yes",
-					className: "btn-success",
-					callback: function() {
-						self.saveload.reset();
-						var alert = $("<div class='alert'></div>")
-							.addClass("alert-success cAlert")
-							.text("Resetted.")
-							.fadeIn(1000).delay(5000).fadeOut(1000)
-					}
-				},
-				danger: {
-					label: "No",
-					className: "btn-danger",
-					callback: function() {return;}
-				}
-			}
-		});
-	},
-	
-	_hardReset: function () {
-		var self = this;
-		bootbox.dialog({
-			title: "HARD Reset",
-			message: "Are you sure you want to <b>HARD</b> reset?",
-			buttons: {
-				success: {
-					label: "Yes",
-					className: "btn-success",
-					callback: function() {
-						self.saveload.reset(true);
-						self._update();
-						var alert = $("<div class='alert'></div>")
-							.addClass("alert-success cAlert")
-							.text("Resetted.")
-							.fadeIn(1000).delay(5000).fadeOut(1000)
-					}
-				},
-				danger: {
-					label: "No",
-					className: "btn-danger",
-					callback: function() {return;}
-				}
-			}
-		});
-	},
-	
-	_import: function () {
-		var self = this;
-		bootbox.dialog({
-			title: "Import",
-			message: '<form id="importData">' +
-					"<p class='center'>Enter import data:<br>" +
-					'<input type="text" name="import" class="form-control input-md"></p>' +
-					'</form>',
-			buttons: {
-				success: {
-					label: "Import",
-					className: "btn-success",
-					callback: function() {
-						//self.saveload.loadGame();
-					}
-				}
-			}
-		});
-	},
-	
-	_export: function () {
-		var self = this;
-		bootbox.dialog({
-			title: "Export",
-			message: '<form id="exportData">' +
-					"<p class='center'>Here's your export data:<br>" +
-					'<input type="text" name="export" value=' + self.saveload.saveGame() + ' class="form-control input-md"></p>' +
-					'</form>',
-			buttons: {
-				success: {
-					label: "OK",
-					className: "btn-success",
-				}
-			}
-		});
-	},
-	
-	_stats: function () {
-		var self = this;
-		bootbox.dialog({
-			title: "Stats",
-			message: "Volts in bank: " + self.beautify(parseInt(self.volts)) + "<br>" +
-					"Total volts (this session): " + self.beautify(parseInt(self.voltsTot)) + "<br>" +
-					"Total volts (all time): " + self.beautify(parseInt(self.voltsTotAll)) + "<br>" +
-					"Session Started: " + self.sessionStart + "<br>" +
-					"Game Started: " + self.gameStart + "<br>" +
-					"Bulbs created: " + self.getNumThing(0) + "<br>" +
-					"Clicked " + self.beautify(self.clicked) + " times<br>" +
-					 self.beautify(parseInt(self.voltsTot)) + " bulbs gained per second<br>" +
-					 self.beautify(parseInt(self.voltsTot)) + " bulbs gained per click<br><br>" +
-					"Version " + self.version + "<br>" +
-					"<hr>" +
-					"Achievements Earned<br>" +
-					 // achievements here
-					"<hr>" +
-					"Upgrades<br>" +
-					"", // upgrades here
-			buttons: {
-				success: {
-					label: "Close",
-					className: "btn-success",
-				},
-			}
-		});
-	},
-	_factName: function () {
-		var self = this;
-		bootbox.dialog({
-			title: "Name your factory",
-			message: '<form id="factName">' +
-					'<input id="factNamebox" name="factNamebox" type="text" placeholder="Name" value="' + Game.factName + '" class="form-control input-md">' +
-					'</form>',
-			buttons: {
-				success: {
-					label: "OK",
-					className: "btn-success",
-					callback: function () {
-						var name = $('#factNamebox').val();
-						self.factName = name;
-						self.factNameDisplay.text(name);
-					}
-				},
-				danger: {
-					label: "Close",
-					className: "btn-danger",
-				},
-			}
-		});
-	},
-	
-	// other
-	getNumThing: function(option) {
-		var num = 0;
-		if (option === 0) {
-			for (var i in this.buildings) {
-				num += this.buildings[i].amount;
-			}
-		}
-		if (option === 1) {
-			for (var i in this.upgrades) {
-				num += this.upgrades[i].amount;
-			}
-		}
-		if (isNaN(num)) return 0;
-		return num;
-	},
-	_notify: function (type, message) {
-		var typeClass = {0: 'alert-info', 1: 'alert-danger', 2: 'alert-success'};
-		var alert = $("<div class='alert'></div>")
-			.addClass(typeClass[type] + " cAlert")
-			.text(type === 1 ? "There's an error in the mainframe." : message)
-			.fadeIn(1000).delay(5000).fadeOut(1000, function () {this.remove()})
-		$('#alertContainer').append(alert);
-	},
-	
-	_sortUpgrades: function () { // updates upgrades
-		var self = this;
-		this.upgradeStore.sort(function (a,b) {
-			var upgradeA = self.upgrades[a.getAtrribute('id')],
-				upgradeB = self.upgrades[b.getAtrribute('id')];
-			if (upgradeA.cost > upgradeB.cost) return 1;
-			if (upgradeA.cost < upgradeB.cost) return -1;
-			return 0;
-		});
-	},
-	
-	_update: function () { // updates the UI
-		for (var b in this.buildings) {
-			this.buildings[b].check();
-			this.buildings[b].update();
-		}
-		for (var u in this.upgrades) {
-			this.upgrades[u].check();
-			this.upgrades[u].update();
-			this._sortUpgrades();
-		}
-		this.count.text(this.beautify(parseInt(this.volts)) + " volt" + (this.volts > 1 ? "s" : ""));
-		this.vpsDisplay.text(this._vps.toFixed(2));
-		this.Level.update();
-	},
-	
-	_earn: function (i) {
-		this.volts += i;
-		this.voltsTot += i;
-		this.voltsTotAll += i;
-		this._update();
-	},
-	
-	_remove: function (i) {
-		this.volts -= i;
-		this._update();
-	},
-	
-	_calcVPS: function () {
-		var vps = this.calc.calcVPS();
-		this._vps = vps;
-		this._update();
-	},
-	
-	// loops
-	Logic: function () {
-		if (Game._vps) Game._earn(Game._vps);
-	},
-	_loop: function () {
-		Game.timer.elasped = (Date.now() - Game.timer.lastFrame) / 1000;
-		Game.ticks += Game.timer.elasped;
-		if (Game.ticks >= 1) {
-			Game.Logic();
-			Game.ticks = 0;
-		}
-		Game.timer.lastFrame = Date.now();
-		setTimeout(Game._loop, 1000 / Game.fps);
-	},
-	
+/*************************************************
+* Lightbulb Clicker's main script file
+* Controls magic and madness (1.3b)
+*************************************************/
+(function (window) {
+	"use strict";
+	// load datas
 	// tools
-	beautify: function (x) {
-		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	},
-	toId: function (text) {
-		return text.toString().toLowerCase().replace(/[^a-z0-9]+/g, '');
-	},
-	choose: function (arr) {
-		return arr[Math.floor(Math.random() * arr.length)];
-	},
-};
-$(document).ready(function() {
-	Game.init();
-});
+	window.loadTools();
+	// the game itself
+	var Game = function () {
+		// system's data var
+		this.version = 1.2;
+		this.versionRead = "1.3b";
+		this.lStorageName = "LBClicker";
+		this.loaded = false;
+		this.drawed = false;
+		// vars
+		this.volts = 0; // volts
+		this.voltsTot = 0; // total volts
+		this.voltsTotAll = 0; // total volts all time
+		this.prestiege = 0; // self exclamatory
+		this._vps = 0; // vps (used for displaying vps)
+		this._expps = 0; // exp per second
+		this.perClick = 0; // per clicks (used for upgrades)
+		
+		// stats
+		this.clicked = 0;
+		this.sessionStart = undefined;
+		this.sessionStarted = false;
+		this.gameStart = undefined;
+		this.gameStarted = false;
+		this.factName = "";
+		this.nameSettable = false;
+		
+		// timer
+		this.logicElasped = undefined;
+		this.date = undefined;
+		this.elapsed = undefined;
+		this.lastTick = undefined;
+		this.fps = undefined;
+
+		// DOM elements
+		// buttons,...
+		this.bulb = undefined;
+		this.count = undefined;
+		this.store = undefined;
+		this.upgradeStore = undefined;
+		this.vpsDisplay = undefined;
+		this.levelDisplay = undefined;
+		this.expDisplay = undefined;
+		this.levelNDisplay = undefined;
+		this.toNextLevelDisplay = undefined;
+		this.pbarDisplay = undefined;
+		this.factNameDisplay = undefined;
+		this.gameContainer = undefined;
+		this.weatherStore = undefined;
+		// options
+		this.saveG = undefined;
+		this.resetG = undefined;
+		this.hresetG = undefined;
+		this.importG = undefined;
+		this.exportG = undefined;
+		this.stats = undefined;
+
+		// data
+		this.buildingsD = [];
+		this.upgradesD = [];
+		this.achievementsD = [];
+		
+		// loaded data
+		this.buildings = [];
+		this.upgrades = [];
+		this.achievements = [];
+		
+		// helper objects
+		this.Building = undefined;
+		this.Upgrade = undefined;
+		this.Level = undefined;
+		this.calc = undefined;
+		this.saveload = undefined;
+		// functions
+		this.init = function () {
+			this.loaded = true;
+			this.draw();
+			
+			var self = this;
+			
+			this.bulb = l('#bulb');
+			this.count = l('#count');
+			this.store = l('#lightbulb');
+			this.upgradeStore = l('#upgrade');
+			this.vpsDisplay = l('#vpsDisplay');
+			this.levelDisplay = l('#level');
+			this.lvlExpDisplay = l('#lvlExp');
+			this.levelNDisplay = l('#lvlN');
+			this.toNextLevelDisplay = l('#toNextLevel');
+			this.pbarDisplay = l('#pbar');
+			this.saveG = l('#saveG');
+			this.resetG = l('#resetG');
+			this.hresetG = l('#hresetG');
+			this.importG = l('#importG');
+			this.exportG = l('#exportG');
+			this.stats = l('#stats');
+			this.factNameDisplay = l('#factNameDisplay');
+			this.gameContainer = l('#gameContainer');
+			this.weatherStore = l('#weatherStore');
+			
+			this.date = Date.now();
+			this.logicElasped = 0;
+			this.elapsed = Date.now();
+			this.lastTick = Date.now();
+			this.fps = 60;
+			
+			this.refresh();
+
+			this.bulb.addEventListener("click", function () {
+				self.bulbClick();
+			});
+			
+			for (var _building in this.buildingsD) {
+				var newBuilding = new this.Building(this.buildingsD[_building]);
+				this.buildings[newBuilding.id] = newBuilding;
+				this.buildings[newBuilding.id].draw();
+			}
+			
+			for (var _upgrade in this.upgradesD) {
+				var newUpgrade = new this.Upgrade(this.upgradesD[_upgrade]);
+				this.upgrades[newUpgrade.id] = newUpgrade;
+				this.upgrades[newUpgrade.id].draw();
+			}
+
+			this.loop();
+			this.refresh();
+		}
+		
+		this.draw = function () {
+			if (!this.drawed) {
+				var container = l('#container'),
+					colLeft = document.createElement('div'),
+					colMid = document.createElement('div'),
+					colRight = document.createElement('div');
+				// draw
+				// colLeft
+				colLeft.setAttribute('id','col1');
+				
+				var lightbulbListContainer = document.createElement('div');
+				lightbulbListContainer.setAttribute('id', 'lightbulbListContainer');
+				colLeft.appendChild(lightbulbListContainer);
+				
+				var lightbulbListTitle = document.createElement('p');
+				lightbulbListTitle.setAttribute('id', 'lightbulbListTitle');
+				lightbulbListTitle.setAttribute('class', 'large');
+				lightbulbListTitle.appendChild(document.createTextNode('Lightbulbs'));
+				lightbulbListContainer.appendChild(lightbulbListTitle);
+				
+				var store = document.createElement('div');
+				store.setAttribute('id', 'lightbulb');
+				lightbulbListContainer.appendChild(store);
+				// drawed in Buildings.draw
+
+				var weatherListContainer = document.createElement('div');
+				weatherListContainer.setAttribute('id', 'weatherListContainer');
+				colLeft.appendChild(weatherListContainer);
+				
+				var weatherListTitle = document.createElement('p');
+				weatherListTitle.setAttribute('id', 'weatherListTitle');
+				weatherListTitle.appendChild(document.createTextNode('Weather Workers'));
+				weatherListTitle.setAttribute('class', 'large');
+				weatherListContainer.appendChild(weatherListTitle);
+				
+				var weatherStore = document.createElement('div');
+				weatherStore.setAttribute('id', 'weatherStore');
+				weatherListContainer.appendChild(weatherStore);
+				// drawed in Buildings.draw
+				
+				// colMid
+				colMid.setAttribute('id','col2');
+				
+				var factNameDisplay = document.createElement('div');
+				factNameDisplay.setAttribute('id', 'factNameDisplay');
+				factNameDisplay.setAttribute('class', 'medium');
+				factNameDisplay.appendChild(document.createTextNode('Your Factory'));
+				colMid.appendChild(factNameDisplay);
+				
+				var voltCounter = document.createElement('div');
+				voltCounter.setAttribute('id', 'count');
+				voltCounter.setAttribute('class', 'large fond');
+				voltCounter.appendChild(document.createTextNode('0 volt'));
+				colMid.appendChild(voltCounter);
+				
+				var vpsDisplay = document.createElement('div');
+				vpsDisplay.setAttribute('id', 'vpsDisplay');
+				vpsDisplay.appendChild(document.createTextNode('0 volt/second'));
+				colMid.appendChild(vpsDisplay);
+				
+				var bulbContainer = document.createElement('div');
+				bulbContainer.setAttribute('id', 'bulbContainer');
+				colMid.appendChild(bulbContainer);
+				
+				var bulb = document.createElement('div');
+				bulb.setAttribute('id', 'bulb');
+				colMid.appendChild(bulb);
+				
+				var progress = document.createElement('div');
+				progress.setAttribute('id', 'pbar');
+				colMid.appendChild(progress);
+				
+				var levelContainer = document.createElement('div');
+				levelContainer.setAttribute('id', 'levelContainer');
+				colMid.appendChild(levelContainer);
+				
+				var level = document.createElement('span');
+				level.setAttribute('id', 'level');
+				level.appendChild(document.createTextNode('Level 0 '));
+				levelContainer.appendChild(level);
+				
+				var lvlExp = document.createElement('span');
+				lvlExp.setAttribute('id', 'lvlExp');
+				lvlExp.appendChild(document.createTextNode('(0 exp)'));
+				levelContainer.appendChild(lvlExp);
+				
+				var lvlNContainer = document.createElement('p');
+				levelContainer.appendChild(lvlNContainer);
+				
+				var lvlN = document.createElement('span');
+				lvlN.setAttribute('id', 'lvlN');
+				lvlN.appendChild(document.createTextNode('0 exp to next level'));
+				lvlNContainer.appendChild(lvlN);
+				
+				var toNextLevel = document.createElement('span');
+				toNextLevel.setAttribute('id', 'toNextLevel');
+				levelContainer.appendChild(toNextLevel);
+				
+				var options = document.createElement('div');
+				options.setAttribute('id', 'options');
+				options.setAttribute('class', 'btn');
+				options.appendChild(document.createTextNode('Options'));
+				colMid.appendChild(options);
+				
+				// colRight
+				colRight.setAttribute('id','col3');
+				
+				var upgradeListContainer = document.createElement('div');
+				upgradeListContainer.setAttribute('id', 'upgradeListContainer');
+				colRight.appendChild(upgradeListContainer);
+				
+				var upgradeListTitle = document.createElement('p');
+				upgradeListTitle.setAttribute('id', 'upgradeListTitle');
+				upgradeListTitle.setAttribute('class', 'large');
+				upgradeListTitle.appendChild(document.createTextNode('Upgrades'));
+				upgradeListContainer.appendChild(upgradeListTitle);
+				
+				var upgradeStore = document.createElement('div');
+				upgradeStore.setAttribute('id', 'upgrade');
+				upgradeListContainer.appendChild(upgradeStore);
+				// drawed in Upgrade.draw
+				
+				// container
+				container.appendChild(colLeft);
+				container.appendChild(colMid);
+				container.appendChild(colRight);
+				this.drawed = true;
+			}
+			return this.drawed;
+		}
+		
+		this.sortUpgrades = function () {
+			var self = this,
+				sortedUpgrades = this.upgradeStore,
+				upgrades = sortedUpgrades.childNodes,
+				upgradesArr = [];
+			for (var i in upgrades) {
+				if (upgrades[i].nodeType === 1) { // get rid of the whitespace text nodes
+					upgradesArr.push(upgrades[i]);
+				}
+			}
+			upgradesArr.sort(function (a, b) {
+				var upgradeIdA = a.getAttribute("id").split('-')[1],
+					upgradeIdB = b.getAttribute("id").split('-')[1];
+				if (!self.upgrades[upgradeIdA] || !self.upgrades[upgradeIdB]) return 0;
+				var upgradeA = self.upgrades[upgradeIdA],
+					upgradeB = self.upgrades[upgradeIdB];
+				if (upgradeA.cost > upgradeB.cost) return 1;
+				else if (upgradeA.cost < upgradeB.cost) return -1;
+				return 0;
+			});
+		}
+		
+		// clicks
+		//this.saveGClick = function () {this._saveFile();};
+		
+		this.bulbClick = function () {
+			this._earn(1);
+		}
+		
+		this._earn = function (i) {
+			this.volts += i;
+			this.voltsTot += i;
+			this.voltsTotAll += i;
+		}
+		
+		this._remove = function (i) {
+			this.volts -= i;
+		}
+		
+		this._calcVPS = function () {
+			var vps = this.calc.calcVPS();
+			this._vps = vps;
+		}
+		
+		this.refresh = function () { // screen tick
+			var self = this;
+			window.requestAnimFrame(function () {
+				self.refresh();
+			});
+			
+			this.count.childNodes[0].nodeValue = Tools.beautify(Math.floor(this.volts)) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
+			this.vpsDisplay.childNodes[0].nodeValue = Tools.beautify(this._vps) + " volt" + (this._vps > 1 ? "s" : "") + "/second";
+			// buildings
+			for (var _building in this.buildings) {
+				this.buildings[_building].refresh();
+			}
+			// upgrades
+			for (var _upgrade in this.upgrades) {
+				this.upgrades[_upgrade].refresh();
+			}
+			this.sortUpgrades();
+			// weather worker handler: todo
+		}
+		
+		this.logic = function () { // logic tick
+			if (this._vps) this._earn(this._vps);
+		}
+		
+		this.loop = function () {
+			var self = this;
+			
+			this.elapsed = ((Date.now() - this.lastTick) / 1000);
+			this.logicElasped += this.elapsed;
+			this.time = Date.now();
+			
+			while (this.elapsed > 0) {
+				if (this.logicElasped >= 1) {
+					this.logic();
+					this.logicElasped = 0;
+				}
+				this.elapsed -= 1000 / this.fps;
+			}
+			
+			this.lastTick = Date.now();
+			setTimeout(function () {
+				self.loop();
+			}, 1000 / this.fps);
+		}
+		
+		return this;
+	}
+	// load the game
+	var g = new Game();
+	window.Game = g;
+	// dom load
+	window.addEventListener('load', function(){
+		window.Game.init();
+	});
+})(window);

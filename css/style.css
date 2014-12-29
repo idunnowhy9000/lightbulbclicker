@@ -1,3 +1,30 @@
+/* RESET */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* FONTS */
 @font-face {
     font-family: 'Lato';
     src: url('../fonts/Lato-Regular.ttf');
@@ -6,6 +33,27 @@
     font-family: 'Fond';
     src: url('../fonts/Fondamento-Regular.ttf');
 }
+/* MEDIA */
+@media only screen 
+and (min-width : 900px)
+and (max-width : 1224px) {
+	#col2{
+		overflow:auto;
+	}
+	#options .btn{
+		width: 100%;
+		display: block;
+		margin: 2px 0;
+	}
+	#options p{
+		margin:0; padding: 0;
+	}
+}
+/* ANIMATION */
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+/* MAIN */
 body{
 overflow:hidden;
 font-family: 'Lato', sans-serif;
@@ -15,35 +63,26 @@ cursor:pointer;
 width:180px;
 height:300px;
 margin: 5px auto;
-background-image: url('../img/lightbulb_clicked.png');
 background-image: url('../img/lightbulb.png');
 background-repeat: no-repeat;
 background-size: 180px 300px;
--webkit-transition: -webkit-transform .2s;
--moz-transition: -moz-transform .2s;
 transition: transform .2s;
+
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+#bulb:after{
+display: none;
+content: url('../img/lightbulb_clicked.png');
 }
 #bulb:active{
 background-image: url('../img/lightbulb_clicked.png');
 -webkit-transform: scale(0.97);
 -moz-transform: scale(0.97);
 transform: scale(0.97);
-}
-#col1, #col2, #col3{
-text-align: center;
-padding: 5px 2px;
-min-height:100vh;
-max-height:100vh;
-overflow:auto;
--webkit-user-select: none;  /* Chrome all / Safari all */
--moz-user-select: none;     /* Firefox all */
--ms-user-select: none;      /* IE 10+ */
-/* No support for these yet, use at own risk */
--o-user-select: none;
-user-select: none;       
-}
-#col2{
-overflow:hidden;
 }
 .center{text-align: center;}
 .large{
@@ -52,39 +91,72 @@ font-size:28px;
 .medium{
 font-size:16px;
 }
-.buildingObj, .upgradeObj{
+.bdObj, .upgradeObj{
 width:100%;
 min-height:40px;
 border:1px solid black;
-margin:2px 0;
+margin:2px;
 }
-.buildingObj .buildingAmount{
+.bdObj .bdAmount{
 text-align:center;
 float:left;
 width:25%;
 }
-.buildingObj .buildingInfo{
+.bdObj .bdInfo{
 float:right;
 width:75%;
 }
-.cAlert{
-position: absolute;
-right:0;
-bottom:0;
+.upgradeObj{
+width: 64px;
+height: 64px;
+float: left;
 }
 #options{
 margin: 5px auto;
 }
-.nostyle{
-padding:0;
-margin:0;
-}
 .fond{
 font-family: 'Fond', sans-serif;
 }
-.fakeDisable{
-filter: alpha(opacity=65);
--webkit-box-shadow: none;
-box-shadow: none;
+.disabled{
 opacity: .65;
+}
+#col1, #col2, #col3{
+text-align: center;
+padding: 5px 2px;
+min-height:100vh;
+max-height:100vh;
+overflow:auto;
+}
+#col1 { float: left; width: 33%; }
+#col2 { display: inline-block; width: 33%; }
+#col3 { float: right; width: 33%; }
+.popover ul{
+padding: 0 40px;
+font-size: 12px;
+}
+.weatherObj{
+background-color: #2aabd2;
+}
+.bulbObj{
+background-image: #265a88;
+}
+.fading{
+opacity: 0;
+
+-webkit-animation: fadeIn 1s;
+-webkit-animation-timing-function: 1;
+-webkit-animation-fill-mode: forwards;
+
+animation: fadeIn 1s;
+animation-timing-function: 1;
+animation-fill-mode: forwards;
+}
+.btn{
+padding: 6px 12px;
+width: 80%;
+margin: auto;
+cursor: pointer;
+}
+.hidden{
+display:none;
 }
