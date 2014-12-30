@@ -1,3 +1,7 @@
+/*************************************************
+* Lightbulb Clicker's upgrade script file
+* Controls drawing/accessing upgrades
+*************************************************/
 (function (window) {
 	"use strict";
 	window.Game.Upgrade = function(options) {
@@ -33,9 +37,8 @@
 			}
 			if (canDisplay) {
 				this.displayed = true;
-				
-				Game.sortUpgrades();
 				this.button.classList.remove('hidden');
+				Game.drawer.sortUpgrades();
 				this.button.classList.add('fading');
 			}
 		}

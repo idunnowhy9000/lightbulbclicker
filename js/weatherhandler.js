@@ -1,3 +1,7 @@
+/*************************************************
+* Lightbulb Clicker's weather handler script file
+* Controls the weather
+*************************************************/
 (function (window) {
 	"use strict";
 	// todo: work on this

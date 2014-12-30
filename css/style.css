@@ -157,3 +157,16 @@ cursor: pointer;
 .hidden{
 display:none;
 }
+#levelbar {
+  margin-top: 15px;
+  margin-right: 50px;
+  margin-left: 50px;
+  height: 30px;
+  border: 1px solid #000;
+  background-color: #F0F0F0;
+}
+#progress{
+  background-color: #0FD935;
+  height: 100%;
+  transition: width .6s ease;
+}

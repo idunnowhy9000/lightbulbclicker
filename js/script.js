@@ -51,6 +51,8 @@
 		this.store = undefined;
 		this.upgradeStore = undefined;
 		this.vpsDisplay = undefined;
+		this.levelBarDisplay = undefined;
+		this.levelContainer = undefined;
 		this.levelDisplay = undefined;
 		this.expDisplay = undefined;
 		this.levelNDisplay = undefined;
@@ -71,6 +73,7 @@
 		this.upgradesD = [];
 		this.achievementsD = [];
 		this.weatherD = [];
+		this.levelHandler = undefined;
 		
 		// loaded data
 		this.buildings = [];
@@ -82,6 +85,7 @@
 		this.Upgrade = undefined;
 		this.Level = undefined;
 		this.WeatherHandler = undefined;
+		this.drawer = undefined;
 		this.calc = undefined;
 		this.saveload = undefined;
 		// functions
@@ -89,8 +93,15 @@
 			this.loaded = true;
 			
 			this.curDate = new Date();
+			if (!this.sessionStarted) {
+				this.sessionStart = new Date();
+				this.sessionStarted = true;
+			} if (!this.gameStarted) {
+				this.gameStart = new Date();
+				this.gameStarted = true;
+			}
 			
-			this.draw();
+			this.drawer.draw();
 			
 			var self = this;
 			
@@ -99,6 +110,8 @@
 			this.store = l('#lightbulb');
 			this.upgradeStore = l('#upgrade');
 			this.vpsDisplay = l('#vpsDisplay');
+			this.levelBarDisplay = l('#levelBarContainer');
+			this.levelContainer = l('#levelContainer');
 			this.levelDisplay = l('#level');
 			this.lvlExpDisplay = l('#lvlExp');
 			this.levelNDisplay = l('#lvlN');
@@ -142,147 +155,13 @@
 			
 			// weather
 			
+			// level
+			this.levelHandler = new this.Level();
+			this.levelHandler.draw();
+			this.levelHandler.update();
 
 			this.loop();
 			this.refresh();
-		}
-		
-		this.draw = function () {
-			if (!this.drawed) {
-				var container = l('#container'),
-					colLeft = document.createElement('div'),
-					colMid = document.createElement('div'),
-					colRight = document.createElement('div');
-				// draw
-				// colLeft
-				colLeft.setAttribute('id','col1');
-				
-				var lightbulbListContainer = document.createElement('div');
-				lightbulbListContainer.setAttribute('id', 'lightbulbListContainer');
-				colLeft.appendChild(lightbulbListContainer);
-				
-				var lightbulbListTitle = document.createElement('p');
-				lightbulbListTitle.setAttribute('id', 'lightbulbListTitle');
-				lightbulbListTitle.setAttribute('class', 'large');
-				lightbulbListTitle.appendChild(document.createTextNode('Lightbulbs'));
-				lightbulbListContainer.appendChild(lightbulbListTitle);
-				
-				var store = document.createElement('div');
-				store.setAttribute('id', 'lightbulb');
-				lightbulbListContainer.appendChild(store);
-				// drawed in Buildings.draw
-				
-				// colMid
-				colMid.setAttribute('id','col2');
-				
-				var factNameDisplay = document.createElement('div');
-				factNameDisplay.setAttribute('id', 'factNameDisplay');
-				factNameDisplay.setAttribute('class', 'medium');
-				factNameDisplay.appendChild(document.createTextNode('Your Factory'));
-				colMid.appendChild(factNameDisplay);
-				
-				var voltCounter = document.createElement('div');
-				voltCounter.setAttribute('id', 'count');
-				voltCounter.setAttribute('class', 'large fond');
-				voltCounter.appendChild(document.createTextNode('0 volt'));
-				colMid.appendChild(voltCounter);
-				
-				var vpsDisplay = document.createElement('div');
-				vpsDisplay.setAttribute('id', 'vpsDisplay');
-				vpsDisplay.appendChild(document.createTextNode('0 volt/second'));
-				colMid.appendChild(vpsDisplay);
-				
-				var bulbContainer = document.createElement('div');
-				bulbContainer.setAttribute('id', 'bulbContainer');
-				colMid.appendChild(bulbContainer);
-				
-				var bulb = document.createElement('div');
-				bulb.setAttribute('id', 'bulb');
-				colMid.appendChild(bulb);
-				
-				var progress = document.createElement('div');
-				progress.setAttribute('id', 'pbar');
-				colMid.appendChild(progress);
-				
-				var levelContainer = document.createElement('div');
-				levelContainer.setAttribute('id', 'levelContainer');
-				colMid.appendChild(levelContainer);
-				
-				var level = document.createElement('span');
-				level.setAttribute('id', 'level');
-				level.appendChild(document.createTextNode('Level 0 '));
-				levelContainer.appendChild(level);
-				
-				var lvlExp = document.createElement('span');
-				lvlExp.setAttribute('id', 'lvlExp');
-				lvlExp.appendChild(document.createTextNode('(0 exp)'));
-				levelContainer.appendChild(lvlExp);
-				
-				var lvlNContainer = document.createElement('p');
-				levelContainer.appendChild(lvlNContainer);
-				
-				var lvlN = document.createElement('span');
-				lvlN.setAttribute('id', 'lvlN');
-				lvlN.appendChild(document.createTextNode('0 exp to next level'));
-				lvlNContainer.appendChild(lvlN);
-				
-				var toNextLevel = document.createElement('span');
-				toNextLevel.setAttribute('id', 'toNextLevel');
-				levelContainer.appendChild(toNextLevel);
-				
-				var options = document.createElement('div');
-				options.setAttribute('id', 'options');
-				options.setAttribute('class', 'btn');
-				options.appendChild(document.createTextNode('Options'));
-				colMid.appendChild(options);
-				
-				// colRight
-				colRight.setAttribute('id','col3');
-				
-				var upgradeListContainer = document.createElement('div');
-				upgradeListContainer.setAttribute('id', 'upgradeListContainer');
-				colRight.appendChild(upgradeListContainer);
-				
-				var upgradeListTitle = document.createElement('p');
-				upgradeListTitle.setAttribute('id', 'upgradeListTitle');
-				upgradeListTitle.setAttribute('class', 'large');
-				upgradeListTitle.appendChild(document.createTextNode('Upgrades'));
-				upgradeListContainer.appendChild(upgradeListTitle);
-				
-				var upgradeStore = document.createElement('div');
-				upgradeStore.setAttribute('id', 'upgrade');
-				upgradeListContainer.appendChild(upgradeStore);
-				// drawed in Upgrade.draw
-				
-				// container
-				container.appendChild(colLeft);
-				container.appendChild(colMid);
-				container.appendChild(colRight);
-				this.drawed = true;
-			}
-			return this.drawed;
-		}
-		
-		this.sortUpgrades = function () {
-			var self = this,
-				sortedUpgrades = this.upgradeStore,
-				upgrades = sortedUpgrades.childNodes,
-				upgradesArr = [];
-			for (var i in upgrades) {
-				if (upgrades[i].nodeType === 1) { // get rid of the whitespace text nodes
-					upgradesArr.push(upgrades[i]);
-				}
-			}
-			upgradesArr.sort(function (a, b) {
-				var upgradeIdA = a.getAttribute("id").split('-')[1],
-					upgradeIdB = b.getAttribute("id").split('-')[1];
-				if (!self.upgrades[upgradeIdA] || !self.upgrades[upgradeIdB]) return 0;
-				var upgradeA = self.upgrades[upgradeIdA],
-					upgradeB = self.upgrades[upgradeIdB];
-				if (upgradeA.cost > upgradeB.cost) return 1;
-				else if (upgradeA.cost < upgradeB.cost) return -1;
-				return 0;
-			});
 		}
 		
 		// clicks
@@ -290,6 +169,7 @@
 		
 		this.bulbClick = function () {
 			this._earn(1);
+			this.clicked++;
 		}
 		
 		this._earn = function (i) {
@@ -310,11 +190,11 @@
 		this.refresh = function () { // screen tick
 			var self = this;
 			window.requestAnimFrame(function () {
-				self.refresh();
+				//self.refresh();
 			});
 			
-			this.count.childNodes[0].nodeValue = Tools.beautify(Math.floor(this.volts)) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
-			this.vpsDisplay.childNodes[0].nodeValue = Tools.beautify(this._vps) + " volt" + (this._vps > 1 ? "s" : "") + "/second";
+			this.drawer.refreshCount();
+			
 			// buildings
 			for (var _building in this.buildings) {
 				this.buildings[_building].refresh();
@@ -323,6 +203,8 @@
 			for (var _upgrade in this.upgrades) {
 				this.upgrades[_upgrade].refresh();
 			}
+			// level
+			//this.levelHandler.update();
 		}
 		
 		this.logic = function () { // logic tick
@@ -349,7 +231,6 @@
 				self.loop();
 			}, 1000 / this.fps);
 		}
-		
 		return this;
 	}
 	// load the game

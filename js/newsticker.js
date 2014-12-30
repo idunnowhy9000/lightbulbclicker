@@ -1,3 +1,7 @@
+/*************************************************
+* Lightbulb Clicker's upgrade script file
+* Controls drawing/accessing the news
+*************************************************/
 var NewsTicker = {
 	tickerAge: 0,
 	ticker: '',

@@ -1,3 +1,7 @@
+/*************************************************
+* Lightbulb Clicker's helper script file
+* Helps all the script
+*************************************************/
 (function (window) {
 	"use strict";
 	// load

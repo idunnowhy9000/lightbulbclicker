@@ -1,3 +1,7 @@
+/*************************************************
+* Lightbulb Clicker's building script file
+* Controls drawing/accessing buildings
+*************************************************/
 (function (window) {
 	"use strict";
 	window.Game.Building = function(options) {

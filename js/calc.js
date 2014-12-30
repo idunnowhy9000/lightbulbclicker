@@ -1,3 +1,7 @@
+/*************************************************
+* Lightbulb Clicker's calc script file
+* Controls calculations
+*************************************************/
 (function (window) {
 	"use strict";
 	window.Game.calc = {
