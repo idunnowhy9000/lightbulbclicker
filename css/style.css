@@ -3,7 +3,6 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -33,26 +32,31 @@ time, mark, audio, video {
     font-family: 'Fond';
     src: url('../fonts/Fondamento-Regular.ttf');
 }
-/* MEDIA */
-@media only screen 
-and (min-width : 900px)
-and (max-width : 1224px) {
-	#col2{
-		overflow:auto;
-	}
-	#options .btn{
-		width: 100%;
-		display: block;
-		margin: 2px 0;
-	}
-	#options p{
-		margin:0; padding: 0;
-	}
-}
 /* ANIMATION */
 @-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+/* HELPER*/
+.btn{
+padding: 6px 12px;
+width: 80%;
+margin: 5px auto;
+cursor: pointer;
+}
+.fading{
+opacity: 0;
+
+-webkit-animation: fadeIn 1s;
+-webkit-animation-timing-function: 1;
+-webkit-animation-fill-mode: forwards;
+
+animation: fadeIn 1s;
+animation-timing-function: 1;
+animation-fill-mode: forwards;
+}
+.hidden{
+display:none;
+}
 /* MAIN */
 body{
 overflow:hidden;
@@ -84,18 +88,9 @@ background-image: url('../img/lightbulb_clicked.png');
 -moz-transform: scale(0.97);
 transform: scale(0.97);
 }
-.center{text-align: center;}
-.large{
-font-size:28px;
-}
-.medium{
-font-size:16px;
-}
 .bdObj, .upgradeObj{
-width:100%;
 min-height:40px;
 border:1px solid black;
-margin:2px;
 }
 .bdObj .bdAmount{
 text-align:center;
@@ -110,12 +105,10 @@ width:75%;
 width: 64px;
 height: 64px;
 float: left;
+margin: 2px;
 }
 #options{
 margin: 5px auto;
-}
-.fond{
-font-family: 'Fond', sans-serif;
 }
 .disabled{
 opacity: .65;
@@ -137,36 +130,33 @@ font-size: 12px;
 .bulbObj{
 background-image: #265a88;
 }
-.fading{
-opacity: 0;
-
--webkit-animation: fadeIn 1s;
--webkit-animation-timing-function: 1;
--webkit-animation-fill-mode: forwards;
-
-animation: fadeIn 1s;
-animation-timing-function: 1;
-animation-fill-mode: forwards;
-}
-.btn{
-padding: 6px 12px;
-width: 80%;
-margin: auto;
-cursor: pointer;
-}
-.hidden{
-display:none;
-}
 #levelbar {
-  margin-top: 15px;
-  margin-right: 50px;
-  margin-left: 50px;
-  height: 30px;
-  border: 1px solid #000;
-  background-color: #F0F0F0;
+margin-top: 15px;
+margin-right: 50px;
+margin-left: 50px;
+height: 30px;
+border: 1px solid #000;
+background-color: #F0F0F0;
 }
 #progress{
-  background-color: #0FD935;
-  height: 100%;
-  transition: width .6s ease;
+background-color: #0FD935;
+height: 100%;
+transition: width .6s ease;
+}
+#count {
+font-family: 'Fond', Arial;
+font-size: 25px;
+}
+#factNameDisplay{
+font-size: 12px;
+}
+#backdrop{
+opacity:0.6;
+background-color:#000;
+position:fixed;
+width:100%;
+height:100%;
+top:0px;
+left:0px;
+z-index:1000;
 }

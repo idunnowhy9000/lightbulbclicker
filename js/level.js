@@ -8,6 +8,7 @@
 		this.level = 1;
 		this.exp = 0;
 		this.toNextLevel = 100;
+		this.neededToNext = 100;
 		this.levelTotalExp = 0;
 		this.levelCap = 100;
 		this.levelN = "";
@@ -25,7 +26,7 @@
 			while (this.exp >= this.levelTotalExp + this.toNextLevel && this.level < this.levelCap) {
 				_results.push(this.levelUp());
 			}
-			this.update();
+			this.neededToNext = this.toNextLevel - this.exp;
 			return _results;
 		}
 		this.progressBar = undefined;
@@ -35,11 +36,11 @@
 		this.lvlNDisplay = undefined;
 		this.toNextLevelDisplay = undefined;
 		this.update = function () {
-			this.progress.style.width = ((this.exp / this.toNextLevel) * 100);
+			this.progress.style.width = ((this.exp / this.toNextLevel) * 100) + "%";
 			this.levelDisplay.childNodes[0].nodeValue = "Level " + this.level;
 			this.lvlExpDisplay.childNodes[0].nodeValue = "(" + this.exp + " exp)";
-			this.lvlNDisplay.childNodes[0].nodeValue = "&lt;" + this.levelN + "&gt;";
-			this.toNextLevelDisplay.childNodes[0].nodeValue = this.toNextLevel + " exp to next level";
+			//this.lvlNDisplay.childNodes[0].nodeValue = "<" + this.levelN + ">";
+			this.toNextLevelDisplay.childNodes[0].nodeValue = this.neededToNext + " exp to next level";
 		}
 		this.draw = function () {
 			var tempProgressBar = document.createElement('div');

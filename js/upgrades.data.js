@@ -177,6 +177,10 @@
 			description: "Enables your factory to travel through hyperspace."
 		},
 		{
+			name: "Star System",
+			description: "Enables you to create stars",
+		},
+		{
 			name: "Prestiege Mode",
 			description: "Enables generating prestiege upon soft-reset.",
 			cost: 999999999999,

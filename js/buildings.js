@@ -61,7 +61,7 @@
 			tempBtn.addEventListener('click',function () {
 				options.buy();
 			});
-			
+						
 			this.button = tempBtn;
 			this.bdCost = bdCost;
 			this.bdAmount = bdAmount;
@@ -71,8 +71,13 @@
 			if (!options.displayed) this.button.classList.add('hidden');
 			if (Game.volts >= this.displayAt && !this.displayed) {
 				this.displayed = true;
+				Tools.fadeInObj(this.button);
 				this.button.classList.remove('hidden');
-				this.button.classList.add('fading');
+			}
+			if (this.cost > Game.volts) {
+				this.button.classList.add('disabled');
+			} else {
+				this.button.classList.remove('disabled');
 			}
 			// update building cost/amount
 			var amountps = Game.calc.calcBdVPS(this),

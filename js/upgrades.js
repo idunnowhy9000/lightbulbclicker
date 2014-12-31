@@ -38,8 +38,7 @@
 			if (canDisplay) {
 				this.displayed = true;
 				this.button.classList.remove('hidden');
-				Game.drawer.sortUpgrades();
-				this.button.classList.add('fading');
+				Tools.fadeInObj(this.button);
 			}
 		}
 		options.draw = function () {

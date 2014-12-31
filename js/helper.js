@@ -35,7 +35,33 @@
 				// i would've had an activex fallback here
 				// but i don't... yet(?)
 				// jokes aside, it's because i or we don't support ie6 anymore
+				// i mean srsly it's 2015 people
 			}
+		}
+		Tools.isEventSupported = function (eventName) {
+			var TAGNAMES = {
+				'select':'input','change':'input',
+				'submit':'form','reset':'form',
+				'error':'img','load':'img','abort':'img'
+			}, el = document.createElement(TAGNAMES[eventName] || 'div');
+			eventName = 'on' + eventName;
+			var isSupported = (eventName in el);
+			if (!isSupported) {
+				el.setAttribute(eventName, 'return;');
+				isSupported = typeof el[eventName] == 'function';
+			}
+			el = null;
+			return isSupported;
+		}
+		Tools.removeElement = function (el) {
+			el.parentNode.removeChild(el);
+		}
+		Tools.fadeInObj = function (el) {
+			var fadeInClass = 'fading';
+			el.classList.add(fadeInClass);
+			function r() {el.classList.remove(fadeInClass);}
+			el.addEventListener("animationend", r);
+			el.addEventListener("webkitAnimationEnd", r);
 		}
 		
 		window.Tools = Tools;
@@ -53,5 +79,8 @@
 					window.setTimeout(callback, 1000 / 60);
 				};
 		})();
+		// customevent
+		// animation start/end polyfill
+		
 	};
 })(window);
