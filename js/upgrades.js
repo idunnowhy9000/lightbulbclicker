@@ -12,7 +12,7 @@
 		if (!options.cost) options.cost = 0;
 		if (!options.vps) options.boost = [["all",0]];
 		options.amount = 0;
-		if (!options.displayAt) options.displayAt = ["volts",0];
+		if (!options.displayAt) options.displayAt = [];
 		if (!options.onBuy) options.onBuy = function () {}
 		options.displayed = false;
 		options.button = undefined;
@@ -30,8 +30,7 @@
 			if (!this.displayed) this.button.classList.add('hidden');
 			if (this.amount === 1) return;
 			var canDisplay = false;
-			if ((Game.buildings[this.displayAt[0]]
-				&& Game.buildings[this.displayAt[0]].amount >= this.displayAt[1])
+			if ((Game.buildings[this.displayAt[0]] && Game.buildings[this.displayAt[0]].amount >= this.displayAt[1])
 				|| (this.displayAt[0] === 'volts' && Game.volts >= this.displayAt[1])) {
 				canDisplay = true;
 			}

@@ -4,7 +4,7 @@
 *************************************************/
 (function (window) {
 	"use strict";
-	window.Game.saveload = { // todo: fix
+	window.Game.saveload = {
 		loadGame: function (saveData) {
 			var Game = window.Game,
 				version = 0,
@@ -34,8 +34,17 @@
 				Game.gameStart = new Date(decoded[9]);
 				Game.gameStarted = decoded[10] || false;
 				Game.clicked = parseFloat(decoded[11]) || 0;
+				Game.factName = decoded[12] || "";
+				Game.nameSettable = decoded[13] || false;
+				var upgrades = decoded[14];
+				for (var u in upgrades) {
+					var uId = upgrades[u].split("=")[0];
+					if (Game.upgrades[uId]) {
+						Game.upgrades[uId].amount = upgrades[u].split("=")[1] || 0;
+					}
+				}
 			} else {
-				errors.push("Cannot read version >" + Game.compatVersion + " save files.");
+				errors.push("Cannot read version >1.0 save files.");
 			}
 			if (errors.length > 0) {
 				
@@ -60,6 +69,14 @@
 			saveData.push(Game.gameStart.getTime());
 			saveData.push(Game.gameStarted);
 			saveData.push(Game.clicked);
+			saveData.push(Game.factName);
+			saveData.push(Game.nameSettable);
+			var upgrades = [];
+			for (var u in Game.upgrades) {
+				var up = Game.upgrades[u];
+				upgrades.push(up.id + "=" + up.amount);
+			}
+			saveData.push(upgrades);
 			// encode
 			var save = saveData.join("!");
 			save = window.btoa(save);

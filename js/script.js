@@ -5,16 +5,16 @@
 (function (window) {
 	"use strict";
 	// load datas
-	// tools
-	window.loadTools();
+	window.loadTools(); // tools
 	// the game itself
 	var Game = function () {
 		// system's data var
-		this.version = 1.2;
-		this.versionRead = "1.3b";
-		this.lStorageName = "LBClicker";
+		this.version = 1.2; // version
+		this.versionRead = "1.3b"; // version readable
+		this.lStorageName = "LBClicker"; // local storage var name
 		this.loaded = false;
 		this.drawed = false;
+		this.offline = false; // work offline using appcache
 		// vars
 		this.volts = 0; // volts
 		this.voltsTot = 0; // total volts
@@ -25,9 +25,6 @@
 		this.perClick = 0; // per clicks (used for upgrades)
 		this.curDate = undefined; // launched date
 		
-		this.baseWeather = undefined;
-		this.curWeather = undefined;
-		
 		// stats
 		this.clicked = 0;
 		this.sessionStart = undefined;
@@ -36,6 +33,9 @@
 		this.gameStarted = false;
 		this.factName = "";
 		this.nameSettable = false;
+		this.starSysAble = false;
+		this.timeTravelAble = false;
+		this.spaceTravelAble = false;
 		
 		// timer
 		this.logicElasped = undefined;
@@ -85,8 +85,13 @@
 		this.Upgrade = undefined;
 		this.Level = undefined;
 		this.WeatherHandler = undefined;
+		this.StarSystem = undefined;
 		this.calc = undefined;
 		this.saveload = undefined;
+		this.baseWeather = undefined;
+		this.curWeather = undefined;
+		this.starSysHandler = undefined;
+		
 		// functions
 		this.init = function () {
 			this.loaded = true;
@@ -293,6 +298,9 @@
 		this.unbackdrop = function () {
 			Tools.removeElement(l("#backdrop"));
 		}
+		this.notify = function () {
+			// todo: this
+		}
 		
 		// events
 		this.bulbClick = function () {
@@ -330,7 +338,7 @@
 			var vps = this.calc.calcVPS();
 			this._vps = vps;
 		}
-		
+				
 		this.refresh = function () { // screen tick
 			var self = this;
 			window.requestAnimFrame(function () {
@@ -359,15 +367,12 @@
 			var self = this;
 			
 			this.elapsed = ((Date.now() - this.lastTick) / 1000);
-			this.logicElasped += this.elapsed;
+			this.logicElasped++;
 			this.time = Date.now();
 			
-			while (this.elapsed > 0) {
-				if (this.logicElasped >= 1) {
-					this.logic();
-					this.logicElasped = 0;
-				}
-				this.elapsed -= 1000 / this.fps;
+			if (this.logicElasped >= 1) {
+				this.logic();
+				this.logicElasped = 0;
 			}
 			
 			this.lastTick = Date.now();

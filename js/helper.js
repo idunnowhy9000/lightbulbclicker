@@ -31,12 +31,11 @@
 				}
 				httpRequest.open('GET', url);
 				httpRequest.send();
-			} else {
-				// i would've had an activex fallback here
-				// but i don't... yet(?)
-				// jokes aside, it's because i or we don't support ie6 anymore
-				// i mean srsly it's 2015 people
 			}
+			// i would've had an activex fallback here
+			// but i don't... yet(?)
+			// jokes aside, it's because i or we don't support ie6 anymore
+			// i mean srsly it's 2015 people
 		}
 		Tools.isEventSupported = function (eventName) {
 			var TAGNAMES = {
@@ -60,8 +59,8 @@
 			var fadeInClass = 'fading';
 			el.classList.add(fadeInClass);
 			function r() {el.classList.remove(fadeInClass);}
-			el.addEventListener("animationend", r);
-			el.addEventListener("webkitAnimationEnd", r);
+			el.addEventListener("animationend", r, false);
+			el.addEventListener("webkitAnimationEnd", r, false);
 		}
 		
 		window.Tools = Tools;
@@ -70,17 +69,18 @@
 		window.ajax = Tools.ajax;
 		
 		// polyfills
-		// requestAnimationFrame polyfill by paul irish
-		window.requestAnimFrame = (function(){
-			return window.requestAnimationFrame ||
-				window.webkitRequestAnimationFrame ||
-				window.mozRequestAnimationFrame ||
-				function( callback ){
-					window.setTimeout(callback, 1000 / 60);
-				};
+		(function () {
+			// requestAnimationFrame polyfill by paul irish
+			window.requestAnimFrame = (function(){
+				return window.requestAnimationFrame ||
+					window.webkitRequestAnimationFrame ||
+					window.mozRequestAnimationFrame ||
+					function( callback ){
+						window.setTimeout(callback, 1000 / 60);
+					};
+			})();
+			// animation start/end
+			var animationStart
 		})();
-		// customevent
-		// animation start/end polyfill
-		
 	};
 })(window);

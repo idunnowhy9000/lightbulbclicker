@@ -1,7 +1,6 @@
 (function (window) {
 	"use strict";
 	window.Game.upgradesD = [
-		// clicks
 		// incandescent bulbs
 		{
 			name: "Thomas Edison",
