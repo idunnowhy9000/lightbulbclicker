@@ -42,27 +42,94 @@
 				'select':'input','change':'input',
 				'submit':'form','reset':'form',
 				'error':'img','load':'img','abort':'img'
-			}, el = document.createElement(TAGNAMES[eventName] || 'div');
-			eventName = 'on' + eventName;
-			var isSupported = (eventName in el);
-			if (!isSupported) {
-				el.setAttribute(eventName, 'return;');
-				isSupported = typeof el[eventName] == 'function';
 			}
-			el = null;
-			return isSupported;
+			return (function (eventName) {
+				var el = document.createElement(TAGNAMES[eventName] || 'div');
+				eventName = 'on' + eventName;
+				var isSupported = (eventName in el);
+				if (!isSupported) {
+					el.setAttribute(eventName, 'return;');
+					isSupported = typeof el[eventName] == 'function';
+				}
+				el = null;
+				return isSupported;
+			})(eventName);
 		}
 		Tools.removeElement = function (el) {
 			el.parentNode.removeChild(el);
 		}
 		Tools.fadeInObj = function (el) {
-			var fadeInClass = 'fading';
+			var fadeInClass = 'fading', fadeOutClass = 'unfade', hiddenClass = 'hidden';
+			el.classList.remove(hiddenClass);
+			el.classList.remove(fadeOutClass);
 			el.classList.add(fadeInClass);
-			function r() {el.classList.remove(fadeInClass);}
+			function r() {
+				el.classList.remove(fadeInClass);
+				el.classList.remove(hiddenClass);
+			}
 			el.addEventListener("animationend", r, false);
 			el.addEventListener("webkitAnimationEnd", r, false);
 		}
-		
+		Tools.fadeOutObj = function (el) {
+			var fadeInClass = 'fading', fadeOutClass = 'unfade', hiddenClass = 'hidden';
+			el.classList.remove(fadeInClass);
+			el.classList.remove(hiddenClass);
+			el.classList.add(fadeOutClass);
+			function r() {
+				el.classList.remove(fadeOutClass);
+				el.classList.add(hiddenClass);
+			}
+			el.addEventListener("animationend", r, false);
+			el.addEventListener("webkitAnimationEnd", r, false);
+		}
+		Tools.tooltipify = function (el, elHover) {
+			var prevX = false, prevY = false;
+			return (function (el, elHover) {
+				elHover.addEventListener('mouseover', function () {
+					if (prevX === false || prevY === false) {
+						el.style.left = Game.mouseX + "px";
+						el.style.top = Game.mouseY + "px";
+						
+						prevX = Game.mouseX;
+						prevY = Game.mouseY;
+					}
+					
+					el.classList.remove('hidden');
+					Tools.fadeInObj(el);
+				});
+				elHover.addEventListener('mouseleave', function () {
+					if (prevX !== false || prevY !== false) {
+						prevX = false;
+						prevY = false;
+					}
+					Tools.fadeOutObj(el);
+				});
+			})(el, elHover);
+		}
+		Tools.slideInObj = function (el) {
+			var slidingClass = 'sliding', unslidingClass = 'unslide', hiddenClass = 'hidden';
+			el.classList.remove(hiddenClass);
+			el.classList.add(slidingClass);
+			el.classList.remove(unslidingClass);
+			function r() {
+				el.classList.remove(unslidingClass);
+				el.classList.remove(hiddenClass);
+			}
+			el.addEventListener("animationend", r, false);
+			el.addEventListener("webkitAnimationEnd", r, false);
+		}
+		Tools.slideOutObj = function (el) {
+			var slidingClass = 'sliding', unslidingClass = 'unslide', hiddenClass = 'hidden';
+			el.classList.remove(hiddenClass);
+			el.classList.remove(slidingClass);
+			el.classList.add(unslidingClass);
+			function r() {
+				el.classList.remove(unslidingClass);
+				el.classList.add(hiddenClass);
+			}
+			el.addEventListener("animationend", r, false);
+			el.addEventListener("webkitAnimationEnd", r, false);
+		}
 		window.Tools = Tools;
 		window.l = Tools.l;
 		window.log = Tools.log;

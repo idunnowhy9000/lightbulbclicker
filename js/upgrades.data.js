@@ -124,7 +124,7 @@
 		{
 			name:"Snowman",
 			cost: 1225000000000000,
-			description:"I hope this guy's not Olaf",
+			description: "Just imagine how much cooler it'll be in summer!",
 			boost: [["humanlightbulb", "x2"]],
 			displayAt: ["humanlightbulb", 320]
 		},
@@ -163,7 +163,10 @@
 		// misc
 		{
 			name: "Time Machine",
-			description: "Enables your factory to travel through time."
+			description: "Enables your factory to travel through time.",
+			onBuy: function (Game) {
+				Game.timeTravelAble = true;
+			}
 		},
 		{
 			name: "Prism",
@@ -173,7 +176,10 @@
 		},
 		{
 			name: "Hyperspace Travelling Machine",
-			description: "Enables your factory to travel through hyperspace."
+			description: "Enables your factory to travel through hyperspace.",
+			onBuy: function (Game) {
+				Game.spaceTravelAble = true;
+			}
 		},
 		{
 			name: "Star System",

@@ -36,6 +36,90 @@ time, mark, audio, video {
 @-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-webkit-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@-moz-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@keyframes sliding {
+	0% {
+		transform: scaleY(0.1);
+	}
+	40% {
+		transform: scaleY(1.02);
+	}
+	60% {
+		transform: scaleY(0.98);
+	}
+	80% {
+		transform: scaleY(1.01);
+	}
+	100% {
+		transform: scaleY(0.98);
+	}				
+	80% {
+		transform: scaleY(1.01);
+	}
+	100% {
+		transform: scaleY(1);
+	}
+}
+
+@-webkit-keyframes sliding {
+	0% {
+		-webkit-transform: scaleY(0.1);
+	}
+	40% {
+		-webkit-transform: scaleY(1.02);
+	}
+	60% {
+		-webkit-transform: scaleY(0.98);
+	}
+	80% {
+		-webkit-transform: scaleY(1.01);
+	}
+	100% {
+		-webkit-transform: scaleY(0.98);
+	}				
+	80% {
+		-webkit-transform: scaleY(1.01);
+	}
+	100% {
+		-webkit-transform: scaleY(1);
+	}
+}
+@keyframes unslide {
+	0% {
+		transform: scaleY(1.02);
+	}
+	40% {
+		transform: scaleY(0.98);
+	}
+	60% {
+		transform: scaleY(0.97);
+	}		
+	80% {
+		transform: scaleY(1.02);
+	}
+	100% {
+		transform: scaleY(0);
+	}
+}
+@-webkit-keyframes unslide {
+	0% {
+		transform: scaleY(1.02);
+	}
+	40% {
+		transform: scaleY(0.98);
+	}
+	60% {
+		transform: scaleY(0.97);
+	}		
+	80% {
+		transform: scaleY(1.02);
+	}
+	100% {
+		transform: scaleY(0);
+	}
+}
 /* HELPER*/
 .btn{
 padding: 6px 12px;
@@ -54,15 +138,44 @@ animation: fadeIn 1s;
 animation-timing-function: 1;
 animation-fill-mode: forwards;
 }
+.sliding{
+-webkit-animation: sliding 1s;
+-webkit-animation-timing-function: 1;
+-webkit-animation-fill-mode: forwards;
+
+animation: sliding 1s;
+animation-timing-function: 1;
+animation-fill-mode: forwards;
+}
+.unslide{
+-webkit-animation: unslide 1s;
+-webkit-animation-timing-function: 1;
+-webkit-animation-fill-mode: forwards;
+
+animation: unslide 1s;
+animation-timing-function: 1;
+animation-fill-mode: forwards;
+}
+.unfade{
+opacity: 1;
+
+-webkit-animation: fadeOut 1s;
+-webkit-animation-timing-function: 1;
+-webkit-animation-fill-mode: forwards;
+
+animation: fadeOut 1s;
+animation-timing-function: 1;
+animation-fill-mode: forwards;
+}
 .hidden{
 display:none;
 }
 /* MAIN */
-body{
+body{ /* BODY */
 overflow:hidden;
 font-family: 'Lato', sans-serif;
 }
-#bulb{
+#bulb{ /* Clicking Bulb */
 cursor:pointer;
 width:180px;
 height:300px;
@@ -78,78 +191,89 @@ transition: transform .2s;
 -ms-user-select: none;
 user-select: none;
 }
-#bulb:after{
+#bulb:after{ /* (Preload clicking image) */
 display: none;
 content: url('../img/lightbulb_clicked.png');
 }
-#bulb:active{
+#bulb:active{ /* Clicked bulb */
 background-image: url('../img/lightbulb_clicked.png');
 -webkit-transform: scale(0.97);
 -moz-transform: scale(0.97);
 transform: scale(0.97);
 }
-.bdObj, .upgradeObj{
+.bdObj, .upgradeObj{ /* Buildings/Upgrades */
 min-height:40px;
 border:1px solid black;
 }
-.bdObj .bdAmount{
+.bdObj{
+margin-bottom: 0;
+}
+.bdObj .bdAmount{ /* Buildings Amount */
 text-align:center;
 float:left;
 width:25%;
 }
-.bdObj .bdInfo{
+.bdObj .bdInfo{ /* Buildings Info Holder */
 float:right;
 width:75%;
 }
-.upgradeObj{
+.upgradeObj{ /* Upgrades */
 width: 64px;
 height: 64px;
 float: left;
 margin: 2px;
 }
-#options{
+#options{ /* Options Holder */
 margin: 5px auto;
 }
-.disabled{
+.disabled{ /* Disabled Buttons */
 opacity: .65;
 }
-#col1, #col2, #col3{
+#col1, #col2, #col3{ /* Columns x3 */
 text-align: center;
 padding: 5px 2px;
 min-height:100vh;
 max-height:100vh;
 overflow:auto;
 }
+/* Columns Alignment */
 #col1 { float: left; width: 33%; }
 #col2 { display: inline-block; width: 33%; }
 #col3 { float: right; width: 33%; }
+/* Buildings/Upgrades Popover */
 .popover ul{
 padding: 0 40px;
 font-size: 12px;
 }
+/* ? */
 .bulbObj{
 background-image: #265a88;
 }
+/* Level bar */
 #levelbar {
 margin-top: 15px;
 margin-right: 50px;
 margin-left: 50px;
 height: 30px;
 border: 1px solid #000;
-background-color: #F0F0F0;
+background-color: #fcfcfc;
 }
+/* Progress for level bar */
 #progress{
 background-color: #0FD935;
 height: 100%;
 transition: width .6s ease;
 }
+/* Volt counter */
 #count {
 font-family: 'Fond', Arial;
 font-size: 25px;
 }
+/* Factory Name */
 #factNameDisplay{
 font-size: 12px;
 }
+/* Page Backdrop */
 #backdrop{
 opacity:0.6;
 background-color:#000;
@@ -159,4 +283,43 @@ height:100%;
 top:0px;
 left:0px;
 z-index:1000;
+}
+/* Tooltips */
+.tooltip{
+position: absolute;
+top: 0;
+left: 0;
+background-color: #fff;
+border-bottom-right-radius: 10px;
+border-bottom-left-radius: 10px;
+box-shadow: 5px 5px 20px -1px rgba(0,0,0,0.7);
+padding: 5px;
+text-align: left;
+z-index: 2;
+min-width: 300px;
+}
+.tooltip .title{
+background-color: #5792FF;
+width: 100%;
+height: 20px;
+color: #fff;
+}
+/* Buy Selection */
+.buySelection{
+min-height:20px;
+border:1px solid black;
+width: 80%;
+padding: 4px 6px;
+margin: 5px auto;
+margin-top: -1px;
+}
+.buySelection div{
+margin: 0 7px;
+display: inline;
+}
+.buySelection .buySelectionNumInput{
+width: 50px;
+}
+.buySelection .buySelectionAll{
+cursor: pointer;
 }

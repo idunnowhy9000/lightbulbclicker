@@ -2,7 +2,8 @@
 	"use strict";
 	window.Game.WeatherD = [
 		{
-			"name": "",
+			name: "Sunny Day",
+			
 		}
 	];
 })(window);

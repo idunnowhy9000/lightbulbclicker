@@ -4,20 +4,20 @@
 *************************************************/
 (function (window) {
 	"use strict";
-	window.Game.Level = function () {
-		this.level = 1;
-		this.exp = 0;
-		this.toNextLevel = 100;
-		this.neededToNext = 100;
-		this.levelTotalExp = 0;
-		this.levelCap = 100;
-		this.levelN = "";
-		this.levelUp = function () {
+	window.Game.Level = {
+		level: 1,
+		exp: 0,
+		toNextLevel: 100,
+		neededToNext: 100,
+		levelTotalExp: 0,
+		levelCap: 100,
+		levelN: "",
+		levelUp: function () {
 			this.level += 1;
 			this.levelTotalExp += this.toNextLevel;
 			this.toNextLevel = this.level * this.level * 100;
-		}
-		this.gainExp = function (exp) {
+		},
+		gainExp: function (exp) {
 			var _results = [];
 			this.exp += exp;
 			if (this.level >= this.levelCap && this.exp > this.levelTotalExp) {
@@ -28,21 +28,21 @@
 			}
 			this.neededToNext = this.toNextLevel - this.exp;
 			return _results;
-		}
-		this.progressBar = undefined;
-		this.progress = undefined;
-		this.levelDisplay = undefined;
-		this.lvlExpDisplay = undefined;
-		this.lvlNDisplay = undefined;
-		this.toNextLevelDisplay = undefined;
-		this.update = function () {
+		},
+		progressBar: undefined,
+		progress: undefined,
+		levelDisplay: undefined,
+		lvlExpDisplay: undefined,
+		lvlNDisplay: undefined,
+		toNextLevelDisplay: undefined,
+		update: function () {
 			this.progress.style.width = ((this.exp / this.toNextLevel) * 100) + "%";
-			this.levelDisplay.childNodes[0].nodeValue = "Level " + this.level;
-			this.lvlExpDisplay.childNodes[0].nodeValue = "(" + this.exp + " exp)";
-			//this.lvlNDisplay.childNodes[0].nodeValue = "<" + this.levelN + ">";
-			this.toNextLevelDisplay.childNodes[0].nodeValue = this.neededToNext + " exp to next level";
-		}
-		this.draw = function () {
+			this.levelDisplay.textContent = "Level " + this.level;
+			this.lvlExpDisplay.textContent = "(" + this.exp + " exp)";
+			//this.lvlNDisplay.textContent = "<" + this.levelN + ">";
+			this.toNextLevelDisplay.textContent = this.neededToNext + " exp to next level";
+		},
+		draw: function () {
 			var tempProgressBar = document.createElement('div');
 			tempProgressBar.setAttribute('id', 'levelbar');
 			
@@ -79,6 +79,5 @@
 			this.lvlNDisplay = lvlN;
 			this.toNextLevelDisplay = toNextLevel;
 		}
-		return this;
 	};
 })(window);

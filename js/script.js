@@ -36,6 +36,8 @@
 		this.starSysAble = false;
 		this.timeTravelAble = false;
 		this.spaceTravelAble = false;
+		this.mouseX = 0;
+		this.mouseY = 0;
 		
 		// timer
 		this.logicElasped = undefined;
@@ -67,18 +69,20 @@
 		this.importG = undefined;
 		this.exportG = undefined;
 		this.stats = undefined;
+		
+		// preferences
+		this.prefs = {};
 
 		// data
 		this.buildingsD = [];
 		this.upgradesD = [];
 		this.achievementsD = [];
-		this.weatherD = [];
-		this.levelHandler = undefined;
 		
 		// loaded data
 		this.buildings = [];
 		this.upgrades = [];
 		this.achievements = [];
+		this.levelHandler = undefined;
 		
 		// helper objects
 		this.Building = undefined;
@@ -88,8 +92,6 @@
 		this.StarSystem = undefined;
 		this.calc = undefined;
 		this.saveload = undefined;
-		this.baseWeather = undefined;
-		this.curWeather = undefined;
 		this.starSysHandler = undefined;
 		
 		// functions
@@ -159,9 +161,17 @@
 			// weather
 			
 			// level
-			this.levelHandler = new this.Level();
+			this.levelHandler = this.Level;
 			this.levelHandler.draw();
 			this.levelHandler.update();
+			
+			// prefs
+			this.prefs = {
+				'shortNums': 0
+			};
+			
+			// mouse track
+			this.spyMouse();
 
 			this.loop();
 			this.refresh();
@@ -285,8 +295,13 @@
 			});
 		}
 		this.refreshCount = function () {
-			this.count.childNodes[0].nodeValue = Tools.beautify(Math.floor(this.volts)) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
-			this.vpsDisplay.childNodes[0].nodeValue = Tools.beautify(this._vps) + " volt" + (this._vps > 1 ? "s" : "") + "/second";
+			this.count.textContent = Tools.beautify(Math.floor(this.volts)) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
+			this.vpsDisplay.textContent = Tools.beautify(this._vps.toFixed(2)) + " volt" + (this._vps > 1 ? "s" : "") + "/second";
+		}
+		this.refreshTitle = function () {
+			var count = Math.floor(this.volts) + " volt" + (Math.floor(this.volts) > 1 ? "s" : ""),
+				name = "Lightbulb Inc";
+			document.title = count + " - " + name;
 		}
 		
 		this.backdrop = function () {
@@ -301,12 +316,42 @@
 		this.notify = function () {
 			// todo: this
 		}
+		this.log = function () {
+			
+		}
 		
 		// events
 		this.bulbClick = function () {
 			this._earn(1);
 			this.levelHandler.gainExp(1);
 			this.clicked++;
+		}
+		this.reset = function (hard) {
+			this.volts = 0;
+			this.voltsTot = 0;
+			for (var b in this.buildings) {
+				this.buildings[b].amount = 0;
+				this.buildings[b].displayed = false;
+			}
+			this.sessionStart = new Date();
+			this.Level.level = 0;
+			this.Level.exp = 0;
+			this.Level.toNextLevel = 0;
+			this.Level.levelTotalExp = 0;
+			this.Level.levelCap = 100;
+			// hard-specific
+			if (hard === true) {
+				this.prestiege = 0;
+				this.voltsTotAll = 0;
+				this.clicked = 0;
+				window.localStorage.removeItem(this.lStorageName);
+			}
+			// soft
+			if (!hard) {
+				if (this.upgrades['prestiegemode'].amount === 1) this.prestiege += this.calc.calcPrestiege();
+			}
+			this.refresh();
+			return;
 		}
 		
 		this.saveGClick = function () {
@@ -338,7 +383,14 @@
 			var vps = this.calc.calcVPS();
 			this._vps = vps;
 		}
-				
+		
+		this.spyMouse = function () {
+			window.addEventListener('mousemove', function (e) {
+				window.Game.mouseX = e.clientX || e.pageX;
+				window.Game.mouseY = e.clientY || e.pageY;
+			});
+		}
+		
 		this.refresh = function () { // screen tick
 			var self = this;
 			window.requestAnimFrame(function () {
@@ -374,6 +426,7 @@
 				this.logic();
 				this.logicElasped = 0;
 			}
+			this.refreshTitle();
 			
 			this.lastTick = Date.now();
 			setTimeout(function () {

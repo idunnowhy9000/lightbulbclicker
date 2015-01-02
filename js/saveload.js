@@ -77,6 +77,11 @@
 				upgrades.push(up.id + "=" + up.amount);
 			}
 			saveData.push(upgrades);
+			saveData.push(levelHandler.level);
+			saveData.push(levelHandler.exp);
+			saveData.push(levelHandler.toNextLevel);
+			saveData.push(levelHandler.levelTotalExp);
+			saveData.push(levelHandler.levelN);
 			// encode
 			var save = saveData.join("!");
 			save = window.btoa(save);
@@ -84,32 +89,5 @@
 		},
 		convertSaveFile: function (n){
 		},
-		reset: function (hard) {
-			Game.volts = 0;
-			Game.voltsTot = 0;
-			for (var b in Game.buildings) {
-				Game.buildings[b].amount = 0;
-				Game.buildings[b].displayed = false;
-			}
-			Game.sessionStart = new Date();
-			Game.Level.level = 0;
-			Game.Level.exp = 0;
-			Game.Level.toNextLevel = 0;
-			Game.Level.levelTotalExp = 0;
-			Game.Level.levelCap = 100;
-			// hard-specific
-			if (hard === true) {
-				Game.prestiege = 0;
-				Game.voltsTotAll = 0;
-				Game.clicked = 0;
-				window.localStorage.removeItem(Game.lStorageName);
-			}
-			// soft
-			if (!hard) {
-				if (Game.upgrades['prestiegemode'].amount === 1) Game.prestiege += Game.calc.calcPrestiege();
-			}
-			Game.refresh();
-			return;
-		}
 	}
 })(window);

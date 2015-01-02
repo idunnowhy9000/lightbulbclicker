@@ -13,7 +13,7 @@
 		if (!options.vps) options.boost = [["all",0]];
 		options.amount = 0;
 		if (!options.displayAt) options.displayAt = [];
-		if (!options.onBuy) options.onBuy = function () {}
+		if (!options.onBuy) options.onBuy = function (Game) {}
 		options.displayed = false;
 		options.button = undefined;
 		options.buy = function() {
@@ -22,7 +22,7 @@
 			
 			this.amount = 1;
 			Game._calcVPS();
-			this.onBuy();
+			this.onBuy(Game);
 			this.update();
 		}
 		options.refresh = function () {
