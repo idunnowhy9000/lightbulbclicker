@@ -130,24 +130,48 @@
 			el.addEventListener("animationend", r, false);
 			el.addEventListener("webkitAnimationEnd", r, false);
 		}
+		Tools.metricSuffix = function (n) {
+			var ranges = [
+				{ divider: 1e30 , suffix: 'multivolts' },
+				{ divider: 1e27 , suffix: 'hellavolts' },
+				{ divider: 1e24 , suffix: 'yottavolts' },
+				{ divider: 1e21 , suffix: 'zettavolts' },
+				{ divider: 1e18 , suffix: 'petavolts' },
+				{ divider: 1e15 , suffix: 'exavolts' },
+				{ divider: 1e12 , suffix: 'teravolts' },
+				{ divider: 1e9 , suffix: 'gigavolts' },
+				{ divider: 1e6 , suffix: 'megavolts' },
+				{ divider: 1e3 , suffix: 'kilovolts' },
+				{ divider: 1e2 , suffix: 'hectovolts' },
+				{ divider: 1e1 , suffix: 'decavolts' },
+				{ divider: 1 , suffix: 'volts' },
+			];
+			return (function () {
+				if (n <= 1) return n + " volt";
+				for (var i = 0; i < ranges.length; i++) {
+					if (n >= ranges[i].divider) {
+						if ((n / ranges[i].divider) % 1 !== 0) return (n / ranges[i].divider).toFixed(2).toString() + ' ' + ranges[i].suffix;
+						return (n / ranges[i].divider).toString() + ' ' + ranges[i].suffix;
+					}
+				}
+				return n.toString() + " volts";
+			})();
+		}
+		
 		window.Tools = Tools;
 		window.l = Tools.l;
 		window.log = Tools.log;
 		window.ajax = Tools.ajax;
 		
 		// polyfills
-		(function () {
-			// requestAnimationFrame polyfill by paul irish
-			window.requestAnimFrame = (function(){
-				return window.requestAnimationFrame ||
-					window.webkitRequestAnimationFrame ||
-					window.mozRequestAnimationFrame ||
-					function( callback ){
-						window.setTimeout(callback, 1000 / 60);
-					};
-			})();
-			// animation start/end
-			var animationStart
+		// requestAnimationFrame polyfill by paul irish
+		window.requestAnimFrame = (function(){
+			return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				function( callback ){
+					window.setTimeout(callback, 1000 / 60);
+				};
 		})();
 	};
 })(window);

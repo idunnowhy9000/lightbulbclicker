@@ -129,7 +129,7 @@
 				Tools.slideInObj(buySelection);
 			});
 			
-			btnHolder.addEventListener('mouseleave', function a() {
+			tempBtn.addEventListener('mouseleave', function a() {
 				Tools.slideOutObj(buySelection);
 			});
 			
@@ -162,9 +162,15 @@
 				amount = Tools.beautify(this.amount),
 				cost = Tools.beautify(this.cost);
 			this.bdAmount.textContent = amount;
-			this.bdCost.textContent = cost + " volts";
-			this.ttBdCost.textContent = cost + " volts";
-			this.ttPerSecond.textContent = amountps + " volts/second";
+			if (Game.prefs.shortNums === 0) {
+				this.bdCost.textContent = cost + " volts";
+				this.ttBdCost.textContent = cost + " volts";
+				this.ttPerSecond.textContent = amountps + " volts/second";
+			} else {
+				this.bdCost.textContent = Tools.metricSuffix(cost);
+				this.ttBdCost.textContent = Tools.metricSuffix(cost);
+				this.ttPerSecond.textContent = Tools.metricSuffix(amountps);
+			}
 		}
 		return options;
 	};

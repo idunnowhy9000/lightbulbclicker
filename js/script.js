@@ -15,6 +15,7 @@
 		this.loaded = false;
 		this.drawed = false;
 		this.offline = false; // work offline using appcache
+		this.paused = false; // stops all ticks
 		// vars
 		this.volts = 0; // volts
 		this.voltsTot = 0; // total volts
@@ -167,7 +168,8 @@
 			
 			// prefs
 			this.prefs = {
-				'shortNums': 0
+				'shortNums': 0,
+				'drawWhenInactive': 0,
 			};
 			
 			// mouse track
@@ -295,12 +297,18 @@
 			});
 		}
 		this.refreshCount = function () {
-			this.count.textContent = Tools.beautify(Math.floor(this.volts)) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
-			this.vpsDisplay.textContent = Tools.beautify(this._vps.toFixed(2)) + " volt" + (this._vps > 1 ? "s" : "") + "/second";
+			if (this.prefs.shortNums === 0) {
+				this.count.textContent = Tools.beautify(Math.floor(this.volts)) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
+				this.vpsDisplay.textContent = Tools.beautify(this._vps.toFixed(2)) + " volt" + (this._vps > 1 ? "s" : "") + "/second";
+			} else {
+				this.count.textContent = Tools.metricSuffix(this.volts);
+				this.vpsDisplay.textContent = Tools.metricSuffix(this._vps) + "/second";
+			}
 		}
 		this.refreshTitle = function () {
 			var count = Math.floor(this.volts) + " volt" + (Math.floor(this.volts) > 1 ? "s" : ""),
 				name = "Lightbulb Inc";
+			if (this.prefs.shortNums === 0) { count = Tools.metricSuffix(this.volts); }
 			document.title = count + " - " + name;
 		}
 		
@@ -397,6 +405,8 @@
 				self.refresh();
 			});
 			
+			if (this.paused === true) { return; }
+			
 			this.refreshCount();
 			
 			// buildings
@@ -417,6 +427,8 @@
 		
 		this.loop = function () {
 			var self = this;
+			
+			if (this.paused === true) { return; }
 			
 			this.elapsed = ((Date.now() - this.lastTick) / 1000);
 			this.logicElasped++;
