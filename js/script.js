@@ -16,6 +16,8 @@
 		this.drawed = false;
 		this.offline = false; // work offline using appcache
 		this.paused = false; // stops all ticks
+		
+		this.isBuySelectionHover = false;
 		// vars
 		this.volts = 0; // volts
 		this.voltsTot = 0; // total volts

@@ -58,24 +58,28 @@
 		Tools.removeElement = function (el) {
 			el.parentNode.removeChild(el);
 		}
-		Tools.fadeInObj = function (el) {
+		Tools.fadeInObj = function (el, callback) {
+			callback = callback || function () {};
 			var fadeInClass = 'fading', fadeOutClass = 'unfade', hiddenClass = 'hidden';
 			el.classList.remove(hiddenClass);
 			el.classList.remove(fadeOutClass);
 			el.classList.add(fadeInClass);
 			function r() {
+				callback();
 				el.classList.remove(fadeInClass);
 				el.classList.remove(hiddenClass);
 			}
 			el.addEventListener("animationend", r, false);
 			el.addEventListener("webkitAnimationEnd", r, false);
 		}
-		Tools.fadeOutObj = function (el) {
+		Tools.fadeOutObj = function (el, callback) {
+			callback = callback || function () {};
 			var fadeInClass = 'fading', fadeOutClass = 'unfade', hiddenClass = 'hidden';
 			el.classList.remove(fadeInClass);
 			el.classList.remove(hiddenClass);
 			el.classList.add(fadeOutClass);
 			function r() {
+				callback();
 				el.classList.remove(fadeOutClass);
 				el.classList.add(hiddenClass);
 			}
@@ -106,24 +110,28 @@
 				});
 			})(el, elHover);
 		}
-		Tools.slideInObj = function (el) {
+		Tools.slideInObj = function (el, callback) {
+			callback = callback || function () {};
 			var slidingClass = 'sliding', unslidingClass = 'unslide', hiddenClass = 'hidden';
 			el.classList.remove(hiddenClass);
 			el.classList.add(slidingClass);
 			el.classList.remove(unslidingClass);
 			function r() {
+				callback();
 				el.classList.remove(unslidingClass);
 				el.classList.remove(hiddenClass);
 			}
 			el.addEventListener("animationend", r, false);
 			el.addEventListener("webkitAnimationEnd", r, false);
 		}
-		Tools.slideOutObj = function (el) {
+		Tools.slideOutObj = function (el, callback) {
+			callback = callback || function () {};
 			var slidingClass = 'sliding', unslidingClass = 'unslide', hiddenClass = 'hidden';
 			el.classList.remove(hiddenClass);
 			el.classList.remove(slidingClass);
 			el.classList.add(unslidingClass);
 			function r() {
+				callback();
 				el.classList.remove(unslidingClass);
 				el.classList.add(hiddenClass);
 			}

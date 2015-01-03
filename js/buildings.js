@@ -126,11 +126,15 @@
 			});
 			
 			tempBtn.addEventListener('mouseover',function () {
-				Tools.slideInObj(buySelection);
+				if (!Game.isBuySelectionHover) {
+					Tools.slideInObj(buySelection);
+					Game.isBuySelectionHover = true;
+				}
 			});
 			
-			tempBtn.addEventListener('mouseleave', function a() {
+			btnHolder.addEventListener('mouseleave', function a() {
 				Tools.slideOutObj(buySelection);
+				Game.isBuySelectionHover = false;
 			});
 			
 			Tools.tooltipify(tooltip, tempBtn);
