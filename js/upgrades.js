@@ -37,7 +37,6 @@
 			if (canDisplay) {
 				this.displayed = true;
 				this.button.classList.remove('hidden');
-				Tools.fadeInObj(this.button);
 			}
 		}
 		options.draw = function () {

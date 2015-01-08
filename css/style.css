@@ -39,94 +39,6 @@ time, mark, audio, video {
 @-webkit-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
 @-moz-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
 @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
-@keyframes sliding {
-	0% {
-		transform: scaleY(0.1);
-	}
-	40% {
-		transform: scaleY(1.02);
-	}
-	60% {
-		transform: scaleY(0.98);
-	}
-	80% {
-		transform: scaleY(1.01);
-	}
-	100% {
-		transform: scaleY(0.98);
-	}				
-	80% {
-		transform: scaleY(1.01);
-	}
-	100% {
-		transform: scaleY(1);
-	}
-}
-
-@-webkit-keyframes sliding {
-	0% {
-		-webkit-transform: scaleY(0.1);
-	}
-	40% {
-		-webkit-transform: scaleY(1.02);
-	}
-	60% {
-		-webkit-transform: scaleY(0.98);
-	}
-	80% {
-		-webkit-transform: scaleY(1.01);
-	}
-	100% {
-		-webkit-transform: scaleY(0.98);
-	}				
-	80% {
-		-webkit-transform: scaleY(1.01);
-	}
-	100% {
-		-webkit-transform: scaleY(1);
-	}
-}
-@keyframes unslide {
-	0% {
-		transform: scaleY(1.02);
-	}
-	40% {
-		transform: scaleY(0.98);
-	}
-	60% {
-		transform: scaleY(0.97);
-	}		
-	80% {
-		transform: scaleY(1.02);
-	}
-	100% {
-		transform: scaleY(0);
-	}
-}
-@-webkit-keyframes unslide {
-	0% {
-		transform: scaleY(1.02);
-	}
-	40% {
-		transform: scaleY(0.98);
-	}
-	60% {
-		transform: scaleY(0.97);
-	}		
-	80% {
-		transform: scaleY(1.02);
-	}
-	100% {
-		transform: scaleY(0);
-	}
-}
-/* HELPER*/
-.btn{
-padding: 6px 12px;
-width: 80%;
-margin: 5px auto;
-cursor: pointer;
-}
 .fading{
 opacity: 0;
 
@@ -135,24 +47,6 @@ opacity: 0;
 -webkit-animation-fill-mode: forwards;
 
 animation: fadeIn 1s;
-animation-timing-function: 1;
-animation-fill-mode: forwards;
-}
-.sliding{
--webkit-animation: sliding 1s;
--webkit-animation-timing-function: 1;
--webkit-animation-fill-mode: forwards;
-
-animation: sliding 1s;
-animation-timing-function: 1;
-animation-fill-mode: forwards;
-}
-.unslide{
--webkit-animation: unslide 1s;
--webkit-animation-timing-function: 1;
--webkit-animation-fill-mode: forwards;
-
-animation: unslide 1s;
 animation-timing-function: 1;
 animation-fill-mode: forwards;
 }
@@ -166,6 +60,13 @@ opacity: 1;
 animation: fadeOut 1s;
 animation-timing-function: 1;
 animation-fill-mode: forwards;
+}
+/* HELPER*/
+.btn{
+padding: 6px 12px;
+width: 80%;
+margin: 5px auto;
+cursor: pointer;
 }
 .hidden{
 display:none;
@@ -256,7 +157,7 @@ margin-right: 50px;
 margin-left: 50px;
 height: 30px;
 border: 1px solid #000;
-background-color: #fcfcfc;
+background-color: #f5f5f5;
 }
 /* Progress for level bar */
 #progress{

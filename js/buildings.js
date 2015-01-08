@@ -25,9 +25,6 @@
 		options.button = undefined;
 		options.bdAmount = undefined;
 		options.bdCost = undefined;
-		options.tooltip = undefined;
-		options.ttBdCost = undefined;
-		options.ttPerSecond = undefined;
 		options.buySelectionNum = undefined;
 		options.buySelectionAll = undefined;
 		options.buy = function() {
@@ -50,7 +47,7 @@
 		options.draw = function () {
 			var btnHolder = document.createElement('div');
 			btnHolder.setAttribute('class', 'btnHolder');
-			btnHolder.setAttribute('id', 'holder-' + options.id);
+			btnHolder.setAttribute('id', 'holder-building-' + options.id);
 			
 			var tempBtn = document.createElement('div');
 			tempBtn.setAttribute('class', 'bdObj btn');
@@ -76,83 +73,20 @@
 			bdCost.appendChild(document.createTextNode('0'));
 			bdInfo.appendChild(bdCost);
 			
-			var buySelection = document.createElement('div');
-			buySelection.setAttribute('class', 'buySelection hidden');
-			btnHolder.appendChild(buySelection);
-			
-			var buySelectionNum = document.createElement('div');
-			buySelectionNum.setAttribute('class', 'buySelectionNum');
-			buySelectionNum.appendChild(document.createTextNode('Buy '));
-			buySelection.appendChild(buySelectionNum);
-			
-			var buySelectionNumInput = document.createElement('input');
-			buySelectionNumInput.setAttribute('class', 'buySelectionNumInput');
-			buySelectionNumInput.setAttribute('type', 'number');
-			buySelectionNumInput.setAttribute('min', '0');
-			buySelectionNumInput.setAttribute('value', '0');
-			buySelectionNum.appendChild(buySelectionNumInput);
-			
-			var buySelectionAll = document.createElement('div');
-			buySelectionAll.setAttribute('class', 'buySelectionAll');
-			buySelectionAll.appendChild(document.createTextNode('Buy Max'));
-			buySelection.appendChild(buySelectionAll);
-			
-			var tooltip = document.createElement('div');
-			tooltip.setAttribute('class', 'bdTooltip tooltip hidden');
-			btnHolder.appendChild(tooltip);
-			
-			var ttBdName = document.createElement('div');
-			ttBdName.setAttribute('class', 'ttBdName title');
-			ttBdName.appendChild(document.createTextNode(options.name));
-			tooltip.appendChild(ttBdName);
-			
-			var ttBdCost = document.createElement('div');
-			ttBdCost.setAttribute('class', 'ttBdCost');
-			ttBdCost.appendChild(document.createTextNode(options.cost));
-			tooltip.appendChild(ttBdCost);
-			
-			var ttPerSecond = document.createElement('div');
-			ttPerSecond.setAttribute('class', 'ttPerSecond');
-			ttPerSecond.appendChild(document.createTextNode(options.vps));
-			tooltip.appendChild(ttPerSecond);
-			
-			var ttBdDesc = document.createElement('div');
-			ttBdDesc.setAttribute('class', 'ttBdDesc');
-			ttBdDesc.appendChild(document.createTextNode(options.description));
-			tooltip.appendChild(ttBdDesc);
-			
 			tempBtn.addEventListener('click',function () {
 				options.buy();
 			});
-			
-			tempBtn.addEventListener('mouseover',function () {
-				if (!Game.isBuySelectionHover) {
-					Tools.slideInObj(buySelection);
-					Game.isBuySelectionHover = true;
-				}
-			});
-			
-			btnHolder.addEventListener('mouseleave', function a() {
-				Tools.slideOutObj(buySelection);
-				Game.isBuySelectionHover = false;
-			});
-			
-			Tools.tooltipify(tooltip, tempBtn);
 			
 			Game.store.appendChild(btnHolder);
 			this.btnHolder = btnHolder;
 			this.button = tempBtn;
 			this.bdCost = bdCost;
 			this.bdAmount = bdAmount;
-			this.tooltip = tooltip;
-			this.ttBdCost = ttBdCost;
-			this.ttPerSecond = ttPerSecond;
 		}
 		options.refresh = function () {
 			if (!options.displayed) this.btnHolder.classList.add('hidden');
 			if (Game.volts >= this.displayAt && !this.displayed) {
 				this.displayed = true;
-				Tools.fadeInObj(this.btnHolder);
 				this.btnHolder.classList.remove('hidden');
 			}
 			if (this.cost > Game.volts) {
@@ -168,12 +102,8 @@
 			this.bdAmount.textContent = amount;
 			if (Game.prefs.shortNums === 0) {
 				this.bdCost.textContent = cost + " volts";
-				this.ttBdCost.textContent = cost + " volts";
-				this.ttPerSecond.textContent = amountps + " volts/second";
 			} else {
 				this.bdCost.textContent = Tools.metricSuffix(cost);
-				this.ttBdCost.textContent = Tools.metricSuffix(cost);
-				this.ttPerSecond.textContent = Tools.metricSuffix(amountps);
 			}
 		}
 		return options;

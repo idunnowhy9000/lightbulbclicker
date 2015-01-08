@@ -16,8 +16,6 @@
 		this.drawed = false;
 		this.offline = false; // work offline using appcache
 		this.paused = false; // stops all ticks
-		
-		this.isBuySelectionHover = false;
 		// vars
 		this.volts = 0; // volts
 		this.voltsTot = 0; // total volts
@@ -308,9 +306,8 @@
 			}
 		}
 		this.refreshTitle = function () {
-			var count = Math.floor(this.volts) + " volt" + (Math.floor(this.volts) > 1 ? "s" : ""),
-				name = "Lightbulb Inc";
-			if (this.prefs.shortNums === 0) { count = Tools.metricSuffix(this.volts); }
+			var count, name = "Lightbulb Inc";
+			count = (this.prefs.shortNums) ? Tools.metricSuffix(this.volts) : Math.floor(this.volts) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
 			document.title = count + " - " + name;
 		}
 		
