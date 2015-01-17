@@ -179,7 +179,7 @@
 					colLeft = document.createElement('div'),
 					colMid = document.createElement('div'),
 					colRight = document.createElement('div');
-				// draw
+				// draw			
 				// colLeft
 				colLeft.setAttribute('id','col1');
 
@@ -240,10 +240,39 @@
 				options.setAttribute('id', 'options');
 				colMid.appendChild(options);
 				
-				var optionsBtn = document.createElement('div');
-				optionsBtn.setAttribute('class', 'btn');
-				optionsBtn.appendChild(document.createTextNode('Options'));
-				options.appendChild(optionsBtn);
+				var saveGameBtn = document.createElement('div');
+				saveGameBtn.setAttribute('class', 'btn');
+				saveGameBtn.appendChild(document.createTextNode('Save Game'));
+				options.appendChild(saveGameBtn);
+				
+				var resetGameBtn = document.createElement('div');
+				resetGameBtn.setAttribute('class', 'btn');
+				resetGameBtn.appendChild(document.createTextNode('Reset Game'));
+				options.appendChild(resetGameBtn);
+				
+				var hResetGameBtn = document.createElement('div');
+				hResetGameBtn.setAttribute('class', 'btn');
+				hResetGameBtn.appendChild(document.createTextNode('Hard Reset Game'));
+				options.appendChild(hResetGameBtn);
+				
+				options.appendChild(document.createElement('br'));
+				
+				var importGameBtn = document.createElement('div');
+				importGameBtn.setAttribute('class', 'btn');
+				importGameBtn.appendChild(document.createTextNode('Import Game'));
+				options.appendChild(importGameBtn);
+				
+				var exportGameBtn = document.createElement('div');
+				exportGameBtn.setAttribute('class', 'btn');
+				exportGameBtn.appendChild(document.createTextNode('Export Game'));
+				options.appendChild(exportGameBtn);
+				
+				options.appendChild(document.createElement('br'));
+				
+				var statisticsBtn = document.createElement('div');
+				statisticsBtn.setAttribute('class', 'btn');
+				statisticsBtn.appendChild(document.createTextNode('Statistics'));
+				options.appendChild(statisticsBtn);
 
 				// colRight
 				colRight.setAttribute('id','col3');

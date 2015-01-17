@@ -15,7 +15,11 @@
 		if (!options.displayAt) options.displayAt = [];
 		if (!options.onBuy) options.onBuy = function (Game) {}
 		options.displayed = false;
+		
 		options.button = undefined;
+		
+		options.tooltip = undefined;
+		
 		options.buy = function() {
 			if (this.cost > Game.volts || this.amount === 1) return;
 			Game._remove(this.cost);
@@ -46,13 +50,36 @@
 			}
 		}
 		options.draw = function () {
-			var tempButton = document.createElement('div');
-			tempButton.setAttribute('class', 'upgradeObj');
-			tempButton.setAttribute('id', 'upgrade-' + options.id);
+			var tempBtn = document.createElement('div');
+			tempBtn.setAttribute('class', 'upgradeObj');
+			tempBtn.setAttribute('id', 'upgrade-' + options.id);
 			
-			tempButton.style.backgroundImage = ('url ("' + options.id + '")');
+			tempBtn.style.backgroundImage = ('url ("' + options.id + '")');
 			
-			this.button = tempButton;
+			var tooltipContent = document.createElement('div');
+			
+			var tooltipDesc = document.createElement('span');
+			tooltipDesc.textContent = this.description;
+			tooltipContent.appendChild(tooltipDesc);
+			
+			tooltipContent.appendChild(document.createElement('br'));
+			
+			tooltipContent.appendChild(document.createTextNode('Costs '));
+			
+			var tooltipCost = document.createElement('span');
+			tooltipCost.textContent = this.cost;
+			tooltipContent.appendChild(tooltipCost);
+			
+			tooltipContent.appendChild(document.createTextNode(' volts'));
+			
+			var tooltip = new window.Tooltip({
+				target: tempBtn,
+				content: tooltipContent
+			});
+			
+			this.button = tempBtn;
+			this.tooltip = tooltip;
+			
 			Game.upgradeStore.appendChild(this.button);
 		}
 		return options;

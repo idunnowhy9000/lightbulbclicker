@@ -21,10 +21,18 @@
 		if (!!options.displayable) options.displayable = true;
 		if (!options.onBuy || !typeof options.onBuy === 'options') options.onBuy = function () {}
 		options.displayed = false;
+		
 		options.btnHolder = undefined;
 		options.button = undefined;
 		options.bdAmount = undefined;
 		options.bdCost = undefined;
+		
+		options.tooltip = undefined;
+		options.tooltipCost = undefined;
+		options.tooltipAmount = undefined;
+		options.tooltipVPS = undefined;
+		options.tooltipProduceName = undefined;
+		
 		options.buySelectionNum = undefined;
 		options.buySelectionAll = undefined;
 		options.buy = function() {
@@ -77,11 +85,55 @@
 				options.buy();
 			});
 			
+			var tooltipContent = document.createElement('div');
+			
+			var tooltipDesc = document.createElement('span');
+			tooltipDesc.textContent = this.description;
+			tooltipContent.appendChild(tooltipDesc);
+			
+			tooltipContent.appendChild(document.createElement('br'));
+			
+			tooltipContent.appendChild(document.createTextNode('Costs '));
+			
+			var tooltipCost = document.createElement('span');
+			tooltipCost.textContent = this.cost;
+			tooltipContent.appendChild(tooltipCost);
+			
+			tooltipContent.appendChild(document.createTextNode(' volts'));
+			
+			tooltipContent.appendChild(document.createElement('br'));
+			
+			var tooltipAmount = document.createElement('span');
+			tooltipAmount.textContent = this.amount;
+			tooltipContent.appendChild(tooltipAmount);
+			
+			var tooltipProduceName = document.createTextNode(" " + this.single);
+			tooltipContent.appendChild(tooltipProduceName);
+			
+			tooltipContent.appendChild(document.createTextNode(" " + this.actionName));
+			
+			var tooltipVPS = document.createElement('span');
+			tooltipVPS.textContent = this.vps;
+			tooltipContent.appendChild(tooltipVPS);
+			
+			tooltipContent.appendChild(document.createTextNode(" volts per second."));
+			
+			var tooltip = new window.Tooltip({
+				target: tempBtn,
+				content: tooltipContent
+			});
+			
 			Game.store.appendChild(btnHolder);
 			this.btnHolder = btnHolder;
 			this.button = tempBtn;
 			this.bdCost = bdCost;
 			this.bdAmount = bdAmount;
+			
+			this.tooltip = tooltip;
+			this.tooltipCost = tooltipCost;
+			this.tooltipAmount = tooltipAmount;
+			this.tooltipVPS = tooltipVPS;
+			this.tooltipProduceName = tooltipProduceName;
 		}
 		options.refresh = function () {
 			var self = this;
@@ -104,14 +156,23 @@
 			// update building cost/amount
 			var amountps = Game.calc.calcBdVPS(this),
 				amountps1 = amountps * this.amount,
-				amount = Tools.beautify(this.amount),
-				cost = Tools.beautify(this.cost);
-			this.bdAmount.textContent = amount;
+				amount = this.amount,
+				cost = this.cost;
 			if (Game.prefs.shortNums) {
+				this.bdAmount.textContent = Tools.metricSuffix(amount);
 				this.bdCost.textContent = Tools.metricSuffix(cost);
+				this.tooltipAmount.textContent = Tools.metricSuffix(amount);
+				this.tooltipCost.textContent = Tools.metricSuffix(cost);
+				this.tooltipVPS.textContent = " " + Tools.metricSuffix(amountps);
 			} else {
-				this.bdCost.textContent = cost + " volts";
+				this.bdCost.textContent = Tools.beautify(cost) + " volts";
+				this.bdAmount.textContent = Tools.beautify(amount);
+				this.tooltipAmount.textContent = Tools.beautify(amount);
+				this.tooltipCost.textContent = Tools.beautify(cost);
+				this.tooltipVPS.textContent = " " + Tools.beautify(amountps);
 			}
+			// update plurals
+			this.tooltipProduceName = Math.round(this.amount) > 1 ? this.plural : this.single;
 		}
 		return options;
 	};

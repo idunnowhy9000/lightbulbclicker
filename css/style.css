@@ -41,6 +41,8 @@ margin: 5px auto;
 cursor: pointer;
 text-align: center;
 color: #fff;
+transition: opacity .5s;
+border-radius: 4px;
 }
 .hidden{
 display:none;
@@ -161,26 +163,6 @@ top:0px;
 left:0px;
 z-index:1000;
 }
-/* Tooltips */
-.tooltip{
-position: absolute;
-top: 0;
-left: 0;
-background-color: #fff;
-border-bottom-right-radius: 10px;
-border-bottom-left-radius: 10px;
-box-shadow: 5px 5px 20px -1px rgba(0,0,0,0.7);
-padding: 5px;
-text-align: left;
-z-index: 2;
-min-width: 300px;
-}
-.tooltip .title{
-background-color: #5792FF;
-width: 100%;
-height: 20px;
-color: #fff;
-}
 /* Buy Selection */
 .buySelection{
 min-height:20px;
@@ -200,8 +182,9 @@ width: 50px;
 .buySelection .buySelectionAll{
 cursor: pointer;
 }
-/* */
+/* Options Buttons */
 #options .btn{
 width: auto;
 display: inline-block;
+margin: 2px;
 }
