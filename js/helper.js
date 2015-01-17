@@ -50,7 +50,7 @@
 						return (n / ranges[i].divider).toString() + ' ' + ranges[i].suffix;
 					}
 				}
-				return n.toString() + " volts";
+				return Tools.beautify(n) + " volts";
 			})();
 		}
 		
@@ -58,16 +58,5 @@
 		window.l = Tools.l;
 		window.log = Tools.log;
 		window.ajax = Tools.ajax;
-		
-		// polyfills
-		// requestAnimationFrame polyfill by paul irish
-		window.requestAnimFrame = (function(){
-			return window.requestAnimationFrame ||
-				window.webkitRequestAnimationFrame ||
-				window.mozRequestAnimationFrame ||
-				function( callback ){
-					window.setTimeout(callback, 1000 / 60);
-				};
-		})();
 	};
 })(window);

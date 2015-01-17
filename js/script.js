@@ -14,8 +14,6 @@
 		this.lStorageName = "LBClicker"; // local storage var name
 		this.loaded = false;
 		this.drawed = false;
-		this.offline = false; // work offline using appcache
-		this.paused = false; // stops all ticks
 		// vars
 		this.volts = 0; // volts
 		this.voltsTot = 0; // total volts
@@ -45,7 +43,6 @@
 		this.date = undefined;
 		this.elapsed = undefined;
 		this.lastTick = undefined;
-		this.fps = undefined;
 
 		// DOM elements
 		// buttons,...
@@ -137,7 +134,6 @@
 			this.logicElasped = 0;
 			this.elapsed = Date.now();
 			this.lastTick = Date.now();
-			this.fps = 60;
 			
 			// doms
 			this.bulb.addEventListener("click", function () {
@@ -169,11 +165,8 @@
 			// prefs
 			this.prefs = {
 				'shortNums': 0,
-				'drawWhenInactive': 0,
+				'paused': 0,
 			};
-			
-			// mouse track
-			this.spyMouse();
 
 			this.loop();
 			this.refresh();
@@ -245,9 +238,12 @@
 
 				var options = document.createElement('div');
 				options.setAttribute('id', 'options');
-				options.setAttribute('class', 'btn');
-				options.appendChild(document.createTextNode('Options'));
 				colMid.appendChild(options);
+				
+				var optionsBtn = document.createElement('div');
+				optionsBtn.setAttribute('class', 'btn');
+				optionsBtn.appendChild(document.createTextNode('Options'));
+				options.appendChild(optionsBtn);
 
 				// colRight
 				colRight.setAttribute('id','col3');
@@ -391,20 +387,13 @@
 			this._vps = vps;
 		}
 		
-		this.spyMouse = function () {
-			window.addEventListener('mousemove', function (e) {
-				window.Game.mouseX = e.clientX || e.pageX;
-				window.Game.mouseY = e.clientY || e.pageY;
-			});
-		}
-		
 		this.refresh = function () { // screen tick
 			var self = this;
 			window.requestAnimFrame(function () {
 				self.refresh();
 			});
 			
-			if (this.paused === true) { return; }
+			if (this.prefs.paused) return;
 			
 			this.refreshCount();
 			
@@ -427,7 +416,7 @@
 		this.loop = function () {
 			var self = this;
 			
-			if (this.paused === true) { return; }
+			if (this.prefs.paused) return;
 			
 			this.elapsed = ((Date.now() - this.lastTick) / 1000);
 			this.logicElasped++;
@@ -442,15 +431,16 @@
 			this.lastTick = Date.now();
 			setTimeout(function () {
 				self.loop();
-			}, 1000 / this.fps);
+			}, 1000);
 		}
+		
 		return this;
 	}
 	// load the game
 	var g = new Game();
 	window.Game = g;
 	// dom load
-	window.addEventListener('load', function(){
+	window.addEventListener('DOMContentLoaded', function(){
 		window.Game.init();
 	});
 })(window);

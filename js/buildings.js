@@ -84,10 +84,17 @@
 			this.bdAmount = bdAmount;
 		}
 		options.refresh = function () {
+			var self = this;
+			if (Game.prefs.paused) return;
+			
 			if (!options.displayed) this.btnHolder.classList.add('hidden');
 			if (Game.volts >= this.displayAt && !this.displayed) {
 				this.displayed = true;
 				this.btnHolder.classList.remove('hidden');
+				this.btnHolder.classList.add('fadeIn', 'animated');
+				window.PrefixedEvent(this.btnHolder, "AnimationEnd", function () {
+					self.btnHolder.classList.remove('fadeIn', 'animated');
+				});
 			}
 			if (this.cost > Game.volts) {
 				this.button.classList.add('disabled');
@@ -100,10 +107,10 @@
 				amount = Tools.beautify(this.amount),
 				cost = Tools.beautify(this.cost);
 			this.bdAmount.textContent = amount;
-			if (Game.prefs.shortNums === 0) {
-				this.bdCost.textContent = cost + " volts";
-			} else {
+			if (Game.prefs.shortNums) {
 				this.bdCost.textContent = Tools.metricSuffix(cost);
+			} else {
+				this.bdCost.textContent = cost + " volts";
 			}
 		}
 		return options;

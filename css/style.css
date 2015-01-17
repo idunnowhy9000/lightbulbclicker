@@ -32,41 +32,15 @@ time, mark, audio, video {
     font-family: 'Fond';
     src: url('../fonts/Fondamento-Regular.ttf');
 }
-/* ANIMATION */
-@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@-webkit-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
-@-moz-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
-@keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
-.fading{
-opacity: 0;
-
--webkit-animation: fadeIn 1s;
--webkit-animation-timing-function: 1;
--webkit-animation-fill-mode: forwards;
-
-animation: fadeIn 1s;
-animation-timing-function: 1;
-animation-fill-mode: forwards;
-}
-.unfade{
-opacity: 1;
-
--webkit-animation: fadeOut 1s;
--webkit-animation-timing-function: 1;
--webkit-animation-fill-mode: forwards;
-
-animation: fadeOut 1s;
-animation-timing-function: 1;
-animation-fill-mode: forwards;
-}
 /* HELPER*/
 .btn{
+background-color: #337ab7;
+border-color: #2e6da4;
 padding: 6px 12px;
-width: 80%;
 margin: 5px auto;
 cursor: pointer;
+text-align: center;
+color: #fff;
 }
 .hidden{
 display:none;
@@ -104,10 +78,10 @@ transform: scale(0.97);
 }
 .bdObj, .upgradeObj{ /* Buildings/Upgrades */
 min-height:40px;
-border:1px solid black;
 }
 .bdObj{
 margin-bottom: 0;
+width: 80%;
 }
 .bdObj .bdAmount{ /* Buildings Amount */
 text-align:center;
@@ -123,6 +97,8 @@ width: 64px;
 height: 64px;
 float: left;
 margin: 2px;
+border: 1px solid black;
+cursor: pointer;
 }
 #options{ /* Options Holder */
 margin: 5px auto;
@@ -223,4 +199,9 @@ width: 50px;
 }
 .buySelection .buySelectionAll{
 cursor: pointer;
+}
+/* */
+#options .btn{
+width: auto;
+display: inline-block;
 }

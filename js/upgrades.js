@@ -27,6 +27,8 @@
 		}
 		options.refresh = function () {
 			var self = this;
+			if (Game.prefs.paused) return;
+			
 			if (!this.displayed) this.button.classList.add('hidden');
 			if (this.amount === 1) return;
 			var canDisplay = false;
@@ -37,6 +39,10 @@
 			if (canDisplay) {
 				this.displayed = true;
 				this.button.classList.remove('hidden');
+				this.button.classList.add('fadeIn', 'animated');
+				window.PrefixedEvent(this.button, "AnimationEnd", function () {
+					self.button.classList.remove('fadeIn', 'animated');
+				});
 			}
 		}
 		options.draw = function () {
