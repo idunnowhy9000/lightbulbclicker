@@ -166,6 +166,7 @@
 			this.prefs = {
 				'shortNums': 0,
 				'paused': 0,
+				'autoSave': 0
 			};
 
 			this.loop();
@@ -332,7 +333,7 @@
 		}
 		this.refreshTitle = function () {
 			var count, name = "Lightbulb Inc";
-			count = (this.prefs.shortNums) ? Tools.metricSuffix(this.volts) : Math.floor(this.volts) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
+			count = this.prefs.shortNums ? Tools.metricSuffix(this.volts) : Tools.beautify(Math.floor(this.volts)) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
 			document.title = count + " - " + name;
 		}
 		

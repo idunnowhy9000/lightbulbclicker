@@ -120,7 +120,8 @@
 			
 			var tooltip = new window.Tooltip({
 				target: tempBtn,
-				content: tooltipContent
+				content: tooltipContent,
+				position: 'right middle'
 			});
 			
 			Game.store.appendChild(btnHolder);
@@ -143,10 +144,7 @@
 			if (Game.volts >= this.displayAt && !this.displayed) {
 				this.displayed = true;
 				this.btnHolder.classList.remove('hidden');
-				this.btnHolder.classList.add('fadeIn', 'animated');
-				window.PrefixedEvent(this.btnHolder, "AnimationEnd", function () {
-					self.btnHolder.classList.remove('fadeIn', 'animated');
-				});
+				Tools.animateCSS(this.btnHolder, 'fadeIn');
 			}
 			if (this.cost > Game.volts) {
 				this.button.classList.add('disabled');
@@ -163,13 +161,13 @@
 				this.bdCost.textContent = Tools.metricSuffix(cost);
 				this.tooltipAmount.textContent = Tools.metricSuffix(amount);
 				this.tooltipCost.textContent = Tools.metricSuffix(cost);
-				this.tooltipVPS.textContent = " " + Tools.metricSuffix(amountps);
+				this.tooltipVPS.textContent = " " + Tools.metricSuffix(amountps1);
 			} else {
 				this.bdCost.textContent = Tools.beautify(cost) + " volts";
 				this.bdAmount.textContent = Tools.beautify(amount);
 				this.tooltipAmount.textContent = Tools.beautify(amount);
 				this.tooltipCost.textContent = Tools.beautify(cost);
-				this.tooltipVPS.textContent = " " + Tools.beautify(amountps);
+				this.tooltipVPS.textContent = " " + Tools.beautify(amountps1);
 			}
 			// update plurals
 			this.tooltipProduceName = Math.round(this.amount) > 1 ? this.plural : this.single;

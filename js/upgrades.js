@@ -43,10 +43,7 @@
 			if (canDisplay) {
 				this.displayed = true;
 				this.button.classList.remove('hidden');
-				this.button.classList.add('fadeIn', 'animated');
-				window.PrefixedEvent(this.button, "AnimationEnd", function () {
-					self.button.classList.remove('fadeIn', 'animated');
-				});
+				Tools.animateCSS(this.button, 'fadeIn');
 			}
 		}
 		options.draw = function () {

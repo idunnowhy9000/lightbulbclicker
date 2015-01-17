@@ -53,6 +53,12 @@
 				return Tools.beautify(n) + " volts";
 			})();
 		}
+		Tools.animateCSS = function (el, type) {
+			el.classList.add(type, 'animated');
+			window.PrefixedEvent(el, "AnimationEnd", function () {
+				el.classList.remove(type, 'animated');
+			});
+		}
 		
 		window.Tools = Tools;
 		window.l = Tools.l;
