@@ -29,14 +29,14 @@
 						Game.buildings[bId].amount = buildings[b].split("=")[1] || 0;
 					}
 				}
-				Game.sessionStart = new Date(decoded[7]);
-				Game.sessionStarted = decoded[8] || false;
-				Game.gameStart = new Date(decoded[9]);
-				Game.gameStarted = decoded[10] || false;
-				Game.clicked = parseFloat(decoded[11]) || 0;
-				Game.factName = decoded[12] || "";
-				Game.nameSettable = decoded[13] || false;
-				var upgrades = decoded[14];
+				Game.sessionStart = decoded[6];
+				Game.sessionStarted = decoded[7] || false;
+				Game.gameStart = decoded[8];
+				Game.gameStarted = decoded[9] || false;
+				Game.clicked = parseFloat(decoded[10]) || 0;
+				Game.factName = decoded[11] || "";
+				Game.nameSettable = decoded[12] || false;
+				var upgrades = decoded[13];
 				for (var u in upgrades) {
 					var uId = upgrades[u].split("=")[0];
 					if (Game.upgrades[uId]) {
@@ -47,7 +47,7 @@
 				errors.push("Cannot read version >1.0 save files.");
 			}
 			if (errors.length > 0) {
-				
+				console.log(errors.join("\n"));
 			}
 		},
 		saveGame: function (){
@@ -64,9 +64,9 @@
 			}
 			saveData.push(buildings.join(","));
 			// stats
-			saveData.push(Game.sessionStart.getTime());
+			saveData.push(Game.sessionStart);
 			saveData.push(Game.sessionStarted);
-			saveData.push(Game.gameStart.getTime());
+			saveData.push(Game.gameStart);
 			saveData.push(Game.gameStarted);
 			saveData.push(Game.clicked);
 			saveData.push(Game.factName);
@@ -77,11 +77,11 @@
 				upgrades.push(up.id + "=" + up.amount);
 			}
 			saveData.push(upgrades);
-			saveData.push(levelHandler.level);
-			saveData.push(levelHandler.exp);
-			saveData.push(levelHandler.toNextLevel);
-			saveData.push(levelHandler.levelTotalExp);
-			saveData.push(levelHandler.levelN);
+			saveData.push(Game.levelHandler.level);
+			saveData.push(Game.levelHandler.exp);
+			saveData.push(Game.levelHandler.toNextLevel);
+			saveData.push(Game.levelHandler.levelTotalExp);
+			saveData.push(Game.levelHandler.levelN);
 			// encode
 			var save = saveData.join("!");
 			save = window.btoa(save);

@@ -36,7 +36,7 @@
 		lvlNDisplay: undefined,
 		toNextLevelDisplay: undefined,
 		update: function () {
-			this.progress.style.width = ((this.exp / this.toNextLevel) * 100) + "%";
+			this.progress.style.width = ((this.exp / this.toNextLevel * 100) || 0) + "%";
 			this.levelDisplay.textContent = "Level " + this.level;
 			this.lvlExpDisplay.textContent = "(" + this.exp + " exp)";
 			//this.lvlNDisplay.textContent = "<" + this.levelN + ">";

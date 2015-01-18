@@ -14,6 +14,7 @@
 		this.lStorageName = "LBClicker"; // local storage var name
 		this.loaded = false;
 		this.drawed = false;
+		this.optionsOpened = false;
 		// vars
 		this.volts = 0; // volts
 		this.voltsTot = 0; // total volts
@@ -35,11 +36,10 @@
 		this.starSysAble = false;
 		this.timeTravelAble = false;
 		this.spaceTravelAble = false;
-		this.mouseX = 0;
-		this.mouseY = 0;
 		
 		// timer
 		this.logicElasped = undefined;
+		this.autoSaveElapsed = undefined;
 		this.date = undefined;
 		this.elapsed = undefined;
 		this.lastTick = undefined;
@@ -60,13 +60,24 @@
 		this.pbarDisplay = undefined;
 		this.factNameDisplay = undefined;
 		this.gameContainer = undefined;
+		this.shortNumsBtn = undefined;
+		this.pausedBtn = undefined;
+		this.autoSaveBtn = undefined;
+		this.col1 = undefined;
+		this.col2 = undefined;
+		this.col3 = undefined;
 		// options
 		this.saveG = undefined;
 		this.resetG = undefined;
 		this.hresetG = undefined;
 		this.importG = undefined;
 		this.exportG = undefined;
-		this.stats = undefined;
+		this.optionsBtn = undefined;
+		this.factNameInput = undefined;
+		this.factNameBtn = undefined;
+		this.buildingsBtn = undefined;
+		this.upgradesBtn = undefined;
+		this.backToMain = undefined;
 		
 		// preferences
 		this.prefs = {};
@@ -126,19 +137,53 @@
 			this.hresetG = l('#hresetG');
 			this.importG = l('#importG');
 			this.exportG = l('#exportG');
-			this.stats = l('#stats');
+			this.optionsBtn = l('#optionsBtn');
 			this.factNameDisplay = l('#factNameDisplay');
 			this.gameContainer = l('#gameContainer');
+			this.col1 = l('#col1');
+			this.col2 = l('#col2');
+			this.col3 = l('#col3');
+			this.buildingsBtn = l("#buildingsBtn");
+			this.upgradesBtn = l("#upgradesBtn");
+			this.backToMain = l("#backToMain");
 			
 			this.date = Date.now();
 			this.logicElasped = 0;
+			this.autoSaveElapsed = 0;
 			this.elapsed = Date.now();
 			this.lastTick = Date.now();
 			
-			// doms
+			// css hack for checking mobile phones
+			this.backToMainAble = !!this.backToMain.style.display;
+			
+			// events
 			this.bulb.addEventListener("click", function () {
 				self.bulbClick();
 			});
+			this.saveG.addEventListener("click", function() {
+				self.saveGClick();
+			});
+			this.optionsBtn.addEventListener("click", function() {
+				self.openOptions();
+			});
+			this.resetG.addEventListener("click", function () {
+				self.resetGClick();
+			});
+			this.hresetG.addEventListener("click", function () {
+				self.hresetGClick();
+			});
+			this.factNameDisplay.addEventListener("click", function () {
+				self.openFactoryName();
+			})
+			this.buildingsBtn.addEventListener("click", function () {
+				self.switchColumn(1);
+			})
+			this.upgradesBtn.addEventListener("click", function () {
+				self.switchColumn(3);
+			})
+			this.backToMain.addEventListener("click", function () {
+				self.switchColumn(2);
+			})
 			
 			// buildings
 			for (var _building in this.buildingsD) {
@@ -162,144 +207,169 @@
 			this.levelHandler.draw();
 			this.levelHandler.update();
 			
-			// prefs
+			// default prefs
 			this.prefs = {
 				'shortNums': 0,
 				'paused': 0,
-				'autoSave': 0
+				'autoSave': 1
 			};
+			
+			this.loadGame();
 
 			this.loop();
+			
+			this.updateFactName(this.factName);
+			if (this.backToMainAble) this.switchColumn(2);
 			this.refresh();
 		}		
 
 		// draw
 		this.draw = function () {
-			if (!this.drawed) {
-				var container = l('#container'),
-					colLeft = document.createElement('div'),
-					colMid = document.createElement('div'),
-					colRight = document.createElement('div');
-				// draw			
-				// colLeft
-				colLeft.setAttribute('id','col1');
-
-				var lightbulbListContainer = document.createElement('div');
-				lightbulbListContainer.setAttribute('id', 'lightbulbListContainer');
-				colLeft.appendChild(lightbulbListContainer);
-
-				var lightbulbListTitle = document.createElement('p');
-				lightbulbListTitle.setAttribute('id', 'lightbulbListTitle');
-				lightbulbListTitle.setAttribute('class', 'large');
-				lightbulbListTitle.appendChild(document.createTextNode('Lightbulbs'));
-				lightbulbListContainer.appendChild(lightbulbListTitle);
-
-				var store = document.createElement('div');
-				store.setAttribute('id', 'lightbulb');
-				lightbulbListContainer.appendChild(store);
-				// drawed in Buildings.draw
-
-				// colMid
-				colMid.setAttribute('id','col2');
-
-				var factNameDisplay = document.createElement('div');
-				factNameDisplay.setAttribute('id', 'factNameDisplay');
-				factNameDisplay.appendChild(document.createTextNode('Your Factory'));
-				colMid.appendChild(factNameDisplay);
-
-				var voltCounter = document.createElement('div');
-				voltCounter.setAttribute('id', 'count');
-				voltCounter.appendChild(document.createTextNode('0 volt'));
-				colMid.appendChild(voltCounter);
-
-				var vpsDisplay = document.createElement('div');
-				vpsDisplay.setAttribute('id', 'vpsDisplay');
-				vpsDisplay.appendChild(document.createTextNode('0 volt/second'));
-				colMid.appendChild(vpsDisplay);
-
-				var bulbContainer = document.createElement('div');
-				bulbContainer.setAttribute('id', 'bulbContainer');
-				colMid.appendChild(bulbContainer);
-
-				var bulb = document.createElement('div');
-				bulb.setAttribute('id', 'bulb');
-				colMid.appendChild(bulb);
-
-				var progress = document.createElement('div');
-				progress.setAttribute('id', 'pbar');
-				colMid.appendChild(progress);
-
-				var levelContainer = document.createElement('div');
-				levelContainer.setAttribute('id', 'levelContainer');
-				colMid.appendChild(levelContainer);
+			if (this.drawed) return;
 				
-				var levelBarContainer = document.createElement('div');
-				levelBarContainer.setAttribute('id', 'levelBarContainer');
-				colMid.appendChild(levelBarContainer);
+			var container = l('#container'),
+				colLeft = document.createElement('div'),
+				colMid = document.createElement('div'),
+				colRight = document.createElement('div');
+			// draw
+			// colLeft
+			colLeft.setAttribute('id','col1');
 
-				var options = document.createElement('div');
-				options.setAttribute('id', 'options');
-				colMid.appendChild(options);
-				
-				var saveGameBtn = document.createElement('div');
-				saveGameBtn.setAttribute('class', 'btn');
-				saveGameBtn.appendChild(document.createTextNode('Save Game'));
-				options.appendChild(saveGameBtn);
-				
-				var resetGameBtn = document.createElement('div');
-				resetGameBtn.setAttribute('class', 'btn');
-				resetGameBtn.appendChild(document.createTextNode('Reset Game'));
-				options.appendChild(resetGameBtn);
-				
-				var hResetGameBtn = document.createElement('div');
-				hResetGameBtn.setAttribute('class', 'btn');
-				hResetGameBtn.appendChild(document.createTextNode('Hard Reset Game'));
-				options.appendChild(hResetGameBtn);
-				
-				options.appendChild(document.createElement('br'));
-				
-				var importGameBtn = document.createElement('div');
-				importGameBtn.setAttribute('class', 'btn');
-				importGameBtn.appendChild(document.createTextNode('Import Game'));
-				options.appendChild(importGameBtn);
-				
-				var exportGameBtn = document.createElement('div');
-				exportGameBtn.setAttribute('class', 'btn');
-				exportGameBtn.appendChild(document.createTextNode('Export Game'));
-				options.appendChild(exportGameBtn);
-				
-				options.appendChild(document.createElement('br'));
-				
-				var statisticsBtn = document.createElement('div');
-				statisticsBtn.setAttribute('class', 'btn');
-				statisticsBtn.appendChild(document.createTextNode('Statistics'));
-				options.appendChild(statisticsBtn);
+			var lightbulbListContainer = document.createElement('div');
+			lightbulbListContainer.setAttribute('id', 'lightbulbListContainer');
+			colLeft.appendChild(lightbulbListContainer);
 
-				// colRight
-				colRight.setAttribute('id','col3');
+			var lightbulbListTitle = document.createElement('h1');
+			lightbulbListTitle.setAttribute('id', 'lightbulbListTitle');
+			lightbulbListTitle.appendChild(document.createTextNode('Lightbulbs'));
+			lightbulbListContainer.appendChild(lightbulbListTitle);
 
-				var upgradeListContainer = document.createElement('div');
-				upgradeListContainer.setAttribute('id', 'upgradeListContainer');
-				colRight.appendChild(upgradeListContainer);
+			var store = document.createElement('div');
+			store.setAttribute('id', 'lightbulb');
+			lightbulbListContainer.appendChild(store);
+			// drawed in Buildings.draw
 
-				var upgradeListTitle = document.createElement('p');
-				upgradeListTitle.setAttribute('id', 'upgradeListTitle');
-				upgradeListTitle.setAttribute('class', 'large');
-				upgradeListTitle.appendChild(document.createTextNode('Upgrades'));
-				upgradeListContainer.appendChild(upgradeListTitle);
+			// colMid
+			colMid.setAttribute('id','col2');
 
-				var upgradeStore = document.createElement('div');
-				upgradeStore.setAttribute('id', 'upgrade');
-				upgradeListContainer.appendChild(upgradeStore);
-				// drawed in Upgrade.draw
+			var factNameDisplay = document.createElement('div');
+			factNameDisplay.setAttribute('id', 'factNameDisplay');
+			factNameDisplay.appendChild(document.createTextNode('Your Factory'));
+			colMid.appendChild(factNameDisplay);
 
-				// container
-				container.appendChild(colLeft);
-				container.appendChild(colMid);
-				container.appendChild(colRight);
-				this.drawed = true;
-			}
-			return this.drawed;
+			var voltCounter = document.createElement('h1');
+			voltCounter.setAttribute('id', 'count');
+			voltCounter.appendChild(document.createTextNode('0 volt'));
+			colMid.appendChild(voltCounter);
+
+			var vpsDisplay = document.createElement('div');
+			vpsDisplay.setAttribute('id', 'vpsDisplay');
+			vpsDisplay.appendChild(document.createTextNode('0 volt/second'));
+			colMid.appendChild(vpsDisplay);
+
+			var bulbContainer = document.createElement('div');
+			bulbContainer.setAttribute('id', 'bulbContainer');
+			colMid.appendChild(bulbContainer);
+
+			var bulb = document.createElement('div');
+			bulb.setAttribute('id', 'bulb');
+			colMid.appendChild(bulb);
+
+			var progress = document.createElement('div');
+			progress.setAttribute('id', 'pbar');
+			colMid.appendChild(progress);
+
+			var levelContainer = document.createElement('div');
+			levelContainer.setAttribute('id', 'levelContainer');
+			colMid.appendChild(levelContainer);
+
+			var levelBarContainer = document.createElement('div');
+			levelBarContainer.setAttribute('id', 'levelBarContainer');
+			colMid.appendChild(levelBarContainer);
+
+			var options = document.createElement('div');
+			options.classList.add('options', 'menu');
+			colMid.appendChild(options);
+
+			var saveGameBtn = document.createElement('div');
+			saveGameBtn.classList.add('btn');
+			saveGameBtn.setAttribute('id', 'saveG');
+			saveGameBtn.appendChild(document.createTextNode('Save Game'));
+			options.appendChild(saveGameBtn);
+
+			var resetGameBtn = document.createElement('div');
+			resetGameBtn.classList.add('btn');
+			resetGameBtn.setAttribute('id', 'resetG');
+			resetGameBtn.appendChild(document.createTextNode('Reset Game'));
+			options.appendChild(resetGameBtn);
+
+			var hResetGameBtn = document.createElement('div');
+			hResetGameBtn.classList.add('btn');
+			hResetGameBtn.setAttribute('id', 'hresetG');
+			hResetGameBtn.appendChild(document.createTextNode('Hard Reset Game'));
+			options.appendChild(hResetGameBtn);
+
+			options.appendChild(document.createElement('br'));
+
+			var importGameBtn = document.createElement('div');
+			importGameBtn.classList.add('btn');
+			importGameBtn.setAttribute('id', 'importG');
+			importGameBtn.appendChild(document.createTextNode('Import Game'));
+			options.appendChild(importGameBtn);
+
+			var exportGameBtn = document.createElement('div');
+			exportGameBtn.classList.add('btn');
+			exportGameBtn.setAttribute('id', 'exportG');
+			exportGameBtn.appendChild(document.createTextNode('Export Game'));
+			options.appendChild(exportGameBtn);
+
+			options.appendChild(document.createElement('br'));
+
+			var optionsBtn = document.createElement('div');
+			optionsBtn.classList.add('btn');
+			optionsBtn.setAttribute('id', 'optionsBtn');
+			optionsBtn.appendChild(document.createTextNode('Options'));
+			options.appendChild(optionsBtn);
+
+			var buildingsBtn = document.createElement('div');
+			buildingsBtn.classList.add('btn');
+			buildingsBtn.setAttribute('id', 'buildingsBtn');
+			buildingsBtn.appendChild(document.createTextNode('Buildings'));
+			options.appendChild(buildingsBtn);
+
+			var upgradesBtn = document.createElement('div');
+			upgradesBtn.classList.add('btn');
+			upgradesBtn.setAttribute('id', 'upgradesBtn');
+			upgradesBtn.appendChild(document.createTextNode('Upgrades'));
+			options.appendChild(upgradesBtn);
+
+			// colRight
+			colRight.setAttribute('id','col3');
+
+			var upgradeListContainer = document.createElement('div');
+			upgradeListContainer.setAttribute('id', 'upgradeListContainer');
+			colRight.appendChild(upgradeListContainer);
+
+			var upgradeListTitle = document.createElement('h1');
+			upgradeListTitle.setAttribute('id', 'upgradeListTitle');
+			upgradeListTitle.appendChild(document.createTextNode('Upgrades'));
+			upgradeListContainer.appendChild(upgradeListTitle);
+
+			var upgradeStore = document.createElement('div');
+			upgradeStore.setAttribute('id', 'upgrade');
+			upgradeListContainer.appendChild(upgradeStore);
+			// drawed in Upgrade.draw
+
+			// container
+			var backToMain = document.createElement('div');
+			backToMain.setAttribute('id', 'backToMain');
+			backToMain.appendChild(document.createTextNode('Back To Main'));
+			container.appendChild(backToMain);
+			
+			container.appendChild(colLeft);
+			container.appendChild(colMid);
+			container.appendChild(colRight);
+			this.drawed = true;
 		}
 		this.sortUpgrades = function () {
 			var self = this,
@@ -327,8 +397,8 @@
 				this.count.textContent = Tools.beautify(Math.floor(this.volts)) + " volt" + (Math.floor(this.volts) > 1 ? "s" : "");
 				this.vpsDisplay.textContent = Tools.beautify(this._vps.toFixed(2)) + " volt" + (this._vps > 1 ? "s" : "") + "/second";
 			} else {
-				this.count.textContent = Tools.metricSuffix(this.volts);
-				this.vpsDisplay.textContent = Tools.metricSuffix(this._vps) + "/second";
+				this.count.textContent = Tools.metricSuffix(Math.floor(this.volts));
+				this.vpsDisplay.textContent = Tools.metricSuffix(this._vps.toFixed(2)) + "/second";
 			}
 		}
 		this.refreshTitle = function () {
@@ -337,20 +407,189 @@
 			document.title = count + " - " + name;
 		}
 		
-		this.backdrop = function () {
-			var el = document.createElement("div");
-			el.setAttribute('id', 'backdrop');
+		this.openOptions = function () {
+			var self = this;
 			
-			document.body.appendChild(el);
-		}
-		this.unbackdrop = function () {
-			Tools.removeElement(l("#backdrop"));
-		}
-		this.notify = function () {
-			// todo: this
-		}
-		this.log = function () {
+			var optionsHolder = document.createElement('div');
+			optionsHolder.classList.add('options');
 			
+			var optionsTitle = document.createElement('h1');
+			optionsTitle.appendChild(document.createTextNode("Options"));
+			optionsHolder.appendChild(optionsTitle);
+			
+			var shortNumsBtn = document.createElement('span');
+			shortNumsBtn.classList.add('btn');
+			shortNumsBtn.setAttribute('id', 'shortNumsBtn');
+			shortNumsBtn.appendChild(document.createTextNode("Enable Short Numbers"));
+			optionsHolder.appendChild(shortNumsBtn);
+			
+			var pausedBtn = document.createElement('span');
+			pausedBtn.classList.add('btn');
+			pausedBtn.setAttribute('id', 'pausedBtn');
+			pausedBtn.appendChild(document.createTextNode("Pause Game"));
+			optionsHolder.appendChild(pausedBtn);
+			
+			var autoSaveBtn = document.createElement('span');
+			autoSaveBtn.classList.add('btn');
+			autoSaveBtn.setAttribute('id', 'autoSaveBtn');
+			autoSaveBtn.appendChild(document.createTextNode("Enable Autosave"));
+			optionsHolder.appendChild(autoSaveBtn);
+			
+			// statistics
+			
+			var optionsTitle = document.createElement('h1');
+			optionsTitle.appendChild(document.createTextNode("Statistics"));
+			optionsHolder.appendChild(optionsTitle);
+			
+			optionsHolder.appendChild(document.createTextNode("Volts in bank: "));
+			optionsHolder.appendChild(document.createTextNode(Tools.beautify(Math.floor(this.volts))));
+			
+			optionsHolder.appendChild(document.createElement('br'));
+			
+			optionsHolder.appendChild(document.createTextNode("Total volts (this session): "));
+			optionsHolder.appendChild(document.createTextNode(Tools.beautify(Math.floor(this.voltsTot))));
+			
+			optionsHolder.appendChild(document.createElement('br'));
+			
+			optionsHolder.appendChild(document.createTextNode("Total volts (all time): "));
+			optionsHolder.appendChild(document.createTextNode(Tools.beautify(Math.floor(this.voltsTotAll))));
+			
+			optionsHolder.appendChild(document.createElement('br'));
+			
+			optionsHolder.appendChild(document.createTextNode("Session Started: "));
+			optionsHolder.appendChild(document.createTextNode(this.sessionStart));
+			
+			optionsHolder.appendChild(document.createElement('br'));
+			
+			optionsHolder.appendChild(document.createTextNode("Game Started: "));
+			optionsHolder.appendChild(document.createTextNode(this.gameStart));
+			
+			optionsHolder.appendChild(document.createElement('br'));
+			
+			optionsHolder.appendChild(document.createTextNode("Bulbs created: "));
+			optionsHolder.appendChild(document.createTextNode(this.calc.buildingsCreated()));
+			
+			optionsHolder.appendChild(document.createElement('br'));
+			
+			optionsHolder.appendChild(document.createTextNode("Clicked "));
+			optionsHolder.appendChild(document.createTextNode(Tools.beautify(this.clicked)));
+			optionsHolder.appendChild(document.createTextNode(" times"));
+			
+			optionsHolder.appendChild(document.createElement('br'));
+			
+			optionsHolder.appendChild(document.createTextNode(Tools.beautify(this._vps.toFixed(2))));
+			optionsHolder.appendChild(document.createTextNode("  bulbs gained per second"));
+			
+			optionsHolder.appendChild(document.createElement('hr'));
+			
+			var upgradesTitle = document.createElement('h1');
+			upgradesTitle.appendChild(document.createTextNode("Upgrades"));
+			optionsHolder.appendChild(upgradesTitle);
+			
+			var upgradesHolder = document.createElement('div');
+			upgradesHolder.setAttribute('id', 'upgradesHolder');
+			optionsHolder.appendChild(upgradesHolder);
+			
+			for (var i in this.upgrades) {
+				if (!this.upgrades[i].amount) continue;
+				upgradesHolder.appendChild(this.upgrades[i].draw(1));
+			}
+			
+			// events
+			Modal.open({
+				content: optionsHolder,
+				closeCallback: function () {
+					self.optionsOpened = false;
+				}
+			});
+			
+			this.shortNumsBtn = l('#shortNumsBtn');
+			this.pausedBtn = l('#pausedBtn');
+			this.autoSaveBtn = l('#autoSaveBtn');
+			
+			this.shortNumsBtn.addEventListener("click", function () {
+				self.togglePrefs("shortNums");
+			});
+			
+			this.pausedBtn.addEventListener("click", function () {
+				self.togglePrefs("paused");
+			});
+			
+			this.autoSaveBtn.addEventListener("click", function () {
+				self.togglePrefs("autoSave");
+			});
+			
+			this.optionsOpened = true;
+		}
+		
+		this.updateOptions = function () {
+			if (!this.optionsOpened) return;
+			this.shortNumsBtn.textContent = this.prefs.shortNums ? "Disable Short Numbers" : "Enable Short Numbers";
+			this.pausedBtn.textContent = this.prefs.paused ? "Resume Game" : "Pause Game";
+			this.autoSaveBtn.textContent = this.prefs.autoSave ? "Disable Autosave" : "Enable Autosave";
+		}
+		
+		this.openFactoryName = function () {
+			var self = this;
+			var factoryNameHolder = document.createElement('div');
+			factoryNameHolder.setAttribute('id', 'factoryNameHolder');
+			factoryNameHolder.classList.add('inputHolder');
+			
+			var factoryNameTitle = document.createElement('h1');
+			factoryNameTitle.appendChild(document.createTextNode('Factory Name'));
+			factoryNameHolder.appendChild(factoryNameTitle);
+			
+			var factoryNameInput = document.createElement('input');
+			factoryNameInput.setAttribute('type', 'text');
+			factoryNameInput.setAttribute('value', this.factName);
+			factoryNameInput.setAttribute('placeholder', 'Input Name Here...');
+			factoryNameInput.setAttribute('id', 'factoryNameInput');
+			factoryNameHolder.appendChild(factoryNameInput);
+			
+			var btnHolder = document.createElement('div');
+			btnHolder.classList.add('btnHolder');
+			factoryNameHolder.appendChild(btnHolder);
+			
+			var setNameBtn = document.createElement('div');
+			setNameBtn.classList.add('btn', 'inline', 'right');
+			setNameBtn.appendChild(document.createTextNode("OK"));
+			btnHolder.appendChild(setNameBtn);
+			
+			// events
+			this.factNameInput = factoryNameInput;
+			this.factNameBtn = setNameBtn;
+			this.factNameBtn.addEventListener("click", function () {
+				if (self.factNameInput.value) self.updateFactName(self.factNameInput.value);
+				Modal.close();
+			});
+			
+			Modal.open({
+				content: factoryNameHolder
+			});
+		}
+		
+		// mobile helper
+		this.switchColumn = function (col) {
+			switch (col) {
+				case 1:
+					this.col1.style.display = "block";
+					this.col2.style.display = "none";
+					this.col3.style.display = "none";
+					this.backToMain.style.display = "block";
+				break;
+				case 2:
+					this.col1.style.display = "none";
+					this.col2.style.display = "block";
+					this.col3.style.display = "none";
+					this.backToMain.style.display = "none";
+				break;
+				case 3:
+					this.col1.style.display = "none";
+					this.col2.style.display = "none";
+					this.col3.style.display = "block";
+					this.backToMain.style.display = "block";
+				break;
+			}
 		}
 		
 		// events
@@ -359,6 +598,36 @@
 			this.levelHandler.gainExp(1);
 			this.clicked++;
 		}
+		this.statsClick = function () {
+			
+		}
+		this.saveGClick = function () {
+			this.saveGame();
+		}
+		this.togglePrefs = function (pref) {
+			if (this.prefs[pref] === 0) this.prefs[pref] = 1;
+			else this.prefs[pref] = 0;
+		}
+		this.resetGClick = function () {
+			this.reset();
+		}
+		this.hresetGClick = function () {
+			this.reset(1);
+		}
+		
+		this.saveGame = function () {
+			if (localStorage) {
+				var savefile = this.saveload.saveGame();
+				localStorage.setItem(this.lStorageName, savefile);
+			}
+		}
+		
+		this.loadGame = function () {
+			if (localStorage && localStorage[this.lStorageName]) {
+				this.saveload.loadGame(localStorage.getItem(this.lStorageName));
+			}
+		}
+		
 		this.reset = function (hard) {
 			this.volts = 0;
 			this.voltsTot = 0;
@@ -373,11 +642,13 @@
 			this.Level.levelTotalExp = 0;
 			this.Level.levelCap = 100;
 			// hard-specific
-			if (hard === true) {
+			if (hard) {
+				this.factName = "";
+				this.gameStart = new Date();
 				this.prestiege = 0;
 				this.voltsTotAll = 0;
 				this.clicked = 0;
-				window.localStorage.removeItem(this.lStorageName);
+				localStorage.removeItem(this.lStorageName);
 			}
 			// soft
 			if (!hard) {
@@ -385,21 +656,6 @@
 			}
 			this.refresh();
 			return;
-		}
-		
-		this.saveGClick = function () {
-		
-		}
-		
-		this.loadGClick = function () {
-		
-		}
-		
-		this.saveGame = function () {
-			if (window.localStorage) {
-				var savefile = this.saveload.saveGame();
-				localStorage.setItem(this.lStorageName, savefile);
-			}
 		}
 		
 		this._earn = function (i) {
@@ -417,11 +673,20 @@
 			this._vps = vps;
 		}
 		
+		this.updateFactName = function (str) {
+			this.factName = str;
+			this.factNameDisplay.textContent = str || "Your Factory";
+		}
+		
 		this.refresh = function () { // screen tick
 			var self = this;
 			window.requestAnimFrame(function () {
 				self.refresh();
 			});
+			
+			// options
+			// (has to go first to control "Resume/Pause Game" option)
+			this.updateOptions();
 			
 			if (this.prefs.paused) return;
 			
@@ -449,14 +714,23 @@
 			if (this.prefs.paused) return;
 			
 			this.elapsed = ((Date.now() - this.lastTick) / 1000);
+			
 			this.logicElasped++;
+			this.autoSaveElapsed++;
+			
 			this.time = Date.now();
 			
 			if (this.logicElasped >= 1) {
 				this.logic();
 				this.logicElasped = 0;
 			}
+			
 			this.refreshTitle();
+			
+			if (this.prefs.autoSave && this.autoSaveElapsed >= 300) {
+				this.saveGame();
+				this.autoSaveElapsed = 0;
+			}
 			
 			this.lastTick = Date.now();
 			setTimeout(function () {

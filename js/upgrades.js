@@ -13,7 +13,7 @@
 		if (!options.vps) options.boost = [["all",0]];
 		options.amount = 0;
 		if (!options.displayAt) options.displayAt = [];
-		if (!options.onBuy) options.onBuy = function (Game) {}
+		if (!options.onBuy || !typeof options.onBuy === 'function') options.onBuy = function (Game) {}
 		options.displayed = false;
 		
 		options.button = undefined;
@@ -27,14 +27,14 @@
 			this.amount = 1;
 			Game._calcVPS();
 			this.onBuy(Game);
-			this.update();
+			this.refresh();
 		}
 		options.refresh = function () {
 			var self = this;
 			if (Game.prefs.paused) return;
 			
-			if (!this.displayed) this.button.classList.add('hidden');
-			if (this.amount === 1) return;
+			if (!this.displayed || this.amount) this.button.classList.add('hidden');
+			if (this.amount) return;
 			var canDisplay = false;
 			if ((Game.buildings[this.displayAt[0]] && Game.buildings[this.displayAt[0]].amount >= this.displayAt[1])
 				|| (this.displayAt[0] === 'volts' && Game.volts >= this.displayAt[1])) {
@@ -46,7 +46,7 @@
 				Tools.animateCSS(this.button, 'fadeIn');
 			}
 		}
-		options.draw = function () {
+		options.draw = function (getDOM) {
 			var tempBtn = document.createElement('div');
 			tempBtn.setAttribute('class', 'upgradeObj');
 			tempBtn.setAttribute('id', 'upgrade-' + options.id);
@@ -69,9 +69,24 @@
 			
 			tooltipContent.appendChild(document.createTextNode(' volts'));
 			
-			var tooltip = new window.Tooltip({
+			var tooltip = new Tooltip({
 				target: tempBtn,
 				content: tooltipContent
+			});
+			
+			if (getDOM) {
+				var newBtn = tempBtn.cloneNode(true),
+					newTooltipContent = tooltipContent.cloneNode(true),
+					newTooltip = new Tooltip({
+						target: newBtn,
+						content: newTooltipContent
+					});
+				return tempBtn;
+			}
+			
+			// events
+			tempBtn.addEventListener('click',function () {
+				options.buy();
 			});
 			
 			this.button = tempBtn;

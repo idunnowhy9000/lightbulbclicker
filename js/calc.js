@@ -45,6 +45,13 @@
 		calcClick: function () {
 			
 		},
+		buildingsCreated: function () {
+			var buildings = 0;
+			for (var b in Game.buildings) {
+				buildings += Game.buildings[b].amount;
+			}
+			return buildings;
+		},
 		rand: function (min, max) {
 			return Math.floor(Math.random() * (max - min)) + min;
 		},

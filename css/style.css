@@ -44,12 +44,30 @@ color: #fff;
 transition: opacity .5s;
 border-radius: 4px;
 }
+.btn:hover{
+background-color: #286090;
+}
+.btn.inline {
+display: inline-block;
+width: auto;
+}
 .hidden{
 display:none;
 }
+
+hr{
+height:0;
+-webkit-box-sizing:content-box;
+-moz-box-sizing:content-box;
+box-sizing:content-box
+}
+* {box-sizing:border-box;}
+/* POSITIONING */
+.left {float:left;}
+.right {float:right;}
 /* MAIN */
 body{ /* BODY */
-overflow:hidden;
+overflow: hidden;
 font-family: 'Lato', sans-serif;
 }
 #bulb{ /* Clicking Bulb */
@@ -79,7 +97,7 @@ background-image: url('../img/lightbulb_clicked.png');
 transform: scale(0.97);
 }
 .bdObj, .upgradeObj{ /* Buildings/Upgrades */
-min-height:40px;
+min-height:50px;
 }
 .bdObj{
 margin-bottom: 0;
@@ -102,6 +120,10 @@ margin: 2px;
 border: 1px solid black;
 cursor: pointer;
 }
+/* Upgrades Holder */
+#upgrade{
+margin: 0 auto;
+}
 #options{ /* Options Holder */
 margin: 5px auto;
 }
@@ -111,8 +133,8 @@ opacity: .65;
 #col1, #col2, #col3{ /* Columns x3 */
 text-align: center;
 padding: 5px 2px;
-min-height:100vh;
-max-height:100vh;
+min-height:100%;
+max-height:100%;
 overflow:auto;
 }
 /* Columns Alignment */
@@ -143,10 +165,11 @@ background-color: #0FD935;
 height: 100%;
 transition: width .6s ease;
 }
-/* Volt counter */
-#count {
+/* Volt counter, header */
+h1 {
 font-family: 'Fond', Arial;
 font-size: 25px;
+margin: 2px 0;
 }
 /* Factory Name */
 #factNameDisplay{
@@ -183,8 +206,27 @@ width: 50px;
 cursor: pointer;
 }
 /* Options Buttons */
-#options .btn{
+.options{
+margin: 5px 0;
+}
+.options .btn{
 width: auto;
 display: inline-block;
 margin: 2px;
+}
+/* Input Buttons */
+.inputHolder input{
+display: block;
+width: 100%;
+height: 40px;
+padding: 6px 12px;
+font-size: 14px;
+}
+/* Buildings/Upgrades button (only in mobile) */
+#upgradesBtn, #buildingsBtn {
+display: none;
+}
+/* Back to main (only in mobile) */
+#backToMain {
+display: none;
 }

@@ -19,7 +19,7 @@
 		if (!options.increase) options.increase = 1.15;
 		if (!options.displayAt) options.displayAt = 100;
 		if (!!options.displayable) options.displayable = true;
-		if (!options.onBuy || !typeof options.onBuy === 'options') options.onBuy = function () {}
+		if (!options.onBuy || !typeof options.onBuy === 'function') options.onBuy = function () {}
 		options.displayed = false;
 		
 		options.btnHolder = undefined;
@@ -36,7 +36,7 @@
 		options.buySelectionNum = undefined;
 		options.buySelectionAll = undefined;
 		options.buy = function() {
-			if (options.cost > Game.volts) { return false; }
+			if (options.cost > Game.volts) return false;
 			Game._remove(options.cost);
 			
 			options.amount++;
@@ -81,10 +81,6 @@
 			bdCost.appendChild(document.createTextNode('0'));
 			bdInfo.appendChild(bdCost);
 			
-			tempBtn.addEventListener('click',function () {
-				options.buy();
-			});
-			
 			var tooltipContent = document.createElement('div');
 			
 			var tooltipDesc = document.createElement('span');
@@ -113,15 +109,18 @@
 			tooltipContent.appendChild(document.createTextNode(" " + this.actionName));
 			
 			var tooltipVPS = document.createElement('span');
-			tooltipVPS.textContent = this.vps;
+			tooltipVPS.textContent = this.vps + " volts per second";
 			tooltipContent.appendChild(tooltipVPS);
-			
-			tooltipContent.appendChild(document.createTextNode(" volts per second."));
 			
 			var tooltip = new window.Tooltip({
 				target: tempBtn,
 				content: tooltipContent,
 				position: 'right middle'
+			});
+			
+			// events
+			tempBtn.addEventListener('click',function () {
+				options.buy();
 			});
 			
 			Game.store.appendChild(btnHolder);
@@ -159,16 +158,14 @@
 			if (Game.prefs.shortNums) {
 				this.bdAmount.textContent = Tools.metricSuffix(amount);
 				this.bdCost.textContent = Tools.metricSuffix(cost);
-				this.tooltipAmount.textContent = Tools.metricSuffix(amount);
-				this.tooltipCost.textContent = Tools.metricSuffix(cost);
-				this.tooltipVPS.textContent = " " + Tools.metricSuffix(amountps1);
+				this.tooltipVPS.textContent = " " + Tools.metricSuffix(amountps1) + " per second";
 			} else {
 				this.bdCost.textContent = Tools.beautify(cost) + " volts";
-				this.bdAmount.textContent = Tools.beautify(amount);
-				this.tooltipAmount.textContent = Tools.beautify(amount);
 				this.tooltipCost.textContent = Tools.beautify(cost);
-				this.tooltipVPS.textContent = " " + Tools.beautify(amountps1);
+				this.tooltipVPS.textContent = " " + Tools.beautify(amountps1) + " volts per second";
 			}
+			this.bdAmount.textContent = Tools.beautify(amount);
+			this.tooltipAmount.textContent = Tools.beautify(amount);
 			// update plurals
 			this.tooltipProduceName = Math.round(this.amount) > 1 ? this.plural : this.single;
 		}
