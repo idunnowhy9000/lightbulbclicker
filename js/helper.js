@@ -66,5 +66,17 @@
 		window.l = Tools.l;
 		window.log = Tools.log;
 		window.ajax = Tools.ajax;
+		
+		// polyfills
+		// prefixed events
+		window.PrefixedEvent = (function() {
+			var pfx = ["webkit", "moz", "ms", "o", ""];
+			return function (element, type, callback) {
+				for (var p = 0; p < pfx.length; p++) {
+					if (!pfx[p]) type = type.toLowerCase();
+					element.addEventListener(pfx[p] + type, callback, false);
+				}
+			}
+		}());
 	};
 })(window);
