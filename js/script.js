@@ -4,6 +4,9 @@
 *************************************************/
 (function (window) {
 	"use strict";
+	
+	var document = window.document;
+	
 	// load datas
 	window.loadTools(); // tools
 	// the game itself
@@ -81,6 +84,7 @@
 		this.achievementHolder = undefined;
 		this.achievementImg = undefined;
 		this.achievementName = undefined;
+		this.timeTravelBtn = undefined;
 		
 		// preferences
 		this.prefs = {};
@@ -419,8 +423,9 @@
 			var self = this,
 				sortedUpgrades = self.upgradeStore,
 				upgrades = sortedUpgrades.childNodes,
-				upgradesArr = [];
-			for (var i in upgrades) {
+				upgradesArr = [],
+				i;
+			for (i in upgrades) {
 				if (upgrades[i].nodeType === 1) { // get rid of the whitespace text nodes
 					upgradesArr.push(upgrades[i]);
 				}
@@ -628,6 +633,31 @@
 			});
 		}
 		
+		// time travel
+		this.drawTimeTravel = function () {
+			var options = l(".options.menu");
+			
+			var timeTravelBtn = document.createElement("div");
+			timeTravelBtn.classList.add("btn", "red-btn");
+			timeTravelBtn.setAttribute("id", "timeTravelBtn");
+			timeTravelBtn.appendChild(document.createTextNode("Time Travel"));
+			
+			options.appendChild(document.createElement("br"));
+			options.appendChild(timeTravelBtn);
+			
+			Tools.animateCSS(timeTravelBtn, 'fadeIn');
+			
+			this.timeTravelBtn = timeTravelBtn;
+		}
+		
+		this.timeTravelDialog = function () {
+			var timeTravelHolder = document.createElement("div");
+			
+			Modal.open({
+				content: timeTravelHolder
+			});
+		}
+		
 		// mobile helper
 		this.switchColumn = function (col) {
 			switch (col) {
@@ -675,13 +705,13 @@
 			this.reset(1);
 		}
 		this.saveGame = function () {
-			if (localStorage) {
+			if (window.localStorage) {
 				var savefile = this.saveload.saveGame();
-				localStorage.setItem(this.lStorageName, savefile);
+				window.localStorage.setItem(this.lStorageName, savefile);
 			}
 		}
 		this.loadGame = function () {
-			if (localStorage && localStorage[this.lStorageName]) {
+			if (window.localStorage && window.localStorage.hasOwnProperty(this.lStorageName)) {
 				var load = this.saveload.loadGame(localStorage.getItem(this.lStorageName));
 				if (typeof load === 'array' && load.length > 0) {
 					Modal.open({
@@ -703,6 +733,8 @@
 			this.Level.toNextLevel = 0;
 			this.Level.levelTotalExp = 0;
 			this.Level.levelCap = 100;
+			this._vps = 0;
+			this._vpc = 0;
 			// hard-specific
 			if (hard) {
 				this.factName = "";
@@ -741,6 +773,10 @@
 		this.updateFactName = function (str) {
 			this.factName = str;
 			this.factNameDisplay.textContent = str || "Your Factory";
+			
+			if (str.toLowerCase() === "illuminati") {
+				this.earnAchievement("triangle");
+			}
 		}
 		this.earnAchievement = function (id) {
 			if (typeof this.achievements[id] === 'undefined') return;
@@ -798,6 +834,11 @@
 			if (this.volts > 1000) this.earnAchievement("1000");
 			if (this.volts > 1000000) this.earnAchievement("1000000");
 			if (this.volts > 10000000) this.earnAchievement("10000000");
+			
+			if (this.buildings["incandescentlightbulb"].amount > 0) this.earnAchievement("inc1");
+			if (this.buildings["incandescentlightbulb"].amount > 2) this.earnAchievement("inc2");
+			if (this.buildings["incandescentlightbulb"].amount > 50) this.earnAchievement("inc3");
+			if (this.buildings["incandescentlightbulb"].amount > 100) this.earnAchievement("inc4");
 		}
 		this.loop = function () {
 			if (this.prefs.paused) return;
@@ -820,14 +861,17 @@
 			}
 			
 			this.lastTick = Date.now();
-			setTimeout(Game.loop, 1000);
+			
+			var self = this;
+			setTimeout(function () {
+				self.loop();
+			}, 1000);
 		}
 		
 		return this;
 	}
 	// load the game
-	var g = new Game();
-	window.Game = g;
+	window.Game = new Game();
 	// dom load
 	window.addEventListener('DOMContentLoaded', function(){
 		window.Game.init();

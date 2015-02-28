@@ -28,18 +28,22 @@
 		// buildings
 		// incandescent
 		{
+			id: "inc1",
 			name:"Edison's Useful Invention",
 			description:"Create 1 incandescent bulb"
 		},
 		{
+			id: "inc2",
 			name:"Twice the fun",
 			description:"Create 2 incandescent bulbs"
 		},
 		{
+			id: "inc3",
 			name:"Fifty Shades of White",
 			description:"Create 50 incandescent bulbs"
 		},
 		{
+			id: "inc4",
 			name:"The Hundred-Bulb Journey",
 			description:"Create 100 incandescent bulbs"
 		},
@@ -80,8 +84,14 @@
 		},
 		// other
 		{
+			id: "github",
 			name:"Fork this on GitHub",
 			description:"Fork the game on Github"
+		},
+		{
+			id: "triangle",
+			name:"Illuminati Confirmed",
+			description: 'Name your factory "Illuminati"'
 		}
 	];
 })(window.Game || {});

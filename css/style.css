@@ -51,6 +51,14 @@ background-color: #286090;
 display: inline-block;
 width: auto;
 }
+.red-btn{
+background-color: #d9534f;
+border-color: #d43f3a;
+}
+.red-btn:hover{
+background-color:#c9302c;
+border-color: #ac2925;
+}
 .hidden{
 display:none;
 }
