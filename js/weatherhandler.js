@@ -2,10 +2,10 @@
 * Lightbulb Clicker's weather handler script file
 * Controls the weather
 *************************************************/
-(function (window) {
+(function (Game) {
 	"use strict";
 	// todo: work on this
-	window.Game.WeatherHandler = {
+	Game.WeatherHandler = {
 		// vars
 		// constants
 		WEATHER_SUNNY: 0,
@@ -44,7 +44,7 @@
 				url = "api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "",
 				httpRequest, response,
 				guessCondition;
-			httpRequest = ajax(url, function (data) {
+			httpRequest = window.ajax(url, function (data) {
 				var weatherData = JSON.parse(data),
 					loc = weatherData[0],
 					condition = loc.main.weather[0].main;
@@ -113,4 +113,4 @@
 			this.refresh();
 		},
 	}
-})(window);
+})(window.Game || {});

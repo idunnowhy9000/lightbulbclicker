@@ -1,6 +1,6 @@
-(function (window) {
+(function (Game) {
 	"use strict";
-	window.Game.upgradesD = [
+	Game.upgradesD = [
 		// incandescent bulbs
 		{
 			name: "Thomas Edison",
@@ -217,4 +217,4 @@
 			description: "Uses solar power as main energy fueller",
 		},
 	];
-})(window);
+})(window.Game || {});

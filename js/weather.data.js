@@ -1,4 +1,4 @@
-(function (window) {
+(function (Game) {
 	"use strict";
 	window.Game.WeatherD = [
 		{
@@ -6,4 +6,4 @@
 			
 		}
 	];
-})(window);
+})(window.Game || {});

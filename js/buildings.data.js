@@ -1,6 +1,6 @@
-(function (window) {
+(function (Game) {
 	"use strict";
-	window.Game.buildingsD = [
+	Game.buildingsD = [
 		// buildings
 		{
 			name:"Incandescent Lightbulb",
@@ -9,6 +9,9 @@
 			vps:0.1,
 			description:"The greatest invasion in history has now begun.",
 			displayAt: -1,
+			onBuy: function (Game, self) {
+				//if (self.amount)
+			}
 		},
 		{
 			name:"Lightbulb Smasher",
@@ -75,4 +78,4 @@
 			displayAt:871995
 		},
 	];
-})(window);
+})(window.Game || {});

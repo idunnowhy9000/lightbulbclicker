@@ -2,9 +2,9 @@
 * Lightbulb Clicker's upgrade script file
 * Controls drawing/accessing upgrades
 *************************************************/
-(function (window) {
+(function (Game) {
 	"use strict";
-	window.Game.Upgrade = function(options) {
+	Game.Upgrade = function(options) {
 		var Game = window.Game;
 		if (!options.name) options.name = 'None';
 		if (!options.id) options.id = Tools.toId(options.name);
@@ -13,7 +13,7 @@
 		if (!options.vps) options.boost = [["all",0]];
 		options.amount = 0;
 		if (!options.displayAt) options.displayAt = [];
-		if (!options.onBuy || !typeof options.onBuy === 'function') options.onBuy = function (Game) {}
+		if (!options.onBuy || !typeof options.onBuy !== 'function') options.onBuy = function (Game) {}
 		options.displayed = false;
 		
 		options.button = undefined;
@@ -26,6 +26,7 @@
 			
 			this.amount = 1;
 			Game._calcVPS();
+			Game._calcVPC();
 			this.onBuy(Game);
 			this.refresh();
 		}
@@ -69,11 +70,6 @@
 			
 			tooltipContent.appendChild(document.createTextNode(' volts'));
 			
-			var tooltip = new Tooltip({
-				target: tempBtn,
-				content: tooltipContent
-			});
-			
 			if (getDOM) {
 				var newBtn = tempBtn.cloneNode(true),
 					newTooltipContent = tooltipContent.cloneNode(true),
@@ -83,6 +79,11 @@
 					});
 				return tempBtn;
 			}
+			
+			var tooltip = new Tooltip({
+				target: tempBtn,
+				content: tooltipContent
+			});
 			
 			// events
 			tempBtn.addEventListener('click',function () {
@@ -96,4 +97,4 @@
 		}
 		return options;
 	};
-})(window);
+})(window.Game || {});

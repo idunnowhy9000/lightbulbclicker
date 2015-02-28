@@ -22,7 +22,7 @@
 		this.prestiege = 0; // self exclamatory
 		this._vps = 0; // vps (used for displaying vps)
 		this._expps = 0; // exp per second
-		this.perClick = 0; // per clicks (used for upgrades)
+		this._vpc = 0; // per clicks (used for upgrades)
 		this.curDate = undefined; // launched date
 		
 		// stats
@@ -78,6 +78,9 @@
 		this.buildingsBtn = undefined;
 		this.upgradesBtn = undefined;
 		this.backToMain = undefined;
+		this.achievementHolder = undefined;
+		this.achievementImg = undefined;
+		this.achievementName = undefined;
 		
 		// preferences
 		this.prefs = {};
@@ -88,9 +91,9 @@
 		this.achievementsD = [];
 		
 		// loaded data
-		this.buildings = [];
-		this.upgrades = [];
-		this.achievements = [];
+		this.buildings = {};
+		this.upgrades = {};
+		this.achievements = {};
 		this.levelHandler = undefined;
 		
 		// helper objects
@@ -99,6 +102,7 @@
 		this.Level = undefined;
 		this.WeatherHandler = undefined;
 		this.StarSystem = undefined;
+		this.Achievement = undefined;
 		this.calc = undefined;
 		this.saveload = undefined;
 		this.starSysHandler = undefined;
@@ -146,6 +150,9 @@
 			this.buildingsBtn = l("#buildingsBtn");
 			this.upgradesBtn = l("#upgradesBtn");
 			this.backToMain = l("#backToMain");
+			this.achievementHolder = l("#achievement");
+			this.achievementImg = l("#achievementImg");
+			this.achievementName = l("#achievementName");
 			
 			this.date = Date.now();
 			this.logicElasped = 0;
@@ -174,31 +181,39 @@
 			});
 			this.factNameDisplay.addEventListener("click", function () {
 				self.openFactoryName();
-			})
+			});
+			
 			this.buildingsBtn.addEventListener("click", function () {
 				self.switchColumn(1);
-			})
+			});
 			this.upgradesBtn.addEventListener("click", function () {
 				self.switchColumn(3);
-			})
+			});
 			this.backToMain.addEventListener("click", function () {
 				self.switchColumn(2);
-			})
+			});
 			
 			// buildings
-			for (var _building in this.buildingsD) {
-				var newBuilding = new this.Building(this.buildingsD[_building]);
-				this.buildings[newBuilding.id] = newBuilding;
-				this.buildings[newBuilding.id].draw();
-			}
+			this.buildingsD.forEach(function (_b) {
+				var newBuilding = new self.Building(_b);
+				self.buildings[newBuilding.id] = newBuilding;
+				self.buildings[newBuilding.id].draw();
+			});
 			
 			// upgrades
-			for (var _upgrade in this.upgradesD) {
-				var newUpgrade = new this.Upgrade(this.upgradesD[_upgrade]);
-				this.upgrades[newUpgrade.id] = newUpgrade;
-				this.upgrades[newUpgrade.id].draw();
-			}
+			this.upgradesD.forEach(function (_u) {
+				var newUpgrade = new self.Upgrade(_u);
+				self.upgrades[newUpgrade.id] = newUpgrade;
+				self.upgrades[newUpgrade.id].draw();
+			});
+			
 			this.sortUpgrades();
+			
+			// achievements
+			this.achievementsD.forEach(function (_a) {
+				var newAchievement = new self.Achievement(_a);
+				self.achievements[newAchievement.id] = newAchievement;
+			});
 			
 			// weather
 			
@@ -215,12 +230,16 @@
 			};
 			
 			this.loadGame();
+			
+			// calculate
+			this._calcVPS();
+			this._calcVPC();
 
 			this.loop();
+			this.refresh();
 			
 			this.updateFactName(this.factName);
 			if (this.backToMainAble) this.switchColumn(2);
-			this.refresh();
 		}		
 
 		// draw
@@ -369,6 +388,31 @@
 			container.appendChild(colLeft);
 			container.appendChild(colMid);
 			container.appendChild(colRight);
+			
+			// achievements
+			var achievementHolder = document.createElement('div');
+			achievementHolder.setAttribute('id', 'achievement');
+			achievementHolder.style.display = 'none';
+			
+			var achievementImg = document.createElement('div');
+			achievementImg.setAttribute('id', 'achievementImg');
+			achievementHolder.appendChild(achievementImg);
+			
+			var achievementInfo = document.createElement('div');
+			achievementInfo.setAttribute('id', 'achievementInfo');
+			achievementHolder.appendChild(achievementInfo);
+			
+			var achievementNote = document.createElement('div');
+			achievementNote.setAttribute('id', 'achievementNote');
+			achievementNote.appendChild(document.createTextNode("Achievement Earned!"));
+			achievementInfo.appendChild(achievementNote);
+			
+			var achievementName = document.createElement('div');
+			achievementName.setAttribute('id', 'achievementName');
+			achievementInfo.appendChild(achievementName);
+			
+			container.appendChild(achievementHolder);
+			
 			this.drawed = true;
 		}
 		this.sortUpgrades = function () {
@@ -437,9 +481,13 @@
 			
 			// statistics
 			
-			var optionsTitle = document.createElement('h1');
-			optionsTitle.appendChild(document.createTextNode("Statistics"));
-			optionsHolder.appendChild(optionsTitle);
+			var statisticsTitle = document.createElement('h1');
+			statisticsTitle.appendChild(document.createTextNode("Statistics"));
+			optionsHolder.appendChild(statisticsTitle);
+			
+			optionsHolder.appendChild(document.createTextNode('Version ' + this.versionRead));
+			
+			optionsHolder.appendChild(document.createElement('br'));
 			
 			optionsHolder.appendChild(document.createTextNode("Volts in bank: "));
 			optionsHolder.appendChild(document.createTextNode(Tools.beautify(Math.floor(this.volts))));
@@ -493,6 +541,18 @@
 			for (var i in this.upgrades) {
 				if (!this.upgrades[i].amount) continue;
 				upgradesHolder.appendChild(this.upgrades[i].draw(1));
+			}
+			
+			var achievementTitle = document.createElement('h1');
+			achievementTitle.appendChild(document.createTextNode("Achievements"));
+			optionsHolder.appendChild(achievementTitle);
+			
+			var achievementHolder = document.createElement('div');
+			optionsHolder.appendChild(achievementHolder);
+			
+			for (var i in this.achievements) {
+				if (!this.achievements[i].amount) continue;
+				achievementHolder.appendChild(this.achievements[i].drawBox());
 			}
 			
 			// events
@@ -614,20 +674,22 @@
 		this.hresetGClick = function () {
 			this.reset(1);
 		}
-		
 		this.saveGame = function () {
 			if (localStorage) {
 				var savefile = this.saveload.saveGame();
 				localStorage.setItem(this.lStorageName, savefile);
 			}
 		}
-		
 		this.loadGame = function () {
 			if (localStorage && localStorage[this.lStorageName]) {
-				this.saveload.loadGame(localStorage.getItem(this.lStorageName));
+				var load = this.saveload.loadGame(localStorage.getItem(this.lStorageName));
+				if (typeof load === 'array' && load.length > 0) {
+					Modal.open({
+						content: array.join("\n")
+					});
+				};
 			}
 		}
-		
 		this.reset = function (hard) {
 			this.volts = 0;
 			this.voltsTot = 0;
@@ -663,24 +725,49 @@
 			this.voltsTot += i;
 			this.voltsTotAll += i;
 		}
-		
 		this._remove = function (i) {
 			this.volts -= i;
 		}
-		
 		this._calcVPS = function () {
 			var vps = this.calc.calcVPS();
 			this._vps = vps;
+			return vps;
 		}
-		
+		this._calcVPC = function () {
+			var vpc = this.calc.calcVPC();
+			this._vpc = vpc;
+			return vpc;
+		}
 		this.updateFactName = function (str) {
 			this.factName = str;
 			this.factNameDisplay.textContent = str || "Your Factory";
 		}
-		
+		this.earnAchievement = function (id) {
+			if (typeof this.achievements[id] === 'undefined') return;
+			if (!this.achievements[id].earn()) return;
+			this.statusAchievement(id);
+		}
+		this.statusAchievement = function (id) {
+			if (typeof this.achievements[id] === 'undefined') return;
+			
+			var self = this,
+			achievement = this.achievements[id];
+			
+			this.achievementImg.style.backgroundImage = ('url: ("' + achievement.name + '")');
+			this.achievementName.textContent = achievement.name;
+			
+			this.achievementHolder.style.display = "";
+			Tools.animateCSS(this.achievementHolder, "fadeIn");
+			setTimeout(function () {
+				Tools.animateCSS(self.achievementHolder, "fadeOut", function (el) {
+					el.style.display = "none";
+				});
+			}, 2000);
+		}
 		this.refresh = function () { // screen tick
 			var self = this;
-			window.requestAnimFrame(function () {
+			
+			window.requestAnimationFrame(function () {
 				self.refresh();
 			});
 			
@@ -703,23 +790,23 @@
 			// level
 			this.levelHandler.update();
 		}
-		
 		this.logic = function () { // logic tick
 			if (this._vps) this._earn(this._vps);
-		}
-		
-		this.loop = function () {
-			var self = this;
 			
+			if (this.volts > 0) this.earnAchievement("firsttimer");
+			if (this.volts > 100) this.earnAchievement("100");
+			if (this.volts > 1000) this.earnAchievement("1000");
+			if (this.volts > 1000000) this.earnAchievement("1000000");
+			if (this.volts > 10000000) this.earnAchievement("10000000");
+		}
+		this.loop = function () {
 			if (this.prefs.paused) return;
 			
 			this.elapsed = ((Date.now() - this.lastTick) / 1000);
 			
 			this.logicElasped++;
 			this.autoSaveElapsed++;
-			
-			this.time = Date.now();
-			
+					
 			if (this.logicElasped >= 1) {
 				this.logic();
 				this.logicElasped = 0;
@@ -733,9 +820,7 @@
 			}
 			
 			this.lastTick = Date.now();
-			setTimeout(function () {
-				self.loop();
-			}, 1000);
+			setTimeout(Game.loop, 1000);
 		}
 		
 		return this;

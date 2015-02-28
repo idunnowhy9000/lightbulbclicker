@@ -96,7 +96,7 @@ background-image: url('../img/lightbulb_clicked.png');
 -moz-transform: scale(0.97);
 transform: scale(0.97);
 }
-.bdObj, .upgradeObj{ /* Buildings/Upgrades */
+.bdObj, .upgradeObj, .achievementObj{ /* Buildings/Upgrades */
 min-height:50px;
 }
 .bdObj{
@@ -112,7 +112,7 @@ width:25%;
 float:right;
 width:75%;
 }
-.upgradeObj{ /* Upgrades */
+.upgradeObj, .achievementObj{ /* Upgrades & Achievements */
 width: 64px;
 height: 64px;
 float: left;
@@ -126,6 +126,9 @@ margin: 0 auto;
 }
 #options{ /* Options Holder */
 margin: 5px auto;
+}
+#options h1, p{ /* Clear */
+clear: both;
 }
 .disabled{ /* Disabled Buttons */
 opacity: .65;
@@ -149,6 +152,10 @@ font-size: 12px;
 /* ? */
 .bulbObj{
 background-image: #265a88;
+}
+/* Level */
+#levelContainer span{
+margin: 0 2px;
 }
 /* Level bar */
 #levelbar {
@@ -229,4 +236,32 @@ display: none;
 /* Back to main (only in mobile) */
 #backToMain {
 display: none;
+}
+/* Achievements */
+#achievement #achievementImg{
+width:64px;
+height:64px;
+float:left;
+border:1px solid black;
+}
+#achievement #achievementInfo{
+width:75%;
+float:right;
+text-align:center;
+padding:2px 0;
+}
+#achievement #achievementNote{
+color:#00CC00;
+font-weight:bold;
+}
+#achievement #achievementName{
+color:#fff;
+}
+#achievement{
+position:absolute;
+bottom: 0;
+right:0;
+height:64px;
+width:300px;
+background-color:black;
 }

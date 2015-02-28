@@ -1,6 +1,6 @@
-(function (window) {
+(function (Game) {
 	"use strict";
-	window.Game.statusesD = {
+	Game.statusesD = {
 		rain: {
 			duration: 5,
 			boost: [
@@ -11,4 +11,4 @@
 			]
 		}
 	}
-})(window);
+})(window.Game || {});

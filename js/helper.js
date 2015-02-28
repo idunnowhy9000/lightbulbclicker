@@ -57,6 +57,7 @@
 			if (typeof after !== 'function') after = function () {}
 			el.classList.add(type, 'animated');
 			window.PrefixedEvent(el, "AnimationEnd", function () {
+				
 				el.classList.remove(type, 'animated');
 				after(el);
 			});

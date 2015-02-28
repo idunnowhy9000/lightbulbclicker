@@ -2,9 +2,9 @@
 * Lightbulb Clicker's level script file
 * Controls drawing/accessing level
 *************************************************/
-(function (window) {
+(function (Game) {
 	"use strict";
-	window.Game.Level = {
+	Game.Level = {
 		level: 1,
 		exp: 0,
 		toNextLevel: 100,
@@ -80,4 +80,4 @@
 			this.toNextLevelDisplay = toNextLevel;
 		}
 	};
-})(window);
+})(window.Game || {});

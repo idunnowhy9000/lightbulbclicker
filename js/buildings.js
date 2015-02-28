@@ -2,9 +2,9 @@
 * Lightbulb Clicker's building script file
 * Controls drawing/accessing buildings
 *************************************************/
-(function (window) {
+(function (Game) {
 	"use strict";
-	window.Game.Building = function(options) {
+	Game.Building = function(options) {
 		if (!options.name) options.name = 'None';
 		if (!options.commonName) options.commonName = '||';
 		options.commonName = options.commonName.split('|');
@@ -42,7 +42,7 @@
 			options.amount++;
 			options.cost = Game.calc.calcCost(options);
 			Game._calcVPS();
-			options.onBuy();
+			options.onBuy(Game, options);
 			options.refresh();
 		}
 		options.buyMultiple = function (value) {
@@ -171,4 +171,4 @@
 		}
 		return options;
 	};
-})(window);
+})(window.Game || {});

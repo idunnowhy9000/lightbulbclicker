@@ -2,53 +2,66 @@
 * Lightbulb Clicker's save/load script file
 * Controls save/load
 *************************************************/
-(function (window) {
+(function (Game) {
 	"use strict";
-	window.Game.saveload = {
+	Game.saveload = {
 		loadGame: function (saveData) {
 			var Game = window.Game,
 				version = 0,
-				decoded = window.atob(saveData),
 				errors = [];
-			decoded = decoded.split('!');
-			version = parseFloat(decoded[0]);
-			if (isNaN(version)) {
-				errors.push("Your save file is invalid.");
-			}
-			if (version > Game.version) {
-				errors.push("Your save file is from a future version.");
-			} else if (version >= 1) {
-				Game.volts = parseFloat(decoded[1]) || 0;
-				Game.voltsTot = parseFloat(decoded[2]) || 0;
-				Game.voltsTotAll = parseFloat(decoded[3]) || 0;
-				Game.prestiege = parseFloat(decoded[4]) || 0;
-				var buildings = decoded[5];
-				for (var b in buildings) {
-					var bId = buildings[b].split("=")[0];
-					if (Game.buildings[bId]) {
-						Game.buildings[bId].amount = buildings[b].split("=")[1] || 0;
-					}
+			try {
+				decoded = window.atob(saveData).split('!');
+				version = parseFloat(decoded[0]);
+				if (isNaN(version)) {
+					errors.push("Your save file is invalid.");
 				}
-				Game.sessionStart = decoded[6];
-				Game.sessionStarted = decoded[7] || false;
-				Game.gameStart = decoded[8];
-				Game.gameStarted = decoded[9] || false;
-				Game.clicked = parseFloat(decoded[10]) || 0;
-				Game.factName = decoded[11] || "";
-				Game.nameSettable = decoded[12] || false;
-				var upgrades = decoded[13];
-				for (var u in upgrades) {
-					var uId = upgrades[u].split("=")[0];
-					if (Game.upgrades[uId]) {
-						Game.upgrades[uId].amount = upgrades[u].split("=")[1] || 0;
+				if (version > Game.version) {
+					errors.push("Your save file is from a future version.");
+				} else if (version >= 1) {
+					Game.volts = parseFloat(decoded[1]) || 0;
+					Game.voltsTot = parseFloat(decoded[2]) || 0;
+					Game.voltsTotAll = parseFloat(decoded[3]) || 0;
+					Game.prestiege = parseFloat(decoded[4]) || 0;
+					var buildings = decoded[5];
+					for (var b in buildings) {
+						var bId = buildings[b].split("=")[0];
+						if (Game.buildings[bId]) {
+							Game.buildings[bId].amount = buildings[b].split("=")[1] || 0;
+						}
 					}
+					Game.sessionStart = decoded[6];
+					Game.sessionStarted = decoded[7] || false;
+					Game.gameStart = decoded[8];
+					Game.gameStarted = decoded[9] || false;
+					Game.clicked = parseFloat(decoded[10]) || 0;
+					Game.factName = decoded[11] || "";
+					Game.nameSettable = decoded[12] || false;
+					var upgrades = decoded[13], u, uId;
+					for (u in upgrades) {
+						uId = upgrades[u].split("=")[0];
+						if (uId in Game.upgrades) {
+							Game.upgrades[uId].amount = upgrades[u].split("=")[1] || 0;
+						}
+					}
+					Game.levelHandler.level = parseFloat(decoded[14]) || 0;
+					Game.levelHandler.exp = parseFloat(decoded[15]) || 0;
+					Game.levelHandler.toNextLevel = parseFloat(decoded[16]) || 0;
+					Game.levelHandler.levelTotalExp = parseFloat(decoded[17]) || 0;
+					Game.levelHandler.levelN = parseFloat(decoded[18]) || 0;
+					achievements = decoded[19], a, ach;
+					for (a in achievements) {
+						ach = achievements[a].split("=")[0];
+						if (ach in Game.achievements) {
+							Game.achievements[ach].amount = achievements[a].split("=")[1] || 0;
+						}
+					}
+				} else {
+					errors.push("Cannot read version >1.0 save files.");
 				}
-			} else {
-				errors.push("Cannot read version >1.0 save files.");
+			} catch (e) {
+				errors.push(e);
 			}
-			if (errors.length > 0) {
-				console.log(errors.join("\n"));
-			}
+			return errors;
 		},
 		saveGame: function (){
 			var saveData = [];
@@ -57,9 +70,10 @@
 			saveData.push(Game.voltsTot);
 			saveData.push(Game.voltsTotAll);
 			saveData.push(Game.prestiege);
-			var buildings = [];
-			for (var b in Game.buildings) {
-				var bd = Game.buildings[b];
+			// buildings
+			var buildings = [], b, bd;
+			for (b in Game.buildings) {
+				bd = Game.buildings[b];
 				buildings.push(bd.id + "=" + bd.amount);
 			}
 			saveData.push(buildings.join(","));
@@ -71,9 +85,10 @@
 			saveData.push(Game.clicked);
 			saveData.push(Game.factName);
 			saveData.push(Game.nameSettable);
-			var upgrades = [];
-			for (var u in Game.upgrades) {
-				var up = Game.upgrades[u];
+			// upgrades
+			var upgrades = [], u, up;
+			for (u in Game.upgrades) {
+				up = Game.upgrades[u];
 				upgrades.push(up.id + "=" + up.amount);
 			}
 			saveData.push(upgrades);
@@ -82,12 +97,17 @@
 			saveData.push(Game.levelHandler.toNextLevel);
 			saveData.push(Game.levelHandler.levelTotalExp);
 			saveData.push(Game.levelHandler.levelN);
+			// achievements
+			var achievements = [], a, ach;
+			for (a in Game.achievements) {
+				ach = Game.achievements[a];
+				achievements.push(ach.id + "=" + ach.amount);
+			}
+			saveData.push(achievements);
 			// encode
 			var save = saveData.join("!");
 			save = window.btoa(save);
 			return save;
 		},
-		convertSaveFile: function (n){
-		},
 	}
-})(window);
+})(window.Game || {});
