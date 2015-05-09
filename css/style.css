@@ -62,6 +62,7 @@ border-color: #ac2925;
 .hidden{
 display:none;
 }
+strong{font-weight: bold;}
 
 hr{
 height:0;
@@ -80,12 +81,14 @@ font-family: 'Lato', sans-serif;
 }
 #bulb{ /* Clicking Bulb */
 cursor:pointer;
-width:180px;
-height:300px;
-margin: 5px auto;
+width:200px;
+height:320px;
+margin: 7px auto;
+
 background-image: url('../img/lightbulb.png');
 background-repeat: no-repeat;
-background-size: 180px 300px;
+background-position: -5px -5px;
+
 transition: transform .2s;
 
 -webkit-touch-callout: none;
@@ -94,12 +97,9 @@ transition: transform .2s;
 -ms-user-select: none;
 user-select: none;
 }
-#bulb:after{ /* (Preload clicking image) */
-display: none;
-content: url('../img/lightbulb_clicked.png');
-}
 #bulb:active{ /* Clicked bulb */
-background-image: url('../img/lightbulb_clicked.png');
+background-position: -215px -5px;
+
 -webkit-transform: scale(0.97);
 -moz-transform: scale(0.97);
 transform: scale(0.97);
