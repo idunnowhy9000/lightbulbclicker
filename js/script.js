@@ -5,8 +5,9 @@
 (function (window) {
     "use strict";
     
-    // load datas
-    window.loadTools(); // tools
+    // load tools
+    window.loadTools();
+    
     // the game itself
     window.Game = (function () {
         var Game = {};
@@ -200,14 +201,14 @@
             
             // buildings
             Game.buildingsD.forEach(function (_b) {
-                var newBuilding = new self.Building(_b);
+                var newBuilding = self.Building(_b);
                 self.buildings[newBuilding.id] = newBuilding;
                 self.buildings[newBuilding.id].draw();
             });
             
             // upgrades
             Game.upgradesD.forEach(function (_u) {
-                var newUpgrade = new self.Upgrade(_u);
+                var newUpgrade = self.Upgrade(_u);
                 self.upgrades[newUpgrade.id] = newUpgrade;
                 self.upgrades[newUpgrade.id].draw();
             });
@@ -216,7 +217,7 @@
             
             // achievements
             Game.achievementsD.forEach(function (_a) {
-                var newAchievement = new self.Achievement(_a);
+                var newAchievement = self.Achievement(_a);
                 self.achievements[newAchievement.id] = newAchievement;
             });
             
@@ -928,6 +929,7 @@
         
         return Game;
     }());
+    
     // dom load
     window.addEventListener('DOMContentLoaded', function(){
         window.Game.init();

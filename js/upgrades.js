@@ -13,7 +13,7 @@
         if (!options.vps) options.boost = [["all",0]];
         options.amount = 0;
         if (!options.displayAt) options.displayAt = [];
-        if (!options.onBuy || !typeof options.onBuy !== 'function') options.onBuy = function (Game) {}
+        if (!options.onBuy || typeof options.onBuy !== 'function') options.onBuy = function (Game) {}
         
         options.displayed = false;        
         options.button = undefined;        
