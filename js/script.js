@@ -43,6 +43,7 @@
         // timer
         Game.logicElasped = undefined;
         Game.autoSaveElapsed = undefined;
+        Game.weatherElapsed = undefined;
         Game.date = undefined;
         Game.elapsed = undefined;
         Game.lastTick = undefined;
@@ -757,10 +758,13 @@
             
             Game.volts = 0;
             Game.voltsTot = 0;
+            
             for (b in Game.buildings) {
                 Game.buildings[b].amount = 0;
                 Game.buildings[b].displayed = false;
+                Game.buildings[b].cost = Game.buildings[b].baseCost;
             }
+            
             Game.sessionStart = new Date();
             Game.Level.level = 0;
             Game.Level.exp = 0;
@@ -896,17 +900,23 @@
             
             Game.elapsed = ((Date.now() - Game.lastTick) / 1000);
             
-            Game.logicElasped++;
-            Game.autoSaveElapsed++;
-                    
+            ++Game.logicElasped;
+            ++Game.autoSaveElapsed;
+            ++Game.weatherElapsed;
+            
             if (Game.logicElasped >= 1) {
                 Game.logic();
                 Game.logicElasped = 0;
             }
             
+            if (Game.weatherElapsed >= 86400) {
+                Game.WeatherHandler.logic();
+                Game.weatherElapsed = 0;
+            }
+            
             Game.refreshTitle();
             
-            if (Game.prefs.autoSave && Game.autoSaveElapsed >= 300) {
+            if (Game.prefs.autoSave && Game.autoSaveElapsed >= 120) {
                 Game.saveGame();
                 Game.autoSaveElapsed = 0;
             }

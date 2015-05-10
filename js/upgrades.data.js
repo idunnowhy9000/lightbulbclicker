@@ -5,24 +5,28 @@
         {
             name: "Thomas Edison",
             cost: 100,
+            description: "First puzzle block of creation.",
             boost: [["incandescentlightbulb", 0.1]],
-            displayAt: ["incandescentlightbulb", 1]
+            displayAt: ["incandescentlightbulb", 3]
         },
         {
             name: "Joseph Swan",
             cost: 400,
+            description: "The guy with long beard.",
             boost: [["incandescentlightbulb", "x2"]],
             displayAt: ["incandescentlightbulb", 10]
         },
         {
             name: "Hiram Maxim",
             cost: 10000,
+            description: "The guy with shorter beard.",
             boost: [["incandescentlightbulb", "x2"]],
             displayAt: ["incandescentlightbulb", 20]
         },
         {
             name: "Blueprints",
             cost: 500000,
+            description: "Build it harder, make it better, do it faster, makes us stronger.",
             boost: [["incandescentlightbulb", "x2"]],
             displayAt: ["incandescentlightbulb", 40]
         },
@@ -39,6 +43,12 @@
             cost: 1000,
             boost: [["lightbulbsmasher", 0.3]],
             displayAt: ["lightbulbsmasher", 1]
+        },
+        {
+            name: "Big Hammer",
+            cost: 10000,
+            boost: ["lightbulbsmasher", "x2"],
+            displayAt: ["lightbulbsmasher", 10]
         },
         {
             name: "Big Hammer",
@@ -80,8 +90,8 @@
         {
             name: "Evolution",
             cost: 400000,
-            boost: [["humanlightbulb", 27]],
             description: "Fun fact: The Greeks actually proposed the theory before Charles Darwin",
+            boost: [["humanlightbulb", 27]],
             displayAt: ["humanlightbulb", 1]
         },
         {

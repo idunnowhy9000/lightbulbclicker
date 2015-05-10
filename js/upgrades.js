@@ -57,6 +57,12 @@
             
             var tooltipContent = document.createElement('div');
             
+            var tooltipHeader = document.createElement('strong');
+            tooltipHeader.textContent = this.name;
+            tooltipContent.appendChild(tooltipHeader);
+            
+            tooltipContent.appendChild(document.createElement('br'));
+            
             var tooltipDesc = document.createElement('span');
             tooltipDesc.textContent = this.description;
             tooltipContent.appendChild(tooltipDesc);
@@ -70,6 +76,10 @@
             tooltipContent.appendChild(tooltipCost);
             
             tooltipContent.appendChild(document.createTextNode(' volts'));
+            
+            tooltipContent.appendChild(document.createElement('br'));
+            
+            var tooltipDescription = document.createElement('br');
             
             if (getDOM) {
                 var newBtn = tempBtn.cloneNode(true),

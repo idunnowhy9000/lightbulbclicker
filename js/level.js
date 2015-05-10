@@ -12,11 +12,13 @@
         levelTotalExp: 0,
         levelCap: 100,
         levelN: "",
+        
         levelUp: function () {
             this.level += 1;
             this.levelTotalExp += this.toNextLevel;
             this.toNextLevel = this.level * this.level * 100;
         },
+        
         gainExp: function (exp) {
             var _results = [];
             this.exp += exp;
@@ -29,12 +31,14 @@
             this.neededToNext = this.toNextLevel - this.exp;
             return _results;
         },
+        
         progressBar: undefined,
         progress: undefined,
         levelDisplay: undefined,
         lvlExpDisplay: undefined,
         lvlNDisplay: undefined,
         toNextLevelDisplay: undefined,
+        
         update: function () {
             this.progress.style.width = ((this.exp / this.toNextLevel * 100) || 0) + "%";
             this.levelDisplay.textContent = "Level " + this.level;
@@ -42,6 +46,7 @@
             //this.lvlNDisplay.textContent = "<" + this.levelN + ">";
             this.toNextLevelDisplay.textContent = this.neededToNext + " exp to next level";
         },
+        
         draw: function () {
             var tempProgressBar = document.createElement('div');
             tempProgressBar.setAttribute('id', 'levelbar');

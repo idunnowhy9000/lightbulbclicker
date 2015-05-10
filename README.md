@@ -1,4 +1,4 @@
 lightbulbclicker
 ================
 
-Lightbulb Clicker 1.3 Beta
+An incremental game based on shitty science.
