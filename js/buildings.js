@@ -14,12 +14,13 @@
         if (!options.id) options.id = Tools.toId(options.name);
         if (!options.description) options.description = '';
         if (!options.cost) options.cost = 10;
+        options.baseCost = options.cost;
         if (!options.vps) options.vps = 1;
         options.amount = 0;
         if (!options.increase) options.increase = 1.15;
         if (!options.displayAt) options.displayAt = 100;
-        if (!!options.displayable) options.displayable = true;
-        if (!options.onBuy || !typeof options.onBuy === 'function') options.onBuy = function () {}
+        if (!options.displayable) options.displayable = true;
+        if (!options.onBuy || typeof options.onBuy !== 'function') options.onBuy = function () {}
         options.displayed = false;
         
         options.btnHolder = undefined;
@@ -48,9 +49,11 @@
         
         options.buyMultiple = function (value) {
             var v = Game.volts;
+            
             while (v > options.cost) {
                 v /= options.cost;
             }
+            
             return v;
         };
         
@@ -84,6 +87,12 @@
             bdInfo.appendChild(bdCost);
             
             var tooltipContent = document.createElement('div');
+            
+            var tooltipHeader = document.createElement('strong');
+            tooltipHeader.textContent = this.name;
+            tooltipContent.appendChild(tooltipHeader);
+            
+            tooltipContent.appendChild(document.createElement('br'));
             
             var tooltipDesc = document.createElement('span');
             tooltipDesc.textContent = this.description;
@@ -158,6 +167,7 @@
                 amountps1 = amountps * this.amount,
                 amount = this.amount,
                 cost = this.cost;
+
             if (Game.prefs.shortNums) {
                 this.bdAmount.textContent = Tools.metricSuffix(amount);
                 this.bdCost.textContent = Tools.metricSuffix(cost);
@@ -165,8 +175,9 @@
             } else {
                 this.bdCost.textContent = Tools.beautify(cost) + " volts";
                 this.tooltipCost.textContent = Tools.beautify(cost);
-                this.tooltipVPS.textContent = " " + Tools.beautify(Math.floor(amountps1)) + " volts per second";
+                this.tooltipVPS.textContent = " " + Tools.beautify(amountps1.toFixed(2)) + " volts per second";
             }
+            
             this.bdAmount.textContent = Tools.beautify(amount);
             this.tooltipAmount.textContent = Tools.beautify(amount);
             // update plurals
