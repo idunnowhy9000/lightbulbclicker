@@ -1,9 +1,5 @@
 <!---------------------------------------
 Lightbulb Clicker 1.3b
-Credits:
-- Animate.css - Daniel Eden
-- Tooltip - Hubspot
-- jsModal
 ---------------------------------------->
 <!doctype html>
 <html lang="en" manifest="offline.appcache">
@@ -11,10 +7,6 @@ Credits:
 		<title>Lightbulb Inc</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<link rel="stylesheet" href="css/animate.css">
-		<link rel="stylesheet" href="css/tooltip-theme-arrows.css">
-		<link rel="stylesheet" href="css/js-modal.css">
 		
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/smallscreen.css" media="screen and (max-width:1024px)">
@@ -24,27 +16,10 @@ Credits:
 		<div id='gameContainer'>
 			<noscript id="nojs">
 				<p>No JS, no game.</p>
-				<p>(This site requires javascript)</p>
+				<small>(This site requires javascript)</small>
 			</noscript>
 			<div id="container"></div>
 		</div>
-		<script src='js/helper.js'></script>
-		<script src='js/tooltip.js'></script>
-		<script src='js/modal.js'></script>
-		<!-- main -->
-		<script src='js/script.js'></script>
-		<!-- data -->
-		<script src='js/buildings.data.js'></script>
-		<script src='js/upgrades.data.js'></script>
-		<script src='js/achievements.data.js'></script>
-		<!-- helper scripts -->
-		<script src='js/buildings.js'></script>
-		<script src='js/upgrades.js'></script>
-		<script src='js/starsystem.js'></script>
-		<script src='js/weatherhandler.js'></script>
-		<script src='js/achievement.js'></script>
-		<script src='js/level.js'></script>
-		<script src='js/calc.js'></script>
-		<script src='js/saveload.js'></script>
+		<script data-main="js/main" src="js/lib/require.js"></script>
 	</body>
 </html>
