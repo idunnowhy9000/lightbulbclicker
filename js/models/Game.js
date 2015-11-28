@@ -1,12 +1,12 @@
 define(["jquery", "underscore",
 	"models/Achievement", "models/Building", "models/Level", "models/Calculator",
 	"views/Achievement", "views/Building", "views/Level", "views/Page",
-	"data/Achievement", "data/Building"],
+	"data/Achievement", "data/Building", "data/Upgrade"],
 	function ($, _,
 		AchievementModel, BuildingModel, LevelModel, Calculator,
 		AchievementView, BuildingView, LevelView, PageView,
-		AchievementData, BuildingData) {
-
+		AchievementData, BuildingData, UpgradeData) {
+		
 	var Game = function () {
 		this.loaded = false;
 		this.drawed = false;
@@ -43,10 +43,11 @@ define(["jquery", "underscore",
 		this.lastTick = undefined;
 		
 		// data
-		this.buildings = {};
+		this.buildings = undefined;
+		this.upgrades = undefined;
 		
 		// models
-		this.calculator = new Calculator(this);
+		this.calculator = Calculator;
 	};
 	
 	var GProto = Game.prototype;
@@ -73,7 +74,7 @@ define(["jquery", "underscore",
 			this.gameStarted = true;
 		}
 		
-		this.draw();
+		//this.draw();
 		
 		this.date = Date.now();
 		this.logicElasped = 0;
@@ -85,28 +86,26 @@ define(["jquery", "underscore",
 		_.forEach(BuildingData, function (_b) {
 			var building = new BuildingModel(_b);
 			self.buildings[building.id] = building;
-			var buildingView = new BuildingView(building);
-			buildingView.render();
 		});
 		
 		// upgrades
-		this.upgradesD.forEach(function (_u) {
+		_.forEach(UpgradeData, function (_u) {
 			var newUpgrade = new UpgradeModel(_u);
 			self.upgrades[newUpgrade.id] = newUpgrade;
-			self.upgrades[newUpgrade.id].draw();
 		});
 		
-		this.sortUpgrades();
+		//this.sortUpgrades();
 		
 		// achievements
-		this.achievementsD.forEach(function (_a) {
-			var newAchievement = self.Achievement(_a);
+		_.forEach(AchievementData, function (_a) {
+			var newAchievement = new AchievementModel(_a);
 			self.achievements[newAchievement.id] = newAchievement;
 		});
 		
 		// weather
 		
 		// level
+		/*
 		this.Level.draw();
 		this.Level.update();
 		
@@ -128,6 +127,7 @@ define(["jquery", "underscore",
 		
 		this.updateFactName(this.factName);
 		if (this.backToMainAble) this.switchColumn(2);
+		*/
 	};
 	
 	return Game;

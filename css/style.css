@@ -1,29 +1,3 @@
-/* RESET */
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* FONTS */
 @font-face {
     font-family: 'Lato';
     src: url('../fonts/Lato-Regular.ttf');
@@ -32,244 +6,84 @@ time, mark, audio, video {
     font-family: 'Fond';
     src: url('../fonts/Fondamento-Regular.ttf');
 }
-/* HELPER*/
-.btn{
-background-color: #337ab7;
-border-color: #2e6da4;
-padding: 6px 12px;
-margin: 5px auto;
-cursor: pointer;
-text-align: center;
-color: #fff;
-transition: opacity .5s;
-border-radius: 4px;
-}
-.btn:hover{
-background-color: #286090;
-}
-.btn.inline {
-display: inline-block;
-width: auto;
-}
-.red-btn{
-background-color: #d9534f;
-border-color: #d43f3a;
-}
-.red-btn:hover{
-background-color:#c9302c;
-border-color: #ac2925;
-}
-.hidden{
-display:none;
-}
-
-hr{
-height:0;
--webkit-box-sizing:content-box;
--moz-box-sizing:content-box;
-box-sizing:content-box
-}
-* {box-sizing:border-box;}
-/* POSITIONING */
-.left {float:left;}
-.right {float:right;}
-/* MAIN */
-body{ /* BODY */
-overflow: hidden;
+body{
+overflow:hidden;
 font-family: 'Lato', sans-serif;
 }
-#bulb{ /* Clicking Bulb */
+#bulb{
 cursor:pointer;
 width:180px;
 height:300px;
 margin: 5px auto;
-background-image: url('../img/lightbulb.png');
+background-image: url('../images/lightbulb.png');
 background-repeat: no-repeat;
 background-size: 180px 300px;
+-webkit-transition: -webkit-transform .2s;
+-moz-transition: -moz-transform .2s;
 transition: transform .2s;
-
--webkit-touch-callout: none;
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
 }
-#bulb:after{ /* (Preload clicking image) */
-display: none;
-content: url('../img/lightbulb_clicked.png');
-}
-#bulb:active{ /* Clicked bulb */
-background-image: url('../img/lightbulb_clicked.png');
+#bulb:active{
+background-image: url('../images/lightbulb_clicked.png');
 -webkit-transform: scale(0.97);
 -moz-transform: scale(0.97);
 transform: scale(0.97);
 }
-.bdObj, .upgradeObj, .achievementObj{ /* Buildings/Upgrades */
-min-height:50px;
+#col1, #col2, #col3{
+text-align: center;
+padding: 5px 2px;
+min-height:100vh;
+max-height:100vh;
+overflow:auto;
+-webkit-user-select: none;  /* Chrome all / Safari all */
+-moz-user-select: none;     /* Firefox all */
+-ms-user-select: none;      /* IE 10+ */
+/* No support for these yet, use at own risk */
+-o-user-select: none;
+user-select: none;       
 }
-.bdObj{
-margin-bottom: 0;
-width: 80%;
+#col2{
+overflow:hidden;
 }
-.bdObj .bdAmount{ /* Buildings Amount */
+.center{text-align: center;}
+.large{
+font-size:28px;
+}
+.medium{
+font-size:16px;
+}
+.buildingObj, .upgradeObj{
+width:100%;
+min-height:40px;
+border:1px solid black;
+margin:2px 0;
+}
+.buildingObj .buildingAmount{
 text-align:center;
 float:left;
 width:25%;
 }
-.bdObj .bdInfo{ /* Buildings Info Holder */
+.buildingObj .buildingInfo{
 float:right;
 width:75%;
 }
-.upgradeObj, .achievementObj{ /* Upgrades & Achievements */
-width: 64px;
-height: 64px;
-float: left;
-margin: 2px;
-border: 1px solid black;
-cursor: pointer;
-}
-/* Upgrades Holder */
-#upgrade{
-margin: 0 auto;
-}
-#options{ /* Options Holder */
-margin: 5px auto;
-}
-#options h1, p{ /* Clear */
-clear: both;
-}
-.disabled{ /* Disabled Buttons */
-opacity: .65;
-}
-#col1, #col2, #col3{ /* Columns x3 */
-text-align: center;
-padding: 5px 2px;
-min-height:100%;
-max-height:100%;
-overflow:auto;
-}
-/* Columns Alignment */
-#col1 { float: left; width: 33%; }
-#col2 { display: inline-block; width: 33%; }
-#col3 { float: right; width: 33%; }
-/* Buildings/Upgrades Popover */
-.popover ul{
-padding: 0 40px;
-font-size: 12px;
-}
-/* ? */
-.bulbObj{
-background-image: #265a88;
-}
-/* Level */
-#levelContainer span{
-margin: 0 2px;
-}
-/* Level bar */
-#levelbar {
-margin-top: 15px;
-margin-right: 50px;
-margin-left: 50px;
-height: 30px;
-border: 1px solid #000;
-background-color: #f5f5f5;
-}
-/* Progress for level bar */
-#progress{
-background-color: #0FD935;
-height: 100%;
-transition: width .6s ease;
-}
-/* Volt counter, header */
-h1 {
-font-family: 'Fond', Arial;
-font-size: 25px;
-margin: 2px 0;
-}
-/* Factory Name */
-#factNameDisplay{
-font-size: 12px;
-}
-/* Page Backdrop */
-#backdrop{
-opacity:0.6;
-background-color:#000;
-position:fixed;
-width:100%;
-height:100%;
-top:0px;
-left:0px;
-z-index:1000;
-}
-/* Buy Selection */
-.buySelection{
-min-height:20px;
-border:1px solid black;
-width: 80%;
-padding: 4px 6px;
-margin: 5px auto;
-margin-top: -1px;
-}
-.buySelection div{
-margin: 0 7px;
-display: inline;
-}
-.buySelection .buySelectionNumInput{
-width: 50px;
-}
-.buySelection .buySelectionAll{
-cursor: pointer;
-}
-/* Options Buttons */
-.options{
-margin: 5px 0;
-}
-.options .btn{
-width: auto;
-display: inline-block;
-margin: 2px;
-}
-/* Input Buttons */
-.inputHolder input{
-display: block;
-width: 100%;
-height: 40px;
-padding: 6px 12px;
-font-size: 14px;
-}
-/* Buildings/Upgrades button (only in mobile) */
-#upgradesBtn, #buildingsBtn {
-display: none;
-}
-/* Back to main (only in mobile) */
-#backToMain {
-display: none;
-}
-/* Achievements */
-#achievement #achievementImg{
-width:64px;
-height:64px;
-float:left;
-border:1px solid black;
-}
-#achievement #achievementInfo{
-width:75%;
-float:right;
-text-align:center;
-padding:2px 0;
-}
-#achievement #achievementNote{
-color:#00CC00;
-font-weight:bold;
-}
-#achievement #achievementName{
-color:#fff;
-}
-#achievement{
-position:absolute;
-bottom: 0;
+.cAlert{
+position: absolute;
 right:0;
-height:64px;
-width:300px;
-background-color:black;
+bottom:0;
+}
+#options{
+margin: 5px auto;
+}
+.nostyle{
+padding:0;
+margin:0;
+}
+.fond{
+font-family: 'Fond', sans-serif;
+}
+.fakeDisable{
+filter: alpha(opacity=65);
+-webkit-box-shadow: none;
+box-shadow: none;
+opacity: .65;
 }

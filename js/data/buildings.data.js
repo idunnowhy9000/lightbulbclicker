@@ -1,6 +1,5 @@
-(function (Game) {
-	"use strict";
-	Game.buildingsD = [
+define(function () {
+	return [
 		// buildings
 		{
 			name:"Incandescent Lightbulb",
@@ -78,4 +77,4 @@
 			displayAt:871995
 		},
 	];
-})(window.Game || {});
+});

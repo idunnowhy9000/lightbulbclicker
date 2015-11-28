@@ -1,6 +1,5 @@
-(function (Game) {
-	"use strict";
-	Game.achievementsD = [
+define(function () {
+	return [
 		{
 			name:"First Timer",
 			description:"Produce 1 volt"
@@ -94,4 +93,4 @@
 			description: 'Name your factory "Illuminati"'
 		}
 	];
-})(window.Game || {});
+});
