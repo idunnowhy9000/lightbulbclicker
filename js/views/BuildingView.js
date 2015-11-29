@@ -11,6 +11,8 @@ define(["underscore", "backbone", "utils",
 		template: _.template(buildingsTemplate),
 		tooltipTemplate: _.template(tooltipTemplate),
 		
+		className: 'buildingHolder',
+		
 		events: {
 			'click': 'buy'
 		},

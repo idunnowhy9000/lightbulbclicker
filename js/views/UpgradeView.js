@@ -11,6 +11,8 @@ define(["underscore", "backbone", "utils",
 		template: _.template(upgradesTemplate),
 		tooltipTemplate: _.template(tooltipTemplate),
 		
+		className: 'upgradeHolder',
+		
 		events: {
 			'click': 'buy'
 		},
@@ -20,18 +22,15 @@ define(["underscore", "backbone", "utils",
 		},
 		
 		render: function () {
-			this.$el.html(this.template(this.model.attributes));
-			
-			if (this.model.get('cost') > AppModel.get('volts')) {
-				this.$('.buildingObj').addClass('disabled');
-			} else {
-				this.$('.buildingObj').removeClass('disabled', 200);
-			}
-			if (!this.model.get('displayed')) this.$el.hide();
-			if (AppModel.get('volts') >= this.model.get('displayAt') && !this.model.get('displayed')) {
-				this.model.set('displayed', true);
-				this.$el.fadeIn(400).show();
-			}
+			this.$el.html(this.template(this.model.attributes))
+				.popover({
+					trigger: 'hover',
+					html: true,
+					container:'body',
+					content: this.tooltipTemplate(this.model.attributes),
+					placement: "bottom",
+					title: this.model.get('name'),
+				});
 			
 			return this;
 		},

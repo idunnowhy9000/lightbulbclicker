@@ -7,7 +7,7 @@ define(['backbone', 'models/BuildingModel'],
 		
 		vps: function () {
 			return this.reduce(function (memo, value) {
-				return memo + (value.get('vps') * value.get('amount'));
+				return memo + value.vps();
 			}, 0);
 		}
 		

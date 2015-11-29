@@ -4,7 +4,7 @@ define(["jquery", "underscore", "backbone", "localStorage",
 	function ($, _, Backbone, Store,
 		AchievementCollection, BuildingCollection, UpgradeCollection,
 		AchievementData, BuildingData, UpgradeData) {
-
+			
 	var AppModel = Backbone.Model.extend({
 		
 		defaults: {

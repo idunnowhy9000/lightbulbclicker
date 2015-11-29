@@ -27,7 +27,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		
 		initialize: function () {
 			this.buildingsView = new BuildingsView({ collection: this.model.buildingCollection });
-			this.upgradesView = new UpgradesView({ collection: this.model.buildingCollection });
+			this.upgradesView = new UpgradesView({ collection: this.model.upgradeCollection });
 			
 			this.listenTo(this.model, 'volts', this.refreshCount);
 			this.listenTo(this.model, 'change', this.refresh);

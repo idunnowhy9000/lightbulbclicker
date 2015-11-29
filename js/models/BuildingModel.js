@@ -30,12 +30,16 @@ define(['backbone', 'utils'],
 			return Math.round(this.get('cost') * Math.pow(this.get('increase'), this.get('amount')));
 		},
 		
+		vps: function () {
+			return this.get('baseVps') * this.get('amount');
+		},
+		
 		defaults: {
 			'name': 'None',
 			'description': '...',
 			'commonName': '||',
 			'cost': 10,
-			'vps': 1,
+			'baseVps': 1,
 			'increase': 1.15,
 			'displayAt': 100,
 			'displayable': true,

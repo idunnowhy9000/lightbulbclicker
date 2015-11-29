@@ -9,7 +9,6 @@ define(['backbone',
 		
 		render: function () {
 			this.collection.each(function (upgrade) {
-				console.log(upgrade);
 				var upgradeView = new UpgradeView({ model: upgrade });
 				this.$el.append(upgradeView.render().el);
 			}, this);

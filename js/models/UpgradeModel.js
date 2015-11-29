@@ -16,6 +16,7 @@ define(['backbone', 'utils'], function (Backbone, utils) {
 		defaults: {
 			'name': 'None',
 			'description': '...',
+			'cost': 0,
 			'earned': false
 		}
 		

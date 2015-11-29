@@ -43,6 +43,7 @@ body{
 	-o-user-select: none;
 	user-select: none;
 }
+
 /* Buildings */
 .buildingObj{
 	width:100%;
@@ -61,12 +62,15 @@ body{
 }
 
 /* Upgrades */
+.upgradeHolder {
+	float: left;
+}
+
 .upgradeObj {
 	width: 64px;
 	height: 64px;
 	border:1px solid black;
-	margin:2px 0;
-	float: left;
+	margin:2px;
 }
 
 /* Misc */
@@ -81,4 +85,7 @@ body{
 }
 .medium{
 	font-size:16px;
+}
+.no-margin{
+	margin: 0;
 }
