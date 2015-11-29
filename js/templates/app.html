@@ -1,15 +1,15 @@
+<div class="row">
 <div class="col-sm-4" id="col1">
 	<div id="lightbulbListContainer">
 		<p class="large">Lightbulbs</p>
-		<div id="lightbulb" class="acc"></div>
 	</div>
 </div>
 <div class="col-sm-4" id="col2">
 	<p class="medium nostyle"><span id="factNameDisplay">Your Factory</span>
 	</p>
-	<p class="large fond"><span id="count">0 volt</span>
+	<p class="large fond"><span id="count"><%= volts %> volt</span>
 	</p>
-	<p id="vpsH"><span id="vps">0</span> volts/second</p>
+	<p><span id="vps">0.00 volt/second</span></p>
 	<div id="bulbContainer">
 		<div id="bulb"></div>
 	</div>
@@ -30,6 +30,7 @@
 		</p>
 		<p>
 			<span id="importG" class="btn btn-primary">Import Game</span>
+			<span id="options" class="btn btn-primary">Options</span>
 			<span id="exportG" class="btn btn-primary">Export Game</span>
 		</p>
 		<p><span id="stats" class="btn btn-primary">Statistics</span>
@@ -41,4 +42,5 @@
 		<p class="large">Upgrades</p>
 		<div id="upgrade" class=acc></div>
 	</div>
+</div>
 </div>

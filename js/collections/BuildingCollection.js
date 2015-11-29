@@ -1,4 +1,5 @@
-define(['backbone', 'model/Building'], function (Backbone, BuildingModel) {
+define(['backbone', 'models/BuildingModel'],
+	function (Backbone, BuildingModel) {
 	
 	var BuildingCollection = Backbone.Collection.extend({
 		

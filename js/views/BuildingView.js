@@ -1,6 +1,6 @@
-define(["underscore", "backbone", "utils"
-	"model/Building",
-	"text!templates/buildings", "text!templates/buildings-tooltip"],
+define(["underscore", "backbone", "utils",
+	"models/BuildingModel",
+	"text!templates/buildings.html", "text!templates/buildings-tooltip.html"],
 	function (_, Backbone, utils,
 		BuildingModel,
 		buildingsTemplate, tooltipTemplate) {
@@ -10,7 +10,6 @@ define(["underscore", "backbone", "utils"
 		template: _.template(buildingsTemplate),
 		
 		initialize: function () {
-			this.game = this.model.get('game');
 			this.listenTo(this.model, "change", this.update);
 		},
 		
@@ -20,7 +19,7 @@ define(["underscore", "backbone", "utils"
 		},
 		
 		update: function () {
-			if (!this.model.get('displayed')) {
+			/*if (!this.model.get('displayed')) {
 				this.$el.hide();
 			}
 			
@@ -30,11 +29,11 @@ define(["underscore", "backbone", "utils"
 			}
 			
 			var amountps = this.vps(),
-				amountps1 = amountps * this.amount,
-				amount = this.amount,
-				cost = this.cost;
+				amountps1 = amountps * this.get('amount'),
+				amount = this.get('amount'),
+				cost = this.get('cost');
 			
-			this.$('.bdCost').text(utils.beautify(cost) + ' volts');
+			this.$('.bdCost').text(utils.beautify(cost) + ' volts');*/
 		},
 		
 		vps: function () {

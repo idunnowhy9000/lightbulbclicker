@@ -7,10 +7,7 @@ define(function () {
 			cost:15,
 			vps:0.1,
 			description:"The greatest invasion in history has now begun.",
-			displayAt: -1,
-			onBuy: function (Game, self) {
-				//if (self.amount)
-			}
+			displayAt: -1
 		},
 		{
 			name:"Lightbulb Smasher",

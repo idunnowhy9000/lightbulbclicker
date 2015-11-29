@@ -4,6 +4,7 @@ requirejs.config({
 		jquery: "lib/jquery",
 		bootstrap: "lib/bootstrap",
 		backbone: "lib/backbone",
+		localStorage: "lib/backbone.localStorage",
 		underscore: "lib/underscore",
 		text: "lib/text"
 	},
@@ -14,18 +15,23 @@ requirejs.config({
 			deps: ['jquery', 'underscore'],
 			exports: 'Backbone'
 		},
+		'localStorage': {
+			deps: ['backbone']
+		},
 		'bootstrap': {
 			deps: ['jquery']
 		}
 	}
 });
 
-require(['backbone', 'views/app', 'routers/Router','bootstrap'],
-	function (Backbone, AppView, Router) {
+require(['backbone', 'jquery', 'views/AppView', 'routers/Router','bootstrap'],
+	function (Backbone, $, AppView, Router) {
 
-	new Router();
-	Backbone.history.start();
-	
-	new AppView();
+	$(function () {
+		new Router();
+		Backbone.history.start();
+		
+		new AppView();
+	});
 	
 });
