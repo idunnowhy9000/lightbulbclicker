@@ -1,12 +1,12 @@
 define(['jquery', 'underscore', 'backbone', 'utils',
 	'models/AppModel',
-	'views/BuildingsView',
-	'collections/BuildingCollection',
+	'views/BuildingsView', 'views/UpgradesView',
+	'collections/BuildingCollection', 'collections/UpgradeCollection',
 	'text!templates/app.html'],
 	function ($, _, Backbone, utils,
 		AppModel,
-		BuildingsView,
-		BuildingCollection,
+		BuildingsView, UpgradesView,
+		BuildingCollection, UpgradeCollection,
 		appTemplate) {
 	var AppView = Backbone.View.extend({
 		
@@ -26,8 +26,8 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		},
 		
 		initialize: function () {
-			console.log(this.model.buildingCollection);
 			this.buildingsView = new BuildingsView({ collection: this.model.buildingCollection });
+			this.upgradesView = new UpgradesView({ collection: this.model.buildingCollection });
 			
 			this.listenTo(this.model, 'volts', this.refreshCount);
 			this.listenTo(this.model, 'change', this.refresh);
@@ -40,12 +40,13 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		render: function () {
 			this.$el.html(this.template(this.model.toJSON()));
 			this.$('#lightbulbListContainer').append(this.buildingsView.render().el);
+			this.$('#upgradeListContainer').append(this.upgradesView.render().el);
 			return this;
 		},
 		
 		refreshCount: function () {
 			this.$('#count').text(utils.beautify(Math.floor(this.model.get('volts'))) + " volt" + (Math.floor(this.model.get('volts')) > 1 ? "s" : ""));
-			this.$('#vps').text(utils.beautify(this.model.get('_vps').toFixed(2)) + " volt" + (this.model.get('_vps') > 1 ? "s" : "") + "/second");
+			this.$('#vps').text(utils.beautify(this.model.get('vps').toFixed(2)) + " volt" + (this.model.get('vps') > 1 ? "s" : "") + "/second");
 			return this;
 		},
 		

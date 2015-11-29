@@ -1,4 +1,4 @@
-define(['backbone', 'model/UpgradeModel'],
+define(['backbone', 'models/UpgradeModel'],
 	function (Backbone, UpgradeModel) {
 	
 	var UpgradeCollection = Backbone.Collection.extend({

@@ -3,7 +3,13 @@ define(['backbone', 'models/BuildingModel'],
 	
 	var BuildingCollection = Backbone.Collection.extend({
 		
-		model: BuildingModel
+		model: BuildingModel,
+		
+		vps: function () {
+			return this.reduce(function (memo, value) {
+				return memo + (value.get('vps') * value.get('amount'));
+			}, 0);
+		}
 		
 	});
 	

@@ -1,11 +1,7 @@
 define(["jquery", "underscore", "backbone", "localStorage",
-	"models/AchievementModel", "models/BuildingModel", "models/UpgradeModel",
-	"views/AchievementView", "views/BuildingView", "views/UpgradeView",
 	"collections/AchievementCollection", "collections/BuildingCollection", "collections/UpgradeCollection",
 	"data/Achievements", "data/Buildings", "data/Upgrades"],
 	function ($, _, Backbone, Store,
-		AchievementModel, BuildingModel, UpgradeModel,
-		AchievementView, BuildingView, UpgradeView,
 		AchievementCollection, BuildingCollection, UpgradeCollection,
 		AchievementData, BuildingData, UpgradeData) {
 
@@ -20,7 +16,7 @@ define(["jquery", "underscore", "backbone", "localStorage",
 			
 			// stats
 			'clicked': 0,
-			'_vps': 0,
+			'vps': 0,
 			'sessionStart': new Date(),
 			'gameStart': new Date(),
 			'factName': 'Your Factory',
@@ -31,21 +27,42 @@ define(["jquery", "underscore", "backbone", "localStorage",
 		localStorage: new Backbone.LocalStorage('App'),
 		
 		initialize: function () {
-			this.buildingCollection = new BuildingCollection();
-			this.upgradeCollection = new UpgradeCollection();
+			this.buildingCollection = new BuildingCollection(BuildingData);
+			this.upgradeCollection = new UpgradeCollection(UpgradeData);
 			this.achievementCollection = new AchievementCollection();
 			
-			_.each(BuildingData, function (data) {
-				this.buildingCollection.add(data);
-			}, this);
+			this.logic();
+			
+			this.listenTo(this.buildingCollection, 'change:amount', this.calcVPS);
+		},
+		
+		logic: function () {
+			var self = this;
+			
+			if (self.get('vps')) self.earn(self.get('vps'));
+			
+			this.timeout = setTimeout(function () {
+				self.logic();
+			}, 1000);
+		},
+		
+		calcVPS: function () {
+			var vps = this.buildingCollection.vps();
+			this.set('vps', vps);
+			this.trigger('volts');
 		},
 		
 		earn: function (n) {
 			this.set('volts', this.get('volts') + n);
 			this.set('voltsTot', this.get('voltsTot') + n);
 			this.set('voltsTotAll', this.get('voltsTotAll') + n);
-			this.trigger('volts', n);
+			this.trigger('volts');
 		},
+		
+		remove: function (n) {
+			this.set('volts', this.get('volts') - n);
+			this.trigger('volts');
+		}
 		
 	});
 	

@@ -1,4 +1,5 @@
-define(['backbone', 'utils'], function (Backbone, utils) {
+define(['backbone', 'utils'],
+	function (Backbone, utils) {
 	
 	var Building = Backbone.Model.extend({
 		
@@ -14,22 +15,25 @@ define(['backbone', 'utils'], function (Backbone, utils) {
 			this.set('plural', plural);
 			this.set('actionName', actionName);
 			this.set('baseCost', this.get('cost'));
-			
-			//this.updateAttributes();
-			//this.on("change", this.updateAttributes, this);
 		},
 		
-		earn: function () {
-			if (this.get('earned')) return false;
-			this.set('earned', true);
-			return true;
+		buy: function () {
+			var AppModel = require('models/AppModel'); // prevent circular ref
+			if (this.get('cost') > AppModel.get('volts')) return false;
+			AppModel.remove(this.get('cost'));
+			
+			this.set('amount', this.get('amount') + 1);
+			this.set('cost', this.calculateCost());
+		},
+		
+		calculateCost: function () {
+			return Math.round(this.get('cost') * Math.pow(this.get('increase'), this.get('amount')));
 		},
 		
 		defaults: {
 			'name': 'None',
 			'description': '...',
 			'commonName': '||',
-			'earned': false,
 			'cost': 10,
 			'vps': 1,
 			'increase': 1.15,

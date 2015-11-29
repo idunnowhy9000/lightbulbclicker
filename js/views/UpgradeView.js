@@ -1,14 +1,14 @@
 define(["underscore", "backbone", "utils",
-	"models/BuildingModel", "models/AppModel",
-	"text!templates/buildings.html", "text!templates/buildings-tooltip.html",
+	"models/UpgradeModel", "models/AppModel",
+	"text!templates/upgrades.html", "text!templates/upgrades-tooltip.html",
 	'tooltip'],
 	function (_, Backbone, utils,
-		BuildingModel, AppModel,
-		buildingsTemplate, tooltipTemplate) {
+		UpgradeModel, AppModel,
+		upgradesTemplate, tooltipTemplate) {
 	
-	var BuildingView = Backbone.View.extend({
-		model: BuildingModel,
-		template: _.template(buildingsTemplate),
+	var UpgradeView = Backbone.View.extend({
+		model: UpgradeModel,
+		template: _.template(upgradesTemplate),
 		tooltipTemplate: _.template(tooltipTemplate),
 		
 		events: {
@@ -17,19 +17,10 @@ define(["underscore", "backbone", "utils",
 		
 		initialize: function () {
 			this.listenTo(this.model, "change", this.render);
-			this.listenTo(AppModel, "volts", this.render);
 		},
 		
 		render: function () {
-			this.$el.html(this.template(this.model.attributes))
-				.popover({
-					trigger: 'hover',
-					html: true,
-					container:'body',
-					content: this.tooltipTemplate(this.model.attributes),
-					placement: "right",
-					title: this.model.get('name'),
-				});
+			this.$el.html(this.template(this.model.attributes));
 			
 			if (this.model.get('cost') > AppModel.get('volts')) {
 				this.$('.buildingObj').addClass('disabled');
@@ -51,6 +42,6 @@ define(["underscore", "backbone", "utils",
 		
 	});
 	
-	return BuildingView;
+	return UpgradeView;
 	
 });

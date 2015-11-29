@@ -30,7 +30,7 @@ define(function () {
 			commonName: "halogen lightbulb|0|shining",
 			cost:3141,
 			vps:15,
-			description:"AHH! IT's TO BRIGHT!",
+			description:"AHH! IT's TOO BRIGHT!",
 			displayAt: 300
 		},
 		{
@@ -62,15 +62,15 @@ define(function () {
 			commonName: "dinosaur lightbulb|0|shining",
 			cost:1618033,
 			vps:161803,
-			description:"Jurassic Park remake CONFIRMED!... or is it?",
+			description:"inb4 asteroids",
 			displayAt:19930
 		},
 		{
-			name:"Human Lightbulb",
+			name:"Computational Lightbulb",
 			commonName: "human lightbulb|0|shining",
 			cost:100110001,
 			vps:99999,
-			description:"Every human will now obey your commmands",
+			description:"Built from the mainframe of an IBN.",
 			displayAt:871995
 		},
 	];
