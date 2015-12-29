@@ -1,13 +1,13 @@
 requirejs.config({
 	baseUrl: 'js/',
 	paths: {
-		jquery: "lib/jquery",
-		bootstrap: "lib/bootstrap",
-		tooltip: "lib/tooltip",
-		backbone: "lib/backbone",
-		localStorage: "lib/backbone.localStorage",
-		underscore: "lib/underscore",
-		text: "lib/text"
+		jquery: 'lib/jquery',
+		bootstrap: 'lib/bootstrap.min',
+		tooltip: 'lib/tooltip',
+		backbone: 'lib/backbone',
+		underscore: 'lib/underscore',
+		bootbox: 'lib/bootbox.min',
+		text: 'lib/text'
 	},
 	shim: {
 		'jquery': { exports: '$' },
@@ -22,20 +22,18 @@ requirejs.config({
 		'bootstrap': {
 			deps: ['jquery']
 		},
+		'bootbox': {
+			deps: ['jquery', 'bootstrap']
+		},
 		'tooltip': {
 			deps: ['jquery', 'bootstrap']
 		}
 	}
 });
 
-require(['backbone', 'jquery', 'views/AppView', 'routers/Router', 'bootstrap'],
+require(['backbone', 'jquery',
+	'views/AppView', 'routers/Router', 'bootstrap'],
 	function (Backbone, $, AppView, Router) {
 	
-	$(function () {
-		new Router();
-		Backbone.history.start();
-		
-		new AppView();
-	});
-	
+	Router.initialize({ appView: new AppView() });
 });

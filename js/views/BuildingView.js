@@ -1,6 +1,6 @@
-define(["underscore", "backbone", "utils",
-	"models/BuildingModel", "models/AppModel",
-	"text!templates/buildings.html", "text!templates/buildings-tooltip.html",
+define(['underscore', 'backbone', 'utils',
+	'models/BuildingModel', 'models/AppModel',
+	'text!templates/buildings.html', 'text!templates/buildings-tooltip.html',
 	'tooltip'],
 	function (_, Backbone, utils,
 		BuildingModel, AppModel,
@@ -18,22 +18,27 @@ define(["underscore", "backbone", "utils",
 		},
 		
 		initialize: function () {
-			this.listenTo(this.model, "change", this.render);
-			this.listenTo(AppModel, "volts", this.render);
+			this.listenTo(this.model, 'change', this.render);
+			this.listenTo(AppModel, 'volts', this.render);
+			
+			this.render();
 		},
 		
 		render: function () {
+			var self = this;
 			this.$el.html(this.template(this.model.attributes))
 				.popover({
 					trigger: 'hover',
 					html: true,
 					container:'body',
-					content: this.tooltipTemplate(this.model.attributes),
-					placement: "right",
+					content: function () {
+						return self.tooltipTemplate(self.model.attributes);
+					},
+					placement: 'right',
 					title: this.model.get('name'),
 				});
 			
-			if (this.model.get('cost') > AppModel.get('volts')) {
+			if (this.model.calculateCost() > AppModel.get('volts')) {
 				this.$('.buildingObj').addClass('disabled');
 			} else {
 				this.$('.buildingObj').removeClass('disabled', 200);

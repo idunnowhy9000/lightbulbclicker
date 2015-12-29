@@ -2,6 +2,6 @@
 	<div class="buildingAmount"><%= amount %></div>
 	<div class="buildingInfo">
 		<div class="buildingName"><%= name %></div>
-		<div class="buildingCost"><%= cost %> volts</div>
+		<div class="buildingCost"><%= _.utils.beautify(cost) %> volts</div>
 	</div>
 </div>

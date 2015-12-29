@@ -8,6 +8,7 @@ define(['backbone',
 		id: 'upgrade',
 		
 		render: function () {
+			this.$el.empty();
 			this.collection.each(function (upgrade) {
 				var upgradeView = new UpgradeView({ model: upgrade });
 				this.$el.append(upgradeView.render().el);

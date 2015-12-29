@@ -1,3 +1,6 @@
 <span><%= description %></span><br>
-Costs <strong class="cost"><%= cost %></strong> volts<br>
-Produces <strong class="vps"><%= baseVps %></strong> volts per second<br>
+Costs <strong><%= cost %></strong> volts<br>
+<ul>
+	<li>Each <%= single %> <%= actionName %> <strong><%= oneVps %></strong> volts per second</li>
+	<li><strong><%= amount %></strong> <%= plural %> <%= actionName %> <strong><%= vps %></strong> volts per second</li>
+</ul>

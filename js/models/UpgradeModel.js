@@ -1,4 +1,5 @@
-define(['backbone', 'utils'], function (Backbone, utils) {
+define(['backbone', 'utils'],
+	function (Backbone, utils) {
 	
 	var UpgradeModel = Backbone.Model.extend({
 		
@@ -13,11 +14,26 @@ define(['backbone', 'utils'], function (Backbone, utils) {
 			this.set('earned', true);
 		},
 		
+		canDisplay: function () {
+			var displayAt = this.get('displayAt');
+			if (!displayAt) return false;
+			
+			var AppModel = require('models/AppModel');
+			var type = displayAt[0],
+				amount = displayAt[1],
+				building = AppModel.buildingCollection.findWhere({ id: type });
+			
+			return (type === 'volts' && AppModel.get('volts') >= amount) ||
+				   (type === 'level' && AppModel.levelModel.level >= amount) ||
+				   (building && building.get('amount') >= amount);
+		},
+		
 		defaults: {
 			'name': 'None',
 			'description': '...',
 			'cost': 0,
-			'earned': false
+			'earned': false,
+			'displayed': false
 		}
 		
 	});

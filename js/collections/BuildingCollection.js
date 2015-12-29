@@ -6,9 +6,11 @@ define(['backbone', 'models/BuildingModel'],
 		model: BuildingModel,
 		
 		vps: function () {
-			return this.reduce(function (memo, value) {
-				return memo + value.vps();
-			}, 0);
+			var vps = 0;
+			this.each(function (building) {
+				vps += building.vps();
+			});
+			return vps;
 		}
 		
 	});

@@ -1,17 +1,33 @@
-define(['backbone'], function (Backbone) {
+define(['underscore', 'backbone'], function (_, Backbone) {
 	
 	var Router = Backbone.Router.extend({
 		
-		routes: {
-			'#help': 'help'
+		initialize: function (options) {
+			this.view = options.appView;
 		},
 		
-		help: function () {
-			
+		routeTmpl: function (route, name, template) {
+			var self = this;
+			if (!template) template = 'text!templates/' + name + '.html';
+			this.route(route, name, function () {
+				require([template], function (template) {
+					self.view.switchColumn(_.template(template));
+				});
+			});
 		}
 		
 	});
 	
-	return Router;
+	var initialize = function (options) {
+		var route = new Router(options);
+		route.routeTmpl('', 'main');
+		route.routeTmpl('options', 'options');
+		
+		Backbone.history.start();
+	}
+	
+	return {
+		initialize: initialize
+	};
 	
 });
