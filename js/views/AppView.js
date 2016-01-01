@@ -27,6 +27,9 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			'click #resetG': 'resetGClick',
 			'click #hresetG': 'hresetGClick',
 			'click #factNameDisplay': 'openFactoryName',
+			
+			'input #autosave': 'autosaveInput',
+			'keyup #autosave': 'autosaveInput'
 		},
 		
 		initialize: function () {
@@ -35,6 +38,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			this.levelView = new LevelView({ model: this.model.levelModel });
 			
 			this.listenTo(this.model, 'volts', _.debounce(this.refreshCount, 0));
+			
 			this.render();
 		},
 		
@@ -47,26 +51,49 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 		},
 		
 		refreshCount: function () {
-			this.$('#count').text(utils.beautify(Math.floor(this.model.get('volts'))) + ' volt' + (Math.floor(this.model.get('volts')) > 1 ? 's' : ''));
-			this.$('#vps').text(utils.beautify(this.model.get('vps').toFixed(2)) + ' volt' + (this.model.get('vps') > 1 ? 's' : '') + '/second');
+			this.$('#count').text(_.suffix(Math.floor(this.model.get('volts'))));
+			document.title = _.suffix(Math.floor(this.model.get('volts')))
+				+ ' | Lightbulb Inc';
+			this.$('#vps').text(_.suffix(this.model.get('vps').toFixed(2)));
 			return this;
 		},
 		
+		refreshFactoryName: function () {
+			$('#factNameDisplay').text(this.model.get('factName'));
+		},
+		
+		// Alerts
+		notify: function (title, description, type) {
+			if (!type) type = 'alert-success';
+			
+			var alert = $('<div></div>');
+			alert.addClass('alert ' + type);
+			alert.append('<strong>' + title + '</strong>');
+			if (description) alert.append('<br>' + description);
+			alert.fadeIn().delay(1000).fadeOut(function () { $(this).remove(); });
+			$('#notify').append(alert);
+		},
+		
 		// Panels
-		switchColumn: function (template) {
-			this.$('#col2').empty()
-				.html(template(_.extend(this.model.toJSON(), { levelModel: this.model.levelModel.toJSON() })));
+		switchColumn: function (name, template) {
+			this.$('#col2').html(template(_.extend(this.model.toJSON(), { levelModel: this.model.levelModel.toJSON() })));
 			this.$('.levelContainer').replaceWith(this.levelView.render().el);
+			
+			if (name === 'stats') {
+				this.$('#col2 #upgrades').append(this.upgradesView.render(true).el);
+			}
+			
+			this.lastColumn = name;
 			this.lastTemplate = template;
 			return this;
 		},
 		
 		// Events
 		bulbClick: function (e) {
-			this.model.click();
+			var num = this.model.click();
 			$('body').append(
 				$('<div class="particle"></div>')
-					.text('1')
+					.text(num)
 					.css({'left': e.pageX, 'top': e.pageY - 25})
 					.animate({ 'top': '-=20px', 'opacity': 0 }, 2000, function () {
 						$(this).remove();
@@ -89,7 +116,8 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 						className: "btn-success",
 						callback: function() {
 							self.model.reset();
-							self.render().switchColumn(self.lastTemplate);
+							self.model.destroy();
+							self.render().switchColumn(self.lastColumn, self.lastTemplate);
 							return;
 						}
 					},
@@ -136,6 +164,29 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 				title: 'Export Game',
 				message: '<div class="form-group"><textarea class="form-control" rows="5">' + localStorage.getItem('LBClicker') + '</textarea></div>'
 			});
+		},
+		
+		openFactoryName: function () {
+			var self = this;
+			bootbox.prompt({
+				title: 'Name your factory',
+				value: this.model.get('factName'),
+				callback: function (name) {
+					if (name) {
+						self.model.set('factName', name);
+						self.refreshFactoryName();
+					}
+				}
+			});
+		},
+		
+		// Options event
+		autosaveInput: function () {
+			this.model.set('autosave', parseInt(this.$('#autosave').val()));
+		},
+		
+		saveNotify: function () {
+			this.notify('Game saved');
 		},
 		
 	});

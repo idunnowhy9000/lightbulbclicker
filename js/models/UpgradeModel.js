@@ -21,11 +21,19 @@ define(['backbone', 'utils'],
 			var AppModel = require('models/AppModel');
 			var type = displayAt[0],
 				amount = displayAt[1],
-				building = AppModel.buildingCollection.findWhere({ id: type });
+				building;
 			
-			return (type === 'volts' && AppModel.get('volts') >= amount) ||
-				   (type === 'level' && AppModel.levelModel.level >= amount) ||
-				   (building && building.get('amount') >= amount);
+			if (type === 'volts') {
+				return AppModel.get('volts') >= amount;
+			} else if (type === 'click') {
+				return AppModel.get('clicked') >= amount;
+			} else if (type === 'level') {
+				return AppModel.levelModel.level >= amount;
+			} else if ( (building = AppModel.buildingCollection.findWhere({ id: type })) ) {
+				return building.get('amount') >= amount;
+			} else {
+				return this.get('displayable');
+			}
 		},
 		
 		defaults: {
@@ -33,7 +41,9 @@ define(['backbone', 'utils'],
 			'description': '...',
 			'cost': 0,
 			'earned': false,
-			'displayed': false
+			'displayed': false,
+			'displayable': false,
+			'boost': []
 		}
 		
 	});

@@ -1,7 +1,7 @@
 define(['backbone', 'underscore', 'utils'],
 	function (Backbone, _, utils) {
 	
-	var Building = Backbone.Model.extend({
+	var BuildingModel = Backbone.Model.extend({
 		
 		initialize: function(){
 			var id = utils.toId(this.get('name')),
@@ -27,7 +27,7 @@ define(['backbone', 'underscore', 'utils'],
 		},
 		
 		calculateCost: function () {
-			var cost = Math.round(this.get('baseCost') * Math.pow(this.get('increase'), this.get('amount')));
+			var cost = Math.ceil(this.get('baseCost') * Math.pow(1.15, this.get('amount')));
 			this.set('cost', cost);
 			return cost;
 		},
@@ -41,16 +41,15 @@ define(['backbone', 'underscore', 'utils'],
 			var mult = 1;
 			AppModel.upgradeCollection.each(function (upgrade) {
 				if (upgrade.earned) {
-					_.each(upgrade.boost, function (boosts) {
-						var type = boosts[0], amount = boosts[1];
-						if (type === self.id || type === 'all') {
-							if (typeof amount === 'string' && amount.substring(0, 1) === 'x') {
-								mult += Number(amount.substring(1, amount.length));
-							} else {
-								vps += amount;
-							}
+					var boost = upgrade.get('boost'),
+						type = boost[0], amount = boost[1];
+					if (type === self.id || type === 'all') {
+						if (typeof amount === 'string' && amount.substring(0, 1) === 'x') {
+							mult += Number(amount.substring(1, amount.length));
+						} else {
+							vps += amount;
 						}
-					});
+					}
 				}
 			});
 			
@@ -66,9 +65,7 @@ define(['backbone', 'underscore', 'utils'],
 			'commonName': '||',
 			'baseCost': 10,
 			'baseVps': 1,
-			'increase': 1.15,
 			'displayAt': 100,
-			'displayable': true,
 			'displayed': false,
 			'amount': 0,
 			
@@ -78,5 +75,5 @@ define(['backbone', 'underscore', 'utils'],
 		
 	});
 	
-	return Building;
+	return BuildingModel;
 });

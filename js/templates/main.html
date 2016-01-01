@@ -1,6 +1,6 @@
-<p class="medium no-margin" id="factNameDisplay">Your Factory</p>
-<p class="large fond" id="count"><%= volts %> volt</p>
-<p id="vps">0.00 volt/second</p>
+<p class="medium no-margin" id="factNameDisplay"><%= factName %></p>
+<p class="large fond" id="count"><%= _.suffix(Math.floor(volts)) %></p>
+<p><span id="vps"><%= _.suffix(vps.toFixed(2)) %></span>/second</p>
 <div id="bulbContainer">
 	<div id="bulb"></div>
 </div>

@@ -1,4 +1,4 @@
-define(['backbone', 'model/AchievementModel'],
+define(['backbone', 'models/AchievementModel'],
 	function (Backbone, AchievementModel) {
 	
 	var AchievementCollection = Backbone.Collection.extend({

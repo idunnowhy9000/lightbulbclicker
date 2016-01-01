@@ -8,13 +8,14 @@ define(['backbone',
 		id: 'lightbulb',
 		
 		render: function () {
+			var self = this;
 			this.$el.empty();
 			this.collection.each(function (building) {
 				var buildingView = new BuildingView({ model: building });
-				this.$el.append(buildingView.render().el);
-			}, this);
+				self.$el.append(buildingView.render().el);
+			});
 			return this;
-		}
+		},
 		
 	});
 	

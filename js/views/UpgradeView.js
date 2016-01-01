@@ -17,41 +17,49 @@ define(['underscore', 'backbone', 'utils',
 			'click': 'buy'
 		},
 		
-		initialize: function () {
-			this.listenTo(this.model, 'change', this.render);
-			this.listenTo(AppModel.buildingCollection, 'change:amount', this.render);
-			this.listenTo(AppModel.Level, 'change:level', this.render);
+		initialize: function (options) {
+			this.listenTo(this.model, 'change', this.refresh);
+			this.listenTo(AppModel, 'volts', this.refresh);
+			this.listenTo(AppModel.buildingCollection, 'change:amount', this.refresh);
+			this.listenTo(AppModel.Level, 'change:level', this.refresh);
 			
-			this.render();
+			this.render()
+				.refresh();
 		},
 		
 		render: function () {
+			var self = this;
 			this.$el.html(this.template(this.model.attributes))
 				.popover({
 					trigger: 'hover',
 					html: true,
 					container:'body',
-					content: this.tooltipTemplate(this.model.attributes),
+					content: function () {
+						return self.tooltipTemplate(self.model.attributes);
+					},
 					placement: 'bottom',
 					title: this.model.get('name'),
 				});
 			
-			if (!this.model.get('displayed')) this.$el.hide();
+			return this;
+		},
+		
+		refresh: function () {
+			this.$el.html(this.template(this.model.attributes));
+			if (this.model.get('cost') > AppModel.get('volts')) {
+				this.$('.upgradeObj').addClass('disabled');
+			} else {
+				this.$('.upgradeObj').removeClass('disabled');
+			}
 			
-			if (this.model.canDisplay()) {
+			if (!this.model.get('displayed')) this.$el.hide();
+			if (this.model.canDisplay() && !this.model.get('displayed')) {
 				this.model.set('displayed', true);
 				this.$el.fadeIn(400).show();
 			}
 			
-			if (this.model.get('cost') > AppModel.get('volts')) {
-				this.$('.buildingObj').addClass('disabled');
-			} else {
-				this.$('.buildingObj').removeClass('disabled', 200);
-			}
-			
 			if (this.model.get('earned')) {
-				this.$el.hide()
-					.popover('hide');
+				this.$el.hide().popover('hide');
 			}
 			
 			return this;
@@ -59,6 +67,7 @@ define(['underscore', 'backbone', 'utils',
 		
 		buy: function () {
 			this.model.buy();
+			this.refresh();
 		}
 		
 	});

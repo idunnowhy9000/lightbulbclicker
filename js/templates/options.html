@@ -6,22 +6,23 @@
 	<div class="row">
 		<div class="col-md-6">
 			<p class="medium no-margin" id="factNameDisplay">Your Factory</p>
-			<p class="fond" id="count"><strong><%= volts %> volt</strong></p>
-			<p id="vps">0.00 volt/second</p>
+			<p class="fond"><strong id="count"><%= _.suffix(Math.floor(volts)) %></strong></p>
+			<p><span id="vps"><%= _.suffix(vps.toFixed(2)) %></span>/second</p>
 		</div>
 		<div class="col-md-6">
 			<p>
-				Level <%= levelModel.level %> (<%= levelModel.exp %> exp) <%= levelModel.levelName %><br>
-				<%= levelModel.neededToNext %> exp until next level
+				Level <%= levelModel.level %> (<%= _.beautify(Math.round(levelModel.exp)) %> exp)<br>
+				<%= _.beautify(Math.round(levelModel.neededToNext)) %> exp until next level
 			</p>
 		</div>
 	</div>
-	<div class="row left">
-		<div class="col-md-6">
-			<label for="autosave">Autosave frequency (0 second for no autosave)</label>
+	<div class="row">
+		<label for="autosave" class="control-label col-sm-6">Autosave frequency (0 second for no autosave)</label>
+		<div class="col-sm-6">
+			<input type="number" id="autosave" value="<%= autosave %>" min="0" class="form-control" />
 		</div>
-		<div class="col-md-6">
-			<input type="number" id="autosave" value="<%= autosave %>" min="0">
-		</div>
+	</div>
+	<div class='left'>
+		<p><small>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></small></p>
 	</div>
 </div>

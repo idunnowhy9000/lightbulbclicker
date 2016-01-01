@@ -7,33 +7,43 @@ requirejs.config({
 		backbone: 'lib/backbone',
 		underscore: 'lib/underscore',
 		bootbox: 'lib/bootbox.min',
-		text: 'lib/text'
+		text: 'lib/text',
+		requirejs: 'lib/require'
 	},
 	shim: {
-		'jquery': { exports: '$' },
-		'underscore': { exports: '_' },
-		'backbone': {
+		jquery: { exports: '$' },
+		underscore: { exports: '_' },
+		backbone: {
 			deps: ['jquery', 'underscore'],
 			exports: 'Backbone'
 		},
-		'localStorage': {
+		localStorage: {
 			deps: ['backbone']
 		},
-		'bootstrap': {
+		bootstrap: {
 			deps: ['jquery']
 		},
-		'bootbox': {
+		bootbox: {
 			deps: ['jquery', 'bootstrap']
 		},
-		'tooltip': {
+		tooltip: {
 			deps: ['jquery', 'bootstrap']
 		}
-	}
-});
+	},
+	optimize: 'none',
+	name: 'main',
+	out: 'js/script.js',
+	include: ['requirejs']
+})
 
-require(['backbone', 'jquery',
-	'views/AppView', 'routers/Router', 'bootstrap'],
-	function (Backbone, $, AppView, Router) {
+require(['backbone', 'jquery', 'bootbox',
+	'views/AppView', 'routers/Router',
+	'bootstrap'],
+	function (Backbone, $, bootbox, AppView, Router) {
+	
+	bootbox.setDefaults({
+		backdrop: true
+	});
 	
 	Router.initialize({ appView: new AppView() });
 });

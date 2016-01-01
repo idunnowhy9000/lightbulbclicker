@@ -15,6 +15,8 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 	var AppModel = Backbone.Model.extend({
 		
 		defaults: {
+			'version': 2.016,
+			
 			'volts': 0,
 			'voltsTot': 0,
 			'voltsTotAll': 0,
@@ -31,12 +33,11 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			'timeTravelAble': false,
 			
 			// settings
-			'autosave': 120,
+			'autosave': 120
 		},
 		
-		version: 2.016,
-		
 		initialize: function () {
+			var self = this;
 			this.buildingCollection = new BuildingCollection(BuildingData);
 			this.upgradeCollection = new UpgradeCollection(UpgradeData);
 			this.achievementCollection = new AchievementCollection();
@@ -48,8 +49,22 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			this.loop();
 			this.fetch();
 			
-			this.listenTo(this.buildingCollection, 'change', this.calcVPS);
-			this.listenTo(this.upgradeCollection, 'change', this.calcVPS);
+			this.listenTo(this.buildingCollection, 'change:amount', function () {
+				self.calcVPS();
+				self.calcMouseVPS();
+				self.buildingsOwned();
+			});
+			
+			this.listenTo(this.upgradeCollection, 'change:earned', function () {
+				self.calcVPS();
+				self.calcMouseVPS();
+			});
+			
+			// hack to calc vps
+			setTimeout(function () {
+				self.calcVPS();
+				self.calcMouseVPS();
+			}, 1000);
 		},
 		
 		loop: function () {
@@ -80,7 +95,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		sync: function (method, model, options) {
 			if (method === 'create' || method === 'update') {
 				var saveData = [];
-				saveData.push(this.version);
+				saveData.push(this.get('version'));
 				saveData.push(this.get('volts'));
 				saveData.push(this.get('voltsTot'));
 				saveData.push(this.get('voltsTotAll'));
@@ -102,30 +117,33 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				// upgrades
 				var upgradesAmount = [];
 				this.upgradeCollection.each(function (upgrade) {
-					upgradesAmount.push(upgrade.get('amount'));
+					upgradesAmount.push(upgrade.get('earned') ? '1' : '0');
 				});
-				saveData.push(upgradesAmount.join(","));
+				saveData.push(upgradesAmount.join(','));
 				
 				// levels
 				saveData.push(this.levelModel.get('level'));
 				saveData.push(this.levelModel.get('exp'));
 				saveData.push(this.levelModel.get('toNextLevel'));
 				saveData.push(this.levelModel.get('levelTotalExp'));
-				saveData.push(this.levelModel.get('levelN'));
 				
 				// VPS
 				saveData.push(this.get('vps'));
 				saveData.push(this.get('m_vps'));
 				
+				// options
+				saveData.push(this.get('autosave'));
+				
 				var saveString = btoa(saveData.join('!'));
 				saveString += '%21END%21'; // make sure base64 works
 				
 				localStorage.setItem('LBClicker', saveString);
+				this.trigger('save');
 				options.success();
 				
 			} else if (method === 'delete') {
 				
-				delete localStorage.LBClicker;
+				localStorage.removeItem('LBClicker');
 				options.success();
 				
 			} else if (method === 'read') {
@@ -155,7 +173,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 					return options.error('Your save file version is invalid.');
 				}
 					
-				if (version > this.version) {
+				if (version > this.get('version')) {
 					return options.error('Your save file is from a future version.');
 				} else if (version < 2) {
 					return options.error("Can't read version <2.0 save files.");
@@ -170,8 +188,8 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				this.set('sessionStart', new Date(parseInt(decoded[i++])));
 				this.set('gameStart', new Date(parseInt(decoded[i++])));
 				this.set('clicked', parseFloat(decoded[i++]) || 0);
-				this.set('factName', decoded[i++] || "");
-				this.set('nameSettable', decoded[i++] || false);
+				this.set('factName', decoded[i++] || '');
+				this.set('nameSettable', decoded[i++] || 'Your Factory');
 
 				// buildings
 				var buildings = decoded[i++].split(',');
@@ -181,7 +199,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 
 				var upgrades = decoded[i++].split(',');
 				this.upgradeCollection.each(function (upgrade, index) {
-					upgrade.set('earned', buildings[index] || false);
+					upgrade.set('earned', upgrades[index] === '1');
 				});
 
 				// levels
@@ -189,10 +207,6 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				this.levelModel.set('exp', parseFloat(decoded[i++]) || 0);
 				this.levelModel.set('toNextLevel', parseFloat(decoded[i++]) || 0);
 				this.levelModel.set('levelTotalExp', parseFloat(decoded[i++]) || 0);
-				this.levelModel.set('levelN', parseFloat(decoded[i++]) || 0);
-				
-				this.set('vps', parseFloat(decoded[i++]) || 0);
-				this.set('m_vps', parseFloat(decoded[i++]) || 0);
 				
 				options.success();
 			}
@@ -201,7 +215,8 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		reset: function () {
 			this.buildingCollection.each(function (building) {
 				building.set('amount', 0)
-						.set('cost', building.get('baseCost'));
+						.set('cost', building.get('baseCost'))
+						.set('displayed', false);
 			});
 			
 			this.upgradeCollection.each(function (upgrade) {
@@ -224,28 +239,38 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		},
 		
 		calcMouseVPS: function () {
-			var vps = 0, mult = 1;
+			var self = this;
+			var vps = 1, mult = 1;
 			this.upgradeCollection.each(function (upgrade) {
-				_.each(upgrade.boost, function (boost) {
-					var type = boost[0], amount = boost[1];
+				if (upgrade.get('earned')) {
+					var boost = upgrade.get('boost'),
+						type = boost[0], amount = boost[1];
 					if (type === 'click') {
-						if (typeof amount === 'string' && amount.substring(0, 1) === 'x') {
+						if (typeof amount === 'string' && amount[0] === 'x') {
+							console.log(amount);
 							mult += Number(amount.substring(1, amount.length));
+						} else if (amount === 'building') {
+							vps += boost[2] * self.get('buildingsOwned');
 						} else {
 							vps += amount;
 						}
 					}
-				});
+				}
 			});
-			this.set('m_vps', vps * mult);
+			var totalVps = vps * mult;
+			this.set('m_vps', totalVps);
+			return totalVps;
 		},
 		
 		// volts manipulator
 		click: function () {
-			this.levelModel.earnExp(1);
-			this.earn(1);
+			var m_vps = this.get('m_vps') || this.calcMouseVPS();
 			
+			this.levelModel.earnExp(m_vps);
+			this.earn(m_vps);
 			utils.increment(this, 'clicked');
+			
+			return m_vps;
 		},
 		
 		earn: function (n) {
@@ -258,6 +283,16 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		remove: function (n) {
 			utils.decrement(this, 'volts', n);
 			this.trigger('volts');
+		},
+		
+		// stats
+		buildingsOwned: function () {
+			var buildings = 0;
+			this.buildingCollection.each(function (building) {
+				buildings += building.amount;
+			});
+			this.set('buildingsOwned', buildings);
+			return buildings;
 		}
 		
 	});

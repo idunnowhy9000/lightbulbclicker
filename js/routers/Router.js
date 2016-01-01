@@ -11,7 +11,7 @@ define(['underscore', 'backbone'], function (_, Backbone) {
 			if (!template) template = 'text!templates/' + name + '.html';
 			this.route(route, name, function () {
 				require([template], function (template) {
-					self.view.switchColumn(_.template(template));
+					self.view.switchColumn(name, _.template(template));
 				});
 			});
 		}
@@ -22,6 +22,7 @@ define(['underscore', 'backbone'], function (_, Backbone) {
 		var route = new Router(options);
 		route.routeTmpl('', 'main');
 		route.routeTmpl('options', 'options');
+		route.routeTmpl('stats', 'stats');
 		
 		Backbone.history.start();
 	}

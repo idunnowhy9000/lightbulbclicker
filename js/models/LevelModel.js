@@ -8,8 +8,11 @@ define(['backbone', 'utils'],
 			'toNextLevel': 100,
 			'neededToNext': 100,
 			'levelTotalExp': 0,
-			'levelCap': 999,
-			'levelName': ''
+			'levelCap': 999
+		},
+		
+		expNeeded: function (level) {
+			
 		},
 		
 		levelUp: function () {
