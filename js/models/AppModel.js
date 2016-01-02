@@ -33,7 +33,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			'timeTravelAble': false,
 			
 			// settings
-			'autosave': 120
+			'autosave': 60
 		},
 		
 		initialize: function () {
