@@ -11,14 +11,15 @@ define(['backbone',
 			this.views = [];
 		},
 		
-		render: function (earnedOnly) {
+		render: function () {
 			var self = this;
 			this.$el.empty();
 			this.collection.each(function (building) {
 				var upgradeView = new UpgradeView({ model: building });
 				self.views.push(upgradeView);
-				self.$el.append(upgradeView.render().el);
+				self.$el.append(upgradeView.el);
 			});
+			
 			return this;
 		},
 		

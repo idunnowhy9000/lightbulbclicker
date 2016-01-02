@@ -25,7 +25,21 @@ define(['backbone', 'models/BuildingModel'],
 			vps *= (1 + AppModel.levelModel.get('level') * level);
 			
 			return vps;
-		}
+		},
+		
+		updateCost: function () {
+			this.each(function (building) {
+				building.updateCost();
+			});
+		},
+		
+		buildingsOwned: function () {
+			var buildings = 0;
+			this.each(function (building) {
+				buildings += building.amount;
+			});
+			return buildings;
+		},
 		
 	});
 	

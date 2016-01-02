@@ -74,14 +74,14 @@ define(function () {
 		},
 		// thundercollector
 		{
-			name: 'Electron Relaxation',
+			name: 'Electric Panel',
 			cost: 20000,
 			description: 'Thunder Collectors are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
-			boost: ['thundercollector', 1],
+			boost: ['thundercollector', 'x2'],
 			displayAt: ['thundercollector', 1]
 		},
 		{
-			name: 'Electron Excitation',
+			name: 'Plasma Ball',
 			description: 'Thunder Collectors are <strong>twice</strong> as efficient.<br><q>The ultimate Electric Party!</q>',
 			cost: 500000,
 			boost: ['thundercollector', 'x2'],
@@ -113,42 +113,42 @@ define(function () {
 			name: 'Fungus',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>I have to say, I'm quite a fungi!</q>",
 			cost: 30000,
-			boost: ['bacteriallightbulb', 3],
+			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 1]
 		},
 		{
 			name: 'Salmonella',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>Lightbulbs, I salmon thee.</q>",
 			cost: 900000,
-			boost: ['bacteriallightbulb', 3],
+			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 10]
 		},
 		{
 			name: 'Cellular division',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>The telomeres man, they limit everything!</q>",
 			cost: 1200000,
-			boost: ['bacteriallightbulb', 3],
+			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 50]
 		},
 		{
 			name: 'Cyanidebacteria',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>The bluestuff, man!<br><strong>WE NEED THE BLUE STUFF</strong></q>",
 			cost: 15000000,
-			boost: ['bacteriallightbulb', 3],
+			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 100]
 		},
 		{
 			name: 'Happinessbacteria',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br>",
 			cost: 3000000000,
-			boost: ['bacteriallightbulb', 3],
+			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 250]
 		},
 		// dinosaur
 		{
 			name: 'Jurrasic Quarks',
 			cost: 100000,
-			boost: ['dinosaurlightbulb', 9],
+			boost: ['dinosaurlightbulb', 'x2'],
 			description: 'Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>The essential element of matter, now in dinosaur form</q>',
 			displayAt: ['dinosaurlightbulb', 1]
 		},
@@ -184,7 +184,7 @@ define(function () {
 		{
 			name: 'Evolution',
 			cost: 40000,
-			boost: ['humanlightbulb', 27],
+			boost: ['humanlightbulb', 'x2'],
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>The Greeks proposed the theory before Charles Darwin</q>',
 			displayAt: ['humanlightbulb', 1]
 		},
@@ -315,6 +315,21 @@ define(function () {
 			boost: ['level', 1],
 			displayAt: ['level', 75]
 		},
+		// buildings to level converter
+		/*{
+			name:'Superheated Lightbulbs',
+			cost: 100,
+			description: "Experience gains <strong>+0.1%</strong> volts per building owned.<br><q>Temperature's so hot and wavelength's so short.</q>",
+			boost: ['level', 'building', 0.001],
+			displayAt: ['click', 300000]
+		},
+		{
+			name:'Superheated Lightbulbs',
+			cost: 100,
+			description: "Experience gains <strong>+0.1%</strong> volts per building owned.<br><q>Temperature's so hot and wavelength's so short.</q>",
+			boost: ['level', 'building', 0.001],
+			displayAt: ['click', 300000]
+		},*/
 		// clicks
 		{
 			name:'Let there be light',
@@ -393,5 +408,6 @@ define(function () {
 			boost: ['click', 'building', 400],
 			displayAt: ['click', 2500000]
 		},
+		
 	];
 });

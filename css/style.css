@@ -50,6 +50,7 @@ body{
 	min-height:40px;
 	border:1px solid black;
 	margin:2px 0;
+	margin-bottom: 0;
 }
 .buildingObj .buildingAmount{
 	text-align:center;
@@ -59,6 +60,42 @@ body{
 .buildingObj .buildingInfo{
 	float:right;
 	width:75%;
+}
+
+/* Buy all functions */
+.buySell{
+	background-color: #F2F2F2;
+	padding: 5px;
+	margin: 0px;
+	border-radius: 0 0 5px 5px;
+	text-align: center;
+	font-size: x-small;
+	display: none;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.buySell a{
+	cursor: pointer;
+	padding-right: 5px;
+	margin-left: 5px;
+	border-right: 1px solid #ccc;
+}
+
+.buySell a:last-child{
+	border-right: 0 none;
+}
+
+/* On hover */
+.buildingHolder > .buildingObj {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.buildingHolder > .buySell{
+	display:none;
+}
+.buildingHolder:hover > .buySell {
+	display:block;
 }
 
 /* Upgrades */
@@ -136,7 +173,7 @@ body{
 		1px 1px 0 #000;
 }
 
-/* Factoruy name */
+/* Factory name */
 #factNameDisplay{
 	cursor: pointer;
 }

@@ -14,7 +14,11 @@ define(['underscore', 'backbone', 'utils',
 		className: 'buildingHolder',
 		
 		events: {
-			'click': 'buy'
+			'click .buildingObj': 'buy',
+			'click .buy10': 'buy10',
+			'click .buyMax': 'buyMax',
+			'click .sell10': 'sell10',
+			'click .sellMax': 'sellMax',
 		},
 		
 		initialize: function () {
@@ -43,7 +47,7 @@ define(['underscore', 'backbone', 'utils',
 		
 		refresh: function () {
 			this.$el.html(this.template(this.model.attributes));
-			if (this.model.calculateCost() > AppModel.get('volts')) {
+			if (this.model.getCurrentCost() > AppModel.get('volts')) {
 				this.$('.buildingObj').addClass('disabled');
 			} else {
 				this.$('.buildingObj').removeClass('disabled');
@@ -57,9 +61,30 @@ define(['underscore', 'backbone', 'utils',
 			return this;
 		},
 		
+		// Buy sell functions
 		buy: function () {
-			this.model.buy();
-		}
+			this.model.buy(1);
+		},
+		
+		buy10: function () {
+			this.model.buy(10);
+		},
+		
+		buyMax: function () {
+			this.model.buy(Infinity);
+		},
+		
+		sell: function () {
+			this.model.sell(1);
+		},
+		
+		sell10: function () {
+			this.model.sell(10);
+		},
+		
+		sellMax: function () {
+			this.model.sell(Infinity);
+		},
 		
 	});
 	

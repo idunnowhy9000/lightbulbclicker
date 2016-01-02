@@ -38,6 +38,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			this.levelView = new LevelView({ model: this.model.levelModel });
 			
 			this.listenTo(this.model, 'volts', _.debounce(this.refreshCount, 0));
+			this.listenTo(AppModel, 'save', this.saveNotify);
 			
 			this.render();
 		},
@@ -79,10 +80,6 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			this.$('#col2').html(template(_.extend(this.model.toJSON(), { levelModel: this.model.levelModel.toJSON() })));
 			this.$('.levelContainer').replaceWith(this.levelView.render().el);
 			
-			if (name === 'stats') {
-				this.$('#col2 #upgrades').append(this.upgradesView.render(true).el);
-			}
-			
 			this.lastColumn = name;
 			this.lastTemplate = template;
 			return this;
@@ -93,7 +90,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			var num = this.model.click();
 			$('body').append(
 				$('<div class="particle"></div>')
-					.text(num)
+					.text('+' + num)
 					.css({'left': e.pageX, 'top': e.pageY - 25})
 					.animate({ 'top': '-=20px', 'opacity': 0 }, 2000, function () {
 						$(this).remove();

@@ -14,24 +14,62 @@ define(['backbone', 'underscore', 'utils'],
 			this.set('single', single);
 			this.set('plural', plural);
 			this.set('actionName', actionName);
-			this.set('cost', this.get('baseCost'));
+			this.updateCost();
 		},
 		
-		buy: function () {
-			var AppModel = require('models/AppModel'); // prevent circular ref
-			if (this.get('cost') > AppModel.get('volts')) return false;
-			AppModel.remove(this.get('cost'));
+		// Buy
+		buy: function (n) {
+			var AppModel = require('models/AppModel');
 			
-			utils.increment(this, 'amount');
-			this.calculateCost();
+			for (var i = 1; i < n; i++) {
+				if (AppModel.get('volts') < this.get('cost')) {
+					this.vps();
+					return i;
+				} else {
+					AppModel.remove(this.get('cost'));
+					utils.increment(this, 'amount');
+					this.updateCost();
+				}
+			}
+			
+			this.vps();
+			return n;
 		},
 		
-		calculateCost: function () {
-			var cost = Math.ceil(this.get('baseCost') * Math.pow(1.15, this.get('amount')));
-			this.set('cost', cost);
-			return cost;
+		// Sell
+		sell: function (n) {
+			var AppModel = require('models/AppModel');
+			
+			for (var i = 1; i < n; i++) {
+				if (this.get('amount') <= 0) {
+					this.vps();
+					return i;
+				} else {
+					utils.decrement(this, 'amount');
+					this.updateCost();
+					AppModel.earn(this.get('cost') * 0.25);
+				}
+			}
+			
+			this.vps();
+			return n;
 		},
 		
+		// Costs
+		getCost: function (n) {
+			return Math.floor(this.get('baseCost') * Math.pow(1.15, n));
+		},
+		
+		getCurrentCost: function () {
+			return this.getCost(this.get('amount'));
+		},
+		
+		updateCost: function () {
+			this.set('cost', this.getCurrentCost());
+			return true;
+		},
+		
+		// VPS functions
 		vps: function () {
 			var AppModel = require('models/AppModel');
 			var self = this;
@@ -40,7 +78,7 @@ define(['backbone', 'underscore', 'utils'],
 			var amount = this.get('amount');
 			var mult = 1;
 			AppModel.upgradeCollection.each(function (upgrade) {
-				if (upgrade.earned) {
+				if (upgrade.get('earned')) {
 					var boost = upgrade.get('boost'),
 						type = boost[0], amount = boost[1];
 					if (type === self.id || type === 'all') {
@@ -56,6 +94,9 @@ define(['backbone', 'underscore', 'utils'],
 			var totalVps = (vps * amount) * mult;
 			this.set('oneVps', vps);
 			this.set('vps', totalVps);
+			
+			console.log(totalVps);
+			
 			return totalVps;
 		},
 		

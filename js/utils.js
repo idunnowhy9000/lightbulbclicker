@@ -15,16 +15,14 @@ define(['underscore'], function (_) {
 				{ divider: 1e9 , suffix: 'gigavolts' },
 				{ divider: 1e6 , suffix: 'megavolts' },
 			];
-			return (function () {
-				if (n <= 1) return n + ' volt';
-				for (var i = 0; i < ranges.length; i++) {
-					if (n >= ranges[i].divider) {
-						if ((n / ranges[i].divider) % 1 !== 0) return (n / ranges[i].divider).toFixed(2).toString() + ' ' + ranges[i].suffix;
-						return (n / ranges[i].divider).toString() + ' ' + ranges[i].suffix;
-					}
+			if (n <= 1) return n + ' volt';
+			for (var i = 0; i < ranges.length; i++) {
+				if (n >= ranges[i].divider) {
+					if ((n / ranges[i].divider) % 1 !== 0) return (n / ranges[i].divider).toFixed(2).toString() + ' ' + ranges[i].suffix;
+					return (n / ranges[i].divider).toString() + ' ' + ranges[i].suffix;
 				}
-				return _.beautify(n) + ' volts';
-			})();
+			}
+			return _.beautify(n) + ' volts';;
 		},
 		
 		

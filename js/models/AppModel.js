@@ -52,7 +52,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			this.listenTo(this.buildingCollection, 'change:amount', function () {
 				self.calcVPS();
 				self.calcMouseVPS();
-				self.buildingsOwned();
+				self.buildingCollection.updateCost();
 			});
 			
 			this.listenTo(this.upgradeCollection, 'change:earned', function () {
@@ -65,6 +65,8 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				self.calcVPS();
 				self.calcMouseVPS();
 			}, 1000);
+			
+			this.buildingCollection.updateCost();
 		},
 		
 		loop: function () {
@@ -117,7 +119,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				// upgrades
 				var upgradesAmount = [];
 				this.upgradeCollection.each(function (upgrade) {
-					upgradesAmount.push(upgrade.get('earned') ? '1' : '0');
+					if (upgrade.get('earned')) upgradesAmount.push(upgrade.get('id'));
 				});
 				saveData.push(upgradesAmount.join(','));
 				
@@ -134,10 +136,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				// options
 				saveData.push(this.get('autosave'));
 				
-				var saveString = btoa(saveData.join('!'));
-				saveString += '%21END%21'; // make sure base64 works
-				
-				localStorage.setItem('LBClicker', saveString);
+				localStorage.setItem('LBClicker', saveData.join('!'));
 				this.trigger('save');
 				options.success();
 				
@@ -152,21 +151,15 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 					var saveData = options.save;
 				} else if (localStorage.hasOwnProperty('LBClicker')) {
 					var saveData = localStorage.getItem('LBClicker');
-				}
-				
-				if (!/%21END%21$/.test(saveData)) {
-					return options.error('Invalid save file.');
 				} else {
-					saveData = saveData.replace('%21END%21', '');
+					return options.error('Save file not found.');
 				}
 				
-				try {
-					var decoded = atob(saveData).split('!'),
-						version = parseFloat(decoded[0]);
-				} catch (e) {
-					if (e instanceof InvalidCharacterError) {
-						return options.error('String is not a save file.');
-					}
+				var decoded = saveData.split('!'),
+					version = parseFloat(decoded[0]);
+				
+				if (!decoded.length) {
+					return options.error('Your save file is invalid.');
 				}
 				
 				if (isNaN(version)) {
@@ -175,8 +168,6 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 					
 				if (version > this.get('version')) {
 					return options.error('Your save file is from a future version.');
-				} else if (version < 2) {
-					return options.error("Can't read version <2.0 save files.");
 				}
 				
 				var i = 1;
@@ -199,7 +190,9 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 
 				var upgrades = decoded[i++].split(',');
 				this.upgradeCollection.each(function (upgrade, index) {
-					upgrade.set('earned', upgrades[index] === '1');
+					if (upgrade.get('id') === upgrades[index]) {
+						upgrade.set('earned', true);
+					}
 				});
 
 				// levels
@@ -284,16 +277,6 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			utils.decrement(this, 'volts', n);
 			this.trigger('volts');
 		},
-		
-		// stats
-		buildingsOwned: function () {
-			var buildings = 0;
-			this.buildingCollection.each(function (building) {
-				buildings += building.amount;
-			});
-			this.set('buildingsOwned', buildings);
-			return buildings;
-		}
 		
 	});
 	
