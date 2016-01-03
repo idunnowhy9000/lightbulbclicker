@@ -38,6 +38,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		
 		initialize: function () {
 			var self = this;
+			
 			this.buildingCollection = new BuildingCollection(BuildingData);
 			this.upgradeCollection = new UpgradeCollection(UpgradeData);
 			this.achievementCollection = new AchievementCollection();
@@ -61,10 +62,10 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			});
 			
 			// hack to calc vps
-			setTimeout(function () {
+			_.defer(function () {
 				self.calcVPS();
 				self.calcMouseVPS();
-			}, 1000);
+			});
 			
 			this.buildingCollection.updateCost();
 		},

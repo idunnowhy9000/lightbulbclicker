@@ -51,6 +51,11 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			return this;
 		},
 		
+		refresh: function () {
+			this.render().switchColumn(this.lastColumn, this.lastTemplate);
+			return this;
+		},
+		
 		refreshCount: function () {
 			this.$('#count').text(_.suffix(Math.floor(this.model.get('volts'))));
 			document.title = _.suffix(Math.floor(this.model.get('volts')))
@@ -76,7 +81,8 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 		},
 		
 		// Panels
-		switchColumn: function (name, template) {
+		switchColumn: function (name, string) {
+			var template = _.template(string);
 			this.$('#col2').html(template(_.extend(this.model.toJSON(), { levelModel: this.model.levelModel.toJSON() })));
 			this.$('.levelContainer').replaceWith(this.levelView.render().el);
 			
@@ -114,7 +120,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 						callback: function() {
 							self.model.reset();
 							self.model.destroy();
-							self.render().switchColumn(self.lastColumn, self.lastTemplate);
+							self.refresh();
 							return;
 						}
 					},
@@ -143,7 +149,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 									save: save,
 									success: function (model) {
 										self.model.reset();
-										self.render().switchColumn(self.lastTemplate);
+										self.refresh();
 									},
 									error: function (model, error) {
 										console.log(error);

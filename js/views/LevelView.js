@@ -20,15 +20,19 @@ define(["underscore", "backbone", "utils",
 		
 		render: function () {
 			this.$el.html(this.template(this.model.attributes));
-			this.$('.progress-bar').css('width', this.model.percent() + '%');
+			this.$('.progress-bar').css('width', (this.model.get('exp') / this.model.get('toNextLevel') * 100) + '%');
 			return this;
 		},
 		
 		refresh: function () {
-			this.$('#level').text(this.model.get('level'));
-			this.$('#exp').text(_.beautify(Math.round(this.model.get('exp'))));
-			this.$('#neededToNext').text(_.beautify(Math.round(this.model.get('neededToNext'))));
-			this.$('.progress-bar').css('width', this.model.percent() + '%');
+			var exp = this.model.get('exp'),
+				level = this.model.get('level'),
+				toNextLevel = this.model.get('toNextLevel');
+			
+			this.$('#level').text(level);
+			this.$('#exp').text(_.beautify(exp));
+			this.$('#neededToNext').text(_.beautify(toNextLevel - exp));
+			this.$('.progress-bar').css('width', (exp / toNextLevel * 100) + '%');
 			return this;
 		}
 		

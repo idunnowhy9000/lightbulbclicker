@@ -1,29 +1,37 @@
-define(['underscore', 'backbone'], function (_, Backbone) {
+define(['underscore', 'backbone',
+	'text!templates/main.html','text!templates/options.html','text!templates/stats.html'],
+	function (_, Backbone,
+		mainTmpl, optionsTmpl, statsTmpl) {
 	
 	var Router = Backbone.Router.extend({
+		
+		routes: {
+			'': 'main',
+			'options': 'options',
+			'stats': 'stats'
+		},
 		
 		initialize: function (options) {
 			this.view = options.appView;
 		},
 		
-		routeTmpl: function (route, name, template) {
-			var self = this;
-			if (!template) template = 'text!templates/' + name + '.html';
-			this.route(route, name, function () {
-				require([template], function (template) {
-					self.view.switchColumn(name, _.template(template));
-				});
-			});
+		// Routes
+		main: function () {
+			this.view.switchColumn('main', mainTmpl);
+		},
+		
+		options: function () {
+			this.view.switchColumn('options', optionsTmpl);
+		},
+		
+		stats: function () {
+			this.view.switchColumn('stats', statsTmpl);
 		}
 		
 	});
 	
 	var initialize = function (options) {
 		var route = new Router(options);
-		route.routeTmpl('', 'main');
-		route.routeTmpl('options', 'options');
-		route.routeTmpl('stats', 'stats');
-		
 		Backbone.history.start();
 	}
 	

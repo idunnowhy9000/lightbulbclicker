@@ -3,38 +3,35 @@ define(['backbone', 'utils'],
 	
 	var LevelModel = Backbone.Model.extend({
 		defaults: {
-			'level': 1,
 			'exp': 0,
+			'level': 1,
 			'toNextLevel': 100,
-			'neededToNext': 100,
 			'levelTotalExp': 0,
 			'levelCap': 999
-		},
-		
-		expNeeded: function (level) {
-			
 		},
 		
 		levelUp: function () {
 			utils.increment(this, 'level');
 			utils.increment(this, 'levelTotalExp', this.get('toNextLevel'));
-			utils.increment(this, 'toNextLevel', Math.pow(this.get('level'), 2) * 100);
+			this.set('toNextLevel', this.get('level') * this.get('level') * 100);
 		},
 		
-		earnExp: function (exp) {
-			utils.increment(this, 'exp', exp);
-			if (this.get('level') >= this.get('levelCap') && this.get('exp') > this.get('levelTotalExp')) {
-				this.set('exp', this.get('levelTotalExp'));
+		earnExp: function (_exp) {
+			var exp = this.get('exp'),
+				level = this.get('level'),
+				totalExp = this.get('levelTotalExp'),
+				levelCap = this.get('levelCap'),
+				toNextLevel = this.get('toNextLevel');
+			_exp = Math.round(_exp);
+			
+			utils.increment(this, 'exp', _exp);
+			
+			if (level >= levelCap && exp > totalExp) {
+				this.set('exp', totalExp);
 			}
-			while (this.get('exp') >= this.get('levelTotalExp') + this.get('toNextLevel') &&
-				this.get('level') < this.get('levelCap')) {
-				this.levelUp()
+			while (exp >= totalExp + toNextLevel && level < levelCap) {
+				this.levelUp();
 			}
-			this.set('neededToNext', this.get('toNextLevel') - this.get('exp'));
-		},
-		
-		percent: function () {
-			return this.get('exp') / this.get('toNextLevel') * 100;
 		}
 	});
 	

@@ -4,8 +4,8 @@ define(function () {
 		{
 			name: 'Thomas Edison',
 			cost: 100,
-			description: 'Incandescent lightbulb are <strong>twice</strong> as efficient.<br><q>1% percent inspiration, 99% perspriation.</q>',
-			boost: ['incandescentlightbulb', 'x2'],
+			description: 'Incandescent lightbulb gain <strong>+0.1</strong> base VPS.<br><q>1% percent inspiration, 99% perspriation.</q>',
+			boost: ['incandescentlightbulb', 0.1],
 			displayAt: ['incandescentlightbulb', 1]
 		},
 		{
@@ -39,14 +39,14 @@ define(function () {
 		// bulb smasher
 		{
 			name: 'Experimentation Room',
-			cost: 3000,
-			description: "Bulb smashers are <strong>twice</strong> as efficient.<q>Put on your goggles, prepare your muscles.</q>",
-			boost: ['lightbulbsmasher', 'x2'],
+			cost: 500,
+			description: "Bulb smashers gain <strong>+0.5</strong> base VPS.<q>Put on your goggles, prepare your muscles.</q>",
+			boost: ['lightbulbsmasher', 0.5],
 			displayAt: ['lightbulbsmasher', 1]
 		},
 		{
 			name: 'Big Hammer',
-			cost: 30000,
+			cost: 50000,
 			description: 'Bulb smashers are <strong>twice</strong> as efficient.<q>Probably not a sexual innuendo.</q>',
 			boost: ['lightbulbsmasher', 'x2'],
 			displayAt: ['lightbulbsmasher', 10]
@@ -67,7 +67,7 @@ define(function () {
 		},
 		{
 			name: 'Thor',
-			cost: 7250000000,
+			cost: 725000000,
 			description: 'Bulb smashers are <strong>twice</strong> as efficient.<q>The Key to Valhalla.</q>',
 			boost: ['lightbulbsmasher', 'x2'],
 			displayAt: ['lightbulbsmasher', 250]
@@ -75,45 +75,153 @@ define(function () {
 		// thundercollector
 		{
 			name: 'Electric Panel',
-			cost: 20000,
-			description: 'Thunder Collectors are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
-			boost: ['thundercollector', 'x2'],
+			cost: 5000,
+			description: 'Thunder Collectors gain <strong>+2</strong> base VPS.<q>Ahh, much more better!</q>',
+			boost: ['thundercollector', 2],
 			displayAt: ['thundercollector', 1]
 		},
 		{
 			name: 'Plasma Ball',
 			description: 'Thunder Collectors are <strong>twice</strong> as efficient.<br><q>The ultimate Electric Party!</q>',
-			cost: 500000,
+			cost: 50000,
 			boost: ['thundercollector', 'x2'],
 			displayAt: ['thundercollector', 10]
 		},
 		{
 			name: 'Hotter than Lead',
 			description: 'Thunder Collectors are <strong>twice</strong> as efficient.<br><q>But not hotter than Venus.</q>',
-			cost: 1000000,
+			cost: 100000,
 			boost: ['thundercollector', 'x2'],
 			displayAt: ['thundercollector', 50]
 		},
 		{
 			name: 'Zeus Worshippers',
 			description: 'Thunder Collectors are <strong>twice</strong> as efficient.<br><q>Actually raised by a goat.</q>',
-			cost: 10000000,
+			cost: 1000000,
 			boost: ['thundercollector', 'x2'],
 			displayAt: ['thundercollector', 100]
 		},
 		{
 			name: 'Zeus Angerers',
 			description: "Thunder Collectors are <strong>twice</strong> as efficient.<br><q>Let's just worship Uranus.</q>",
-			cost: 100000000,
+			cost: 10000000,
 			boost: ['thundercollector', 'x2'],
 			displayAt: ['thundercollector', 250]
+		},
+		// halogen
+		{
+			name: 'Pressure container',
+			cost: 10000,
+			description: 'Halogen Lightbulbs gain <strong>+2</strong> base VPS.<q>Ahh, much more better!</q>',
+			boost: ['halogenlightbulb', 5],
+			displayAt: ['halogenlightbulb', 1]
+		},
+		{
+			name: 'Chlorine Lightbulb',
+			cost: 200000,
+			description: 'Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['halogenlightbulb', 'x2'],
+			displayAt: ['halogenlightbulb', 1]
+		},
+		{
+			name: 'Hydrocarbon Bromine compounds',
+			cost: 2550000,
+			description: 'Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['halogenlightbulb', 'x2'],
+			displayAt: ['halogenlightbulb', 1]
+		},
+		{
+			name: 'Krypton Gas',
+			cost: 50000000,
+			description: 'Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['halogenlightbulb', 'x2'],
+			displayAt: ['halogenlightbulb', 1]
+		},
+		{
+			name: 'Xenon Gas',
+			cost: 500000000,
+			description: 'Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['halogenlightbulb', 'x2'],
+			displayAt: ['halogenlightbulb', 1]
+		},
+		// tan
+		{
+			name: 'Ultraviolet Radiator',
+			cost: 314159,
+			description: 'Tan Lightbulbs gain <strong>+30</strong> base VPS.<q>Ahh, much more better!</q>',
+			boost: ['tanlightbulb', 30],
+			displayAt: ['tanlightbulb', 1]
+		},
+		{
+			name: 'Sunscreen lotion',
+			cost: 1732050,
+			description: 'Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['tanlightbulb', 'x2'],
+			displayAt: ['tanlightbulb', 1]
+		},
+		{
+			name: 'Vitamin D Producer',
+			cost: 14142135,
+			description: 'Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['tanlightbulb', 'x2'],
+			displayAt: ['tanlightbulb', 1]
+		},
+		{
+			name: 'Cancer Protection Radiator',
+			cost: 223606797,
+			description: 'Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['tanlightbulb', 'x2'],
+			displayAt: ['tanlightbulb', 1]
+		},
+		{
+			name: 'Melanin Maker',
+			cost: 3605551275,
+			description: 'Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['tanlightbulb', 'x2'],
+			displayAt: ['tanlightbulb', 1]
+		},
+		// led
+		{
+			name: 'LED Diodes',
+			cost: 1000000,
+			description: 'LED Lightbulbs gain <strong>+100</strong> base VPS.<q>Ahh, much more better!</q>',
+			boost: ['ledlightbulb', 100],
+			displayAt: ['ledlightbulb', 1]
+		},
+		{
+			name: 'Glowstick',
+			cost: 20000000,
+			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['ledlightbulb', 'x2'],
+			displayAt: ['ledlightbulb', 1]
+		},
+		{
+			name: 'LED Monitor',
+			cost: 300000000,
+			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['ledlightbulb', 'x2'],
+			displayAt: ['ledlightbulb', 1]
+		},
+		{
+			name: 'Superdisplay',
+			cost: 500000000,
+			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['ledlightbulb', 'x2'],
+			displayAt: ['ledlightbulb', 1]
+		},
+		{
+			name: 'Lifi',
+			cost: 800000000,
+			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
+			boost: ['ledlightbulb', 'x2'],
+			displayAt: ['ledlightbulb', 1]
 		},
 		// bacterial
 		{
 			name: 'Fungus',
-			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>I have to say, I'm quite a fungi!</q>",
-			cost: 30000,
-			boost: ['bacteriallightbulb', 'x2'],
+			description: "Bacterial Lightbulbs gain <strong>+400</strong> base VPS.<br><q>I have to say, I'm quite a fungi!</q>",
+			cost: 50000,
+			boost: ['bacteriallightbulb', 400],
 			displayAt: ['bacteriallightbulb', 1]
 		},
 		{
@@ -148,8 +256,8 @@ define(function () {
 		{
 			name: 'Jurrasic Quarks',
 			cost: 100000,
-			boost: ['dinosaurlightbulb', 'x2'],
-			description: 'Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>The essential element of matter, now in dinosaur form</q>',
+			boost: ['dinosaurlightbulb', 800],
+			description: 'Dinosaur Lightbulbs gain <strong>+800</strong> base VPS.<br><q>The essential element of matter, now in dinosaur form</q>',
 			displayAt: ['dinosaurlightbulb', 1]
 		},
 		{
@@ -184,8 +292,8 @@ define(function () {
 		{
 			name: 'Evolution',
 			cost: 40000,
-			boost: ['humanlightbulb', 'x2'],
-			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>The Greeks proposed the theory before Charles Darwin</q>',
+			boost: ['humanlightbulb', 1500],
+			description: 'Human Lightbulbs gain <strong>+1500</strong> base VPS.<br><q>The Greeks proposed the theory before Charles Darwin</q>',
 			displayAt: ['humanlightbulb', 1]
 		},
 		{
@@ -262,21 +370,21 @@ define(function () {
 		{
 			name: 'Solar Power',
 			description: 'Uses solar power as main energy fuel.<br><q>SolarCity, coming soon.</q>',
-			cost: 8.88e12,
+			cost: 102400000,
 			displayAt: ['level', 85]
 		},
 		// levels
 		{
 			name: 'Open the Gate of Experience',
 			cost: 1024,
-			description: "Volts per seconds are <strong>1%</strong> more efficient per levels.<q>Powerful spirits shall be with you, for the owner shal open this gate.</q>",
+			description: "Volts per seconds are <strong>1%</strong> more efficient per levels.<q>Powerful spirits shall be with you, for those who dare shall open this gate.</q>",
 			boost: ['level', 0.01],
 			displayAt: ['level', 5]
 		},
 		{
 			name: 'Experience Scrolls',
 			cost: 2560,
-			description: "Volts per seconds are <strong>2%</strong> more efficient per levels.<q>Contains the knowledge of the ancient photon researchers</q>",
+			description: "Volts per seconds are <strong>2%</strong> more efficient per levels.<q>Contains the knowledge of the ancient light waves researchers</q>",
 			boost: ['level', 0.02],
 			displayAt: ['level', 10]
 		},
@@ -304,7 +412,7 @@ define(function () {
 		{
 			name: 'E=mc2 Converter',
 			cost: 4096000000,
-			description: "Volts per seconds are <strong>50%</strong> more efficient per levels.<q>Suprisingly complicated conversion machinery involving momentum and snake venoms.</q>",
+			description: "Volts per seconds are <strong>50%</strong> more efficient per levels.<q>Suprisingly complicated conversion machinery involving angular momentum and snake venoms.</q>",
 			boost: ['level', 0.50],
 			displayAt: ['level', 50]
 		},
@@ -315,21 +423,6 @@ define(function () {
 			boost: ['level', 1],
 			displayAt: ['level', 75]
 		},
-		// buildings to level converter
-		/*{
-			name:'Superheated Lightbulbs',
-			cost: 100,
-			description: "Experience gains <strong>+0.1%</strong> volts per building owned.<br><q>Temperature's so hot and wavelength's so short.</q>",
-			boost: ['level', 'building', 0.001],
-			displayAt: ['click', 300000]
-		},
-		{
-			name:'Superheated Lightbulbs',
-			cost: 100,
-			description: "Experience gains <strong>+0.1%</strong> volts per building owned.<br><q>Temperature's so hot and wavelength's so short.</q>",
-			boost: ['level', 'building', 0.001],
-			displayAt: ['click', 300000]
-		},*/
 		// clicks
 		{
 			name:'Let there be light',

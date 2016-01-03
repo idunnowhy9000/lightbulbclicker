@@ -21,7 +21,7 @@ define(['backbone', 'underscore', 'utils'],
 		buy: function (n) {
 			var AppModel = require('models/AppModel');
 			
-			for (var i = 1; i < n; i++) {
+			for (var i = 0; i < n; i++) {
 				if (AppModel.get('volts') < this.get('cost')) {
 					this.vps();
 					return i;
@@ -94,9 +94,6 @@ define(['backbone', 'underscore', 'utils'],
 			var totalVps = (vps * amount) * mult;
 			this.set('oneVps', vps);
 			this.set('vps', totalVps);
-			
-			console.log(totalVps);
-			
 			return totalVps;
 		},
 		
