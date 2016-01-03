@@ -61,6 +61,8 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				self.calcMouseVPS();
 			});
 			
+			this.listenTo(this, 'volts', this.storyTicker);
+			
 			// hack to calc vps
 			_.defer(function () {
 				self.calcVPS();
@@ -95,7 +97,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		},
 		
 		// save load
-		sync: function (method, model, options) {
+		sync: function (method, model, options) {console.log(method);
 			if (method === 'create' || method === 'update') {
 				var saveData = [];
 				saveData.push(this.get('version'));
@@ -219,7 +221,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			});
 			
 			this.levelModel.set(this.levelModel.defaults);
-			this.set(this.defaults);
+			this.clear().set(this.defaults);
 			
 			this.destroy();
 			return this;
@@ -278,6 +280,34 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			utils.decrement(this, 'volts', n);
 			this.trigger('volts');
 		},
+		
+		// story ticker
+		storyTicker: function () {
+			var volts = this.get('volts'), story;
+			if (volts === 1) story = 'You are a mechanic, you work for an electric factory.';
+			else if (volts === 2) story = 'Your bright idea for a new power source has emerged, using lightbulbs to generate power.';
+			else if (volts === 3) story = 'Your boss has denied your proposal, saying, "That\'s not possible, and it never will"';
+			else if (volts === 4) story = "You feel sad, however you won't give up.";
+			else if (volts === 5) story = 'You spin your bicycle wheels to generate power. Your adventure begins.';
+			else if (volts === 15) story = 'You have enough energy to buy a lightbulb.';
+			else if (volts === 50) story = 'You have enough energy to charge your own phone.';
+			else if (volts === 100) story = 'You have enough energy to charge a laptop.';
+			else if (volts === 500) story = 'Your house is now using your energy.';
+			else if (volts === 1000) story = 'Your local coffee shop are now using your energy!';
+			else if (volts === 5000) story = 'Your local coffee shop are now using your energy!';
+			else if (volts === 10000) story = 'People from miles around are now using your energy!';
+			else if (volts === 50000) story = 'Foreigners are using your energy!';
+			else if (volts === 100000) story = 'Your factory now starts growing, 5 employees a day.';
+			else if (volts === 125000) story = "You've open your official company!";
+			else if (volts === 150000) story = 'Your company now owns a website!';
+			else if (volts === 200000) story = 'Distant countries are paying for your power.';
+			else if (volts === 500000) story = 'Your company now starts growing, 10 employees a day.';
+			else if (volts === 1000000) story = 'Your company has been expanded to seas and nations!';
+			else if (volts === 2000000) story = 'Your company is in The Museum of Science and Industry!';
+			else if (volts === 5000000) story = 'Your last electric factory has been closed. Take that old boss!';
+			
+			if (story) this.trigger('story', story);
+		}
 		
 	});
 	

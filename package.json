@@ -1,7 +1,7 @@
 {
   "name": "lightbulbclicker",
   "version": "1.0.0",
-  "description": "a shitty game by idunnowhy9000",
+  "description": "a shitty game based on shitty science",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
 	"build": "node r.js -o build.js"
@@ -11,7 +11,7 @@
     "url": "https://github.com/idunnowhy9000/lightbulbclicker.git"
   },
   "author": "idunnowhy9000",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/idunnowhy9000/lightbulbclicker/issues"
   },

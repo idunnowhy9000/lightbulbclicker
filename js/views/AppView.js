@@ -2,12 +2,12 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 	'models/AppModel',
 	'views/BuildingsView', 'views/UpgradesView', 'views/LevelView',
 	'collections/BuildingCollection', 'collections/UpgradeCollection',
-	'text!templates/app.html'],
+	'text!templates/app.html', 'text!templates/alert.html'],
 	function ($, _, Backbone, bootbox, utils,
 		AppModel,
 		BuildingsView, UpgradesView, LevelView,
 		BuildingCollection, UpgradeCollection,
-		appTemplate) {
+		appTemplate, alertTemplate) {
 	
 	var localStorage = window.localStorage;
 	
@@ -38,6 +38,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			this.levelView = new LevelView({ model: this.model.levelModel });
 			
 			this.listenTo(this.model, 'volts', _.debounce(this.refreshCount, 0));
+			//this.listenTo(AppModel, 'story', this.storyTicker);
 			this.listenTo(AppModel, 'save', this.saveNotify);
 			
 			this.render();
@@ -69,14 +70,16 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 		},
 		
 		// Alerts
-		notify: function (title, description, type) {
+		notify: function (title, description, type, duration) {
 			if (!type) type = 'alert-success';
+			if (!duration) duration = 1000;
 			
-			var alert = $('<div></div>');
-			alert.addClass('alert ' + type);
-			alert.append('<strong>' + title + '</strong>');
-			if (description) alert.append('<br>' + description);
-			alert.fadeIn().delay(1000).fadeOut(function () { $(this).remove(); });
+			var alert = $(_.template(alertTemplate)({
+				title: title,
+				description: description,
+				type: type
+			}));
+			alert.fadeIn().delay(duration).fadeOut(function () { $(this).remove(); });
 			$('#notify').append(alert);
 		},
 		
@@ -87,7 +90,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			this.$('.levelContainer').replaceWith(this.levelView.render().el);
 			
 			this.lastColumn = name;
-			this.lastTemplate = template;
+			this.lastTemplate = string;
 			return this;
 		},
 		
@@ -191,6 +194,11 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 		saveNotify: function () {
 			this.notify('Game saved');
 		},
+		
+		// story ticker
+		storyTicker: function (story) {
+			this.notify('Story', story, 'alert-story', 5000);
+		}
 		
 	});
 	
