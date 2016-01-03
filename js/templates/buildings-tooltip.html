@@ -1,0 +1,6 @@
+<span><%= description %></span><br>
+Costs <strong><%= _.suffix(cost) %></strong><br>
+<ul>
+	<li>Each <%= single %> <%= actionName %> <strong><%= _.suffix(oneVps.toFixed(2)) %>/second</strong></li>
+	<li><strong><%= amount %></strong> <%= plural %> <%= actionName %> <strong><%= _.suffix(vps.toFixed(2)) %>/second</strong></li>
+</ul>

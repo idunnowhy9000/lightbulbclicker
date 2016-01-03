@@ -1,0 +1,13 @@
+<div class="container-fluid left">
+	<a href="#" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Main Page</a>
+	<a href="#options" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Options</a>
+
+	<p>Version <strong><%= version %></strong></p>
+	<p>Volts in bank: <strong><%= _.suffix(Math.floor(volts)) %></strong></p>
+	<p>Total volts (this session): <strong><%= _.suffix(Math.floor(voltsTot)) %></strong></p>
+	<p>Total volts (all time): <strong><%= _.suffix(Math.floor(voltsTotAll)) %></strong></p>
+	<p>Session started: <strong><%= sessionStart.toISOString() %></strong></p>
+	<p>Game started: <strong><%= gameStart.toISOString() %></strong></p>
+	<p>Clicked <strong><%= clicked %></strong> times</p>
+	<p><strong><%= _.suffix(vps.toFixed(2)) %></strong> volts produced per second</p>
+</div>

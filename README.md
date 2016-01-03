@@ -1,4 +1,4 @@
 lightbulbclicker
 ================
 
-Lightbulb Clicker
+Lightbulb Clicker 1.3 Beta

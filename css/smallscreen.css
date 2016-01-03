@@ -1,0 +1,18 @@
+/* OPTIONS */
+.options.menu .btn {
+display: block;
+}
+.options.menu br{
+width: 0;
+height: 0;
+display: none;
+}
+/* LEVEL BAR */
+#levelbar {
+width: 100%;
+margin: 15px 0 0;
+}
+/* Buildings */
+.bdObj {
+height: 70px;
+}
