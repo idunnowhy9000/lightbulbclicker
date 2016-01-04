@@ -22,7 +22,7 @@ define(['underscore'], function (_) {
 					return (n / ranges[i].divider).toString() + ' ' + ranges[i].suffix;
 				}
 			}
-			return _.beautify(n) + ' volts';;
+			return _.beautify(n) + ' volts';
 		},
 		
 		
@@ -32,12 +32,12 @@ define(['underscore'], function (_) {
 	utils.toId = function (text) { return text.toString().toLowerCase().replace(/[^a-z0-9]+/g, ''); };
 	
 	utils.increment = function (model, prop, val) {
-		if (val === undefined) { val = 1; }
+		if (val === undefined) val = 1;
 		model.set(prop, model.get(prop) + val);
 	};
 	
 	utils.decrement = function (model, prop, val) {
-		if (val === undefined) { val = 1; }
+		if (val === undefined) val = 1;
 		model.set(prop, model.get(prop) - val);
 	};
 	

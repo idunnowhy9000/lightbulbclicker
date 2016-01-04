@@ -262,8 +262,8 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		click: function () {
 			var m_vps = this.get('m_vps') || this.calcMouseVPS();
 			
-			this.levelModel.earnExp(m_vps);
 			this.earn(m_vps);
+			this.levelModel.earnExp(m_vps);
 			utils.increment(this, 'clicked');
 			
 			return m_vps;
