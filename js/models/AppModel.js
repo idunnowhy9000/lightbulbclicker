@@ -73,6 +73,10 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			this.clickUpgrades = this.upgradeCollection.filter(function (upgrade) {
 				return upgrade.get('boost')[0] === 'click';
 			});
+			
+			this.levelUpgrades = this.upgradeCollection.filter(function (upgrade) {
+				return upgrade.get('boost')[0] === 'level';
+			});
 		},
 		
 		loop: function () {
@@ -233,6 +237,16 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		// volts per second calculator
 		calcVPS: function () {
 			var vps = this.buildingCollection.vps();
+			
+			var level = 0;
+			this.levelUpgrades.each(function (upgrade) {
+				if (upgrade.get('earned')) {
+					var boost = upgrade.get('boost');
+					level = Math.max(level, boost[1]);
+				}
+			});
+			vps *= (1 + this.levelModel.get('level') * level);
+			
 			this.set('vps', vps);
 			this.trigger('volts');
 		},

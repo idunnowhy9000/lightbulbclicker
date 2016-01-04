@@ -12,18 +12,6 @@ define(['backbone', 'models/BuildingModel'],
 			this.each(function (building) {
 				vps += building.vps();
 			});
-			
-			var level = 0;
-			AppModel.upgradeCollection.each(function (upgrade) {
-				if (upgrade.get('earned')) {
-					var boost = upgrade.get('boost');
-					if (boost[0] === 'level') {
-						level = Math.max(level, boost[1]);
-					}
-				}
-			});
-			vps *= (1 + AppModel.levelModel.get('level') * level);
-			
 			return vps;
 		},
 		
