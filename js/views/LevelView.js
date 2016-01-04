@@ -28,8 +28,7 @@ define(["underscore", "backbone", "utils",
 			var exp = Math.floor(this.model.get('exp')),
 				level = this.model.get('level'),
 				toNextLevel = Math.floor(this.model.get('toNextLevel')),
-				levelTotalExp = Math.floor(this.model.get('levelTotalExp')),
-				neededToNext = exp;
+				levelTotalExp = Math.floor(this.model.get('levelTotalExp'));
 			
 			this.$('#level').text(level);
 			this.$('#exp').text(_.beautify(exp));
