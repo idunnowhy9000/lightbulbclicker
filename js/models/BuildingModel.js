@@ -74,19 +74,25 @@ define(['backbone', 'underscore', 'utils'],
 			var AppModel = require('models/AppModel');
 			var self = this;
 			
+			// upgrades to optimize vps
+			if (!this.upgrades) {
+				var self = this;
+				this.upgrades = AppModel.upgradeCollection.filter(function (upgrade) {
+					return upgrade.get('boost')[0] === self.id;
+				});
+			}
+			
 			var vps = this.get('baseVps');
 			var amount = this.get('amount');
 			var mult = 1;
-			AppModel.upgradeCollection.each(function (upgrade) {
+			_.each(this.upgrades, function (upgrade) {
 				if (upgrade.get('earned')) {
 					var boost = upgrade.get('boost'),
 						type = boost[0], amount = boost[1];
-					if (type === self.id || type === 'all') {
-						if (typeof amount === 'string' && amount.substring(0, 1) === 'x') {
-							mult += Number(amount.substring(1, amount.length));
-						} else {
-							vps += amount;
-						}
+					if (typeof amount === 'string' && amount.substring(0, 1) === 'x') {
+						mult += Number(amount.substring(1, amount.length));
+					} else {
+						vps += amount;
 					}
 				}
 			});

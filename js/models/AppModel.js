@@ -61,8 +61,6 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				self.calcMouseVPS();
 			});
 			
-			this.listenTo(this, 'volts', this.storyTicker);
-			
 			// hack to calc vps
 			_.defer(function () {
 				self.calcVPS();
@@ -70,6 +68,11 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			});
 			
 			this.buildingCollection.updateCost();
+			
+			// optimize for click upgrades
+			this.clickUpgrades = this.upgradeCollection.filter(function (upgrade) {
+				return upgrade.get('boost')[0] === 'click';
+			});
 		},
 		
 		loop: function () {
