@@ -53,7 +53,7 @@ define(['underscore', 'backbone', 'utils',
 				this.$('.buildingObj').removeClass('disabled');
 			}
 			if (!this.model.get('displayed')) this.$el.hide();
-			if (AppModel.get('volts') >= this.model.get('displayAt') && !this.model.get('displayed')) {
+			if (AppModel.get('voltsTot') >= this.model.get('displayAt') && !this.model.get('displayed')) {
 				this.model.set('displayed', true);
 				this.$el.fadeIn(400).show();
 			}

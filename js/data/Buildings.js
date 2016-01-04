@@ -15,7 +15,7 @@ define(function () {
 			baseCost:50,
 			baseVps:0.5,
 			description:"Hires some muscular guys to smash bulbs.",
-			displayAt: 100,
+			displayAt: 30,
 		},
 		{
 			name:"Thunder Collector",
@@ -23,7 +23,7 @@ define(function () {
 			baseCost:200,
 			baseVps:2.5,
 			description:"Collects thunder whenever they strike.",
-			displayAt: 250
+			displayAt: 100
 		},
 		{
 			name:"Halogen Lightbulb",
@@ -31,7 +31,7 @@ define(function () {
 			baseCost:500,
 			baseVps:5,
 			description:"AHH! IT's TOO BRIGHT!",
-			displayAt: 1000
+			displayAt: 300
 		},
 		{
 			name:"Tan Lightbulb",
@@ -39,7 +39,7 @@ define(function () {
 			baseCost:3141,
 			baseVps:15,
 			description:"ahh, much better...",
-			displayAt: 5000,
+			displayAt: 1000,
 		},
 		{
 			name:"LED Lightbulb",
@@ -47,31 +47,31 @@ define(function () {
 			baseCost:10000,
 			baseVps:50,
 			description:"LEDs you to your destiny.",
-			displayAt: 20000,
+			displayAt: 5000,
 		},
 		{
 			name:"Bacterial Lightbulb",
 			commonName: "bacterial lightbulb||producing",
-			baseCost:40000,
-			baseVps:100,
+			baseCost:50000,
+			baseVps:500,
 			description:"Small, tiny life forms that will soon take over the WORLD!",
-			displayAt: 99999,
+			displayAt: 10000,
 		},
 		{
 			name:"Dinosaur Lightbulb",
-			commonName: "dinosaur lightbulb||shining",
+			commonName: "dinosaur lightbulb||pooping out",
 			baseCost:161803,
-			baseVps:1618,
+			baseVps:62831,
 			description:"inb4 asteroids",
 			displayAt:19930
 		},
 		{
 			name:"Human Lightbulb",
-			commonName: "human lightbulb||shining",
+			commonName: "human lightbulb||creating",
 			baseCost:200000,
-			baseVps:99999,
+			baseVps:999999,
 			description:"A civilization since 6000 B.C.",
-			displayAt:871995
+			displayAt:100000
 		},
 		//130760000
 	];
