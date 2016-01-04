@@ -239,7 +239,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			var vps = this.buildingCollection.vps();
 			
 			var level = 0;
-			this.levelUpgrades.each(function (upgrade) {
+			_.each(this.levelUpgrades, function (upgrade) {
 				if (upgrade.get('earned')) {
 					var boost = upgrade.get('boost');
 					level = Math.max(level, boost[1]);

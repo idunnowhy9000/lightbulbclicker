@@ -377,51 +377,58 @@ define(function () {
 		{
 			name: 'Open the Gate of Experience',
 			cost: 1024,
-			description: "Volts per seconds are <strong>1%</strong> more efficient per levels.<q>Powerful spirits shall be with you, for those who dare shall open this gate.</q>",
-			boost: ['level', 0.01],
+			description: "Volts per seconds are <strong>5%</strong> efficient per levels.<q>Powerful spirits shall be with you, for those who dare shall open this gate.</q>",
+			boost: ['level', 0.05],
 			displayAt: ['level', 5]
 		},
 		{
 			name: 'Experience Scrolls',
 			cost: 2560,
-			description: "Volts per seconds are <strong>2%</strong> more efficient per levels.<q>Contains the knowledge of the ancient light waves researchers</q>",
-			boost: ['level', 0.02],
+			description: "Volts per seconds are <strong>10%</strong> efficient per levels.<q>Contains the knowledge of the ancient light waves researchers</q>",
+			boost: ['level', 0.1],
 			displayAt: ['level', 10]
 		},
 		{
 			name: 'Quantum Leaper',
 			cost: 512000,
-			description: "Volts per seconds are <strong>5%</strong> more efficient per levels.<q>Harnest the energy of an electron leaping in a hydrogen atom</q>",
-			boost: ['level', 0.05],
+			description: "Volts per seconds are <strong>15%</strong> efficient per levels.<q>Harnest the energy of an electron leaping in a hydrogen atom</q>",
+			boost: ['level', 0.15],
 			displayAt: ['level', 20]
 		},
 		{
 			name: 'Experience Vortex',
 			cost: 10240000,
-			description: "Volts per seconds are <strong>10%</strong> more efficient per levels.<q>A swirling electromagnetic energy field, converting experience into photons.</q>",
-			boost: ['level', 0.1],
+			description: "Volts per seconds are <strong>20%</strong> efficient per levels.<q>A swirling electromagnetic energy field, converting experience into photons.</q>",
+			boost: ['level', 0.2],
 			displayAt: ['level', 30]
 		},
 		{
 			name: 'Level Conversion Unit',
 			cost: 204800000,
-			description: "Volts per seconds are <strong>25%</strong> more efficient per levels.<q>Highly technical machinery, created from a experience vortex and 10 quantum computers.</q>",
+			description: "Volts per seconds are <strong>25%</strong> efficient per levels.<q>Highly technical machinery, created from a experience vortex and 10 quantum computers.</q>",
 			boost: ['level', 0.25],
 			displayAt: ['level', 45]
 		},
 		{
 			name: 'E=mc2 Converter',
 			cost: 4096000000,
-			description: "Volts per seconds are <strong>50%</strong> more efficient per levels.<q>Suprisingly complicated conversion machinery involving angular momentum and snake venoms.</q>",
-			boost: ['level', 0.50],
+			description: "Volts per seconds are <strong>50%</strong> efficient per levels.<q>Suprisingly complicated conversion machinery involving angular momentum and snake venoms.</q>",
+			boost: ['level', 0.5],
 			displayAt: ['level', 50]
 		},
 		{
 			name: 'Energy State Manipulator',
 			cost: 8192000000,
-			description: "Volts per seconds are <strong>100%</strong> more efficient per levels.<q>[filler description]</q>",
+			description: "Volts per seconds are <strong>100%</strong> efficient per levels.<q>[filler description]</q>",
 			boost: ['level', 1],
 			displayAt: ['level', 75]
+		},
+		{
+			name: 'Energy State Manipulator',
+			cost: 16384000000,
+			description: "Volts per seconds are <strong>150%</strong> efficient per levels.<q>[filler description]</q>",
+			boost: ['level', 1.5],
+			displayAt: ['level', 100]
 		},
 		// clicks
 		{

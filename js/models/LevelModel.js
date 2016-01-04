@@ -17,7 +17,7 @@ define(['backbone', 'utils'],
 		
 		earnExp: function (_exp) {
 			utils.increment(this, 'exp', _exp);
-			while (this.get('exp') >= this.get('levelTotalExp') + this.get('toNextLevel')) {
+			while (this.get('exp') >= this.get('toNextLevel')) {
 				this.levelUp();
 			}
 		}
