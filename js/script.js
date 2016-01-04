@@ -395,7 +395,7 @@ define('models/levelModel',['backbone', 'utils'],
 		
 		earnExp: function (_exp) {
 			utils.increment(this, 'exp', _exp);
-			while (this.get('exp') >= this.get('toNextLevel')) {
+			while (this.get('exp') >= this.get('toNextLevel') + this.get('levelTotalExp')) {
 				this.levelUp();
 			}
 		}
@@ -2204,7 +2204,7 @@ define('models/LevelModel',['backbone', 'utils'],
 		
 		earnExp: function (_exp) {
 			utils.increment(this, 'exp', _exp);
-			while (this.get('exp') >= this.get('toNextLevel')) {
+			while (this.get('exp') >= this.get('toNextLevel') + this.get('levelTotalExp')) {
 				this.levelUp();
 			}
 		}
@@ -2243,17 +2243,18 @@ define('views/LevelView',["underscore", "backbone", "utils",
 		},
 		
 		refresh: function () {
-			var exp = Math.round(this.model.get('exp')),
-				level = Math.round(this.model.get('level')),
-				toNextLevel = Math.round(this.model.get('toNextLevel')),
-				levelTotalExp = Math.round(this.model.get('levelTotalExp'));
+			var exp = Math.floor(this.model.get('exp')),
+				level = this.model.get('level'),
+				toNextLevel = Math.floor(this.model.get('toNextLevel')),
+				levelTotalExp = Math.floor(this.model.get('levelTotalExp')),
+				neededToNext = exp;
 			
 			this.$('#level').text(level);
 			this.$('#exp').text(_.beautify(exp));
-			this.$('#neededToNext').text(_.beautify(toNextLevel - exp));
+			this.$('#neededToNext').text(_.beautify(toNextLevel + levelTotalExp - exp));
 			
 			this.$('.progress-bar')
-				.css('width', (exp / toNextLevel * 100) + '%');
+				.css('width', ((exp - levelTotalExp) / toNextLevel * 100) + '%');
 			return this;
 		}
 		
