@@ -30,7 +30,7 @@
 			deps: ['jquery', 'bootstrap']
 		}
 	},
-	optimize: 'none',
+	//optimize: 'none',
 	name: 'main',
 	out: 'js/script.js',
 	include: ['requirejs']
