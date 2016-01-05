@@ -24,7 +24,7 @@ define(['backbone', 'models/BuildingModel'],
 		buildingsOwned: function () {
 			var buildings = 0;
 			this.each(function (building) {
-				buildings += building.amount;
+				buildings += building.get('amount');
 			});
 			return buildings;
 		},

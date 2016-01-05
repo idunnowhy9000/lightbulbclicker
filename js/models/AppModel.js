@@ -51,6 +51,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			this.fetch();
 			
 			this.listenTo(this.buildingCollection, 'change:amount', function () {
+				self.buildingsOwned();
 				self.calcVPS();
 				self.calcMouseVPS();
 				self.buildingCollection.updateCost();
@@ -63,6 +64,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			
 			// hack to calc vps
 			_.defer(function () {
+				self.buildingsOwned();
 				self.calcVPS();
 				self.calcMouseVPS();
 			});
@@ -104,7 +106,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		},
 		
 		// save load
-		sync: function (method, model, options) {console.log(method);
+		sync: function (method, model, options) {
 			if (method === 'create' || method === 'update') {
 				var saveData = [];
 				saveData.push(this.get('version'));
@@ -129,7 +131,9 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				// upgrades
 				var upgradesAmount = [];
 				this.upgradeCollection.each(function (upgrade) {
-					if (upgrade.get('earned')) upgradesAmount.push(upgrade.get('id'));
+					if (upgrade.get('earned')) {
+						upgradesAmount.push(upgrade.get('id'));
+					}
 				});
 				saveData.push(upgradesAmount.join(','));
 				
@@ -138,10 +142,6 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				saveData.push(this.levelModel.get('exp'));
 				saveData.push(this.levelModel.get('toNextLevel'));
 				saveData.push(this.levelModel.get('levelTotalExp'));
-				
-				// VPS
-				saveData.push(this.get('vps'));
-				saveData.push(this.get('m_vps'));
 				
 				// options
 				saveData.push(this.get('autosave'));
@@ -198,9 +198,11 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 					building.set('amount', parseInt(buildings[index]) || 0);
 				});
 
+				var self = this;
 				var upgrades = decoded[i++].split(',');
-				this.upgradeCollection.each(function (upgrade, index) {
-					if (upgrade.get('id') === upgrades[index]) {
+				_.each(upgrades, function (id) {
+					var upgrade = self.upgradeCollection.findWhere({id: id});
+					if (upgrade) {
 						upgrade.set('earned', true);
 					}
 				});
@@ -260,7 +262,6 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 						type = boost[0], amount = boost[1];
 					if (type === 'click') {
 						if (typeof amount === 'string' && amount[0] === 'x') {
-							console.log(amount);
 							mult += Number(amount.substring(1, amount.length));
 						} else if (amount === 'building') {
 							vps += boost[2] * self.get('buildingsOwned');
@@ -324,6 +325,13 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			else if (volts === 5000000) story = 'Your last electric factory has been closed. Take that old boss!';
 			
 			if (story) this.trigger('story', story);
+		},
+		
+		// stats
+		buildingsOwned: function () {
+			var buildingsOwned = this.buildingCollection.buildingsOwned();
+			this.set('buildingsOwned', buildingsOwned);
+			return buildingsOwned;
 		}
 		
 	});
