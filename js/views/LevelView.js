@@ -20,7 +20,6 @@ define(["underscore", "backbone", "utils",
 		
 		render: function () {
 			this.$el.html(this.template(this.model.attributes));
-			this.$('.progress-bar').css('width', (this.model.get('exp') / this.model.get('toNextLevel') * 100) + '%');
 			return this;
 		},
 		

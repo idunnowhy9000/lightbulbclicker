@@ -138,10 +138,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				saveData.push(upgradesAmount.join(','));
 				
 				// levels
-				saveData.push(this.levelModel.get('level'));
 				saveData.push(this.levelModel.get('exp'));
-				saveData.push(this.levelModel.get('toNextLevel'));
-				saveData.push(this.levelModel.get('levelTotalExp'));
 				
 				// options
 				saveData.push(this.get('autosave'));
@@ -208,10 +205,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				});
 
 				// levels
-				this.levelModel.set('level', parseFloat(decoded[i++]) || 0);
-				this.levelModel.set('exp', parseFloat(decoded[i++]) || 0);
-				this.levelModel.set('toNextLevel', parseFloat(decoded[i++]) || 0);
-				this.levelModel.set('levelTotalExp', parseFloat(decoded[i++]) || 0);
+				this.levelModel.earnExp(parseFloat(decoded[i++]) || 0);
 				
 				options.success();
 			}

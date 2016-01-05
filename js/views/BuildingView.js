@@ -71,7 +71,7 @@ define(['underscore', 'backbone', 'utils',
 		},
 		
 		buyMax: function () {
-			this.model.buy(Infinity);
+			this.model.buyMax();
 		},
 		
 		sell: function () {
@@ -83,7 +83,7 @@ define(['underscore', 'backbone', 'utils',
 		},
 		
 		sellMax: function () {
-			this.model.sell(Infinity);
+			this.model.sellMax();
 		},
 		
 	});

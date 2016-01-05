@@ -24,35 +24,64 @@ define(['backbone', 'underscore', 'utils'],
 			for (var i = 0; i < n; i++) {
 				if (AppModel.get('volts') < this.get('cost')) {
 					this.vps();
-					return i;
-				} else {
-					AppModel.remove(this.get('cost'));
-					utils.increment(this, 'amount');
-					this.updateCost();
+					break;
 				}
+				
+				AppModel.remove(this.get('cost'));
+				utils.increment(this, 'amount');
+				this.updateCost();
 			}
 			
 			this.vps();
 			return n;
 		},
 		
-		// Sell
-		sell: function (n) {
+		buyMax: function () {
 			var AppModel = require('models/AppModel');
 			
-			for (var i = 1; i < n; i++) {
-				if (this.get('amount') <= 0) {
-					this.vps();
-					return i;
-				} else {
-					utils.decrement(this, 'amount');
-					this.updateCost();
-					AppModel.earn(this.get('cost') * 0.25);
-				}
+			while (AppModel.get('volts') > this.get('cost')) {
+				AppModel.remove(this.get('cost'));
+				utils.increment(this, 'amount');
+				this.updateCost();
 			}
 			
 			this.vps();
+			return true;
+		},
+		
+		// Sell
+		sell: function (n) {
+			var AppModel = require('models/AppModel');
+			var totalCost = 0;
+			
+			for (var i = 1; i < n; i++) {
+				if (this.get('amount') <= 0) {
+					break;
+				}
+				
+				utils.decrement(this, 'amount');
+				this.updateCost();
+				totalCost += this.get('cost') * 0.25;
+			}
+			
+			AppModel.earn(totalCost);
+			this.vps();
 			return n;
+		},
+		
+		sellMax: function () {
+			var AppModel = require('models/AppModel');
+			var totalCost = 0;
+			
+			while (this.get('amount') > 0) {
+				utils.decrement(this, 'amount');
+				this.updateCost();
+				totalCost = this.get('cost') * 0.25;
+			}
+			
+			AppModel.earn(totalCost);
+			this.vps();
+			return true;
 		},
 		
 		// Costs

@@ -376,14 +376,14 @@ define(function () {
 		// levels
 		{
 			name: 'Open the Gate of Experience',
-			cost: 1024,
+			cost: 1280,
 			description: "Volts per seconds are <strong>5%</strong> efficient per levels.<q>Powerful spirits shall be with you, for those who dare shall open this gate.</q>",
 			boost: ['level', 0.05],
 			displayAt: ['level', 5]
 		},
 		{
 			name: 'Experience Scrolls',
-			cost: 2560,
+			cost: 25600,
 			description: "Volts per seconds are <strong>10%</strong> efficient per levels.<q>Contains the knowledge of the ancient light waves researchers</q>",
 			boost: ['level', 0.1],
 			displayAt: ['level', 10]
@@ -397,37 +397,37 @@ define(function () {
 		},
 		{
 			name: 'Experience Vortex',
-			cost: 10240000,
+			cost: 1024000,
 			description: "Volts per seconds are <strong>20%</strong> efficient per levels.<q>A swirling electromagnetic energy field, converting experience into photons.</q>",
 			boost: ['level', 0.2],
 			displayAt: ['level', 30]
 		},
 		{
 			name: 'Level Conversion Unit',
-			cost: 204800000,
+			cost: 2048000,
 			description: "Volts per seconds are <strong>25%</strong> efficient per levels.<q>Highly technical machinery, created from a experience vortex and 10 quantum computers.</q>",
 			boost: ['level', 0.25],
 			displayAt: ['level', 45]
 		},
 		{
 			name: 'E=mc2 Converter',
-			cost: 4096000000,
+			cost: 40960000,
 			description: "Volts per seconds are <strong>50%</strong> efficient per levels.<q>Suprisingly complicated conversion machinery involving angular momentum and snake venoms.</q>",
 			boost: ['level', 0.5],
 			displayAt: ['level', 50]
 		},
 		{
 			name: 'Energy State Manipulator',
-			cost: 8192000000,
-			description: "Volts per seconds are <strong>100%</strong> efficient per levels.<q>[filler description]</q>",
-			boost: ['level', 1],
+			cost: 81920000,
+			description: "Volts per seconds are <strong>75%</strong> efficient per levels.<q>[filler description]</q>",
+			boost: ['level', 0.75],
 			displayAt: ['level', 75]
 		},
 		{
 			name: 'Energy State Manipulator',
-			cost: 16384000000,
-			description: "Volts per seconds are <strong>150%</strong> efficient per levels.<q>[filler description]</q>",
-			boost: ['level', 1.5],
+			cost: 163840000,
+			description: "Volts per seconds are <strong>100%</strong> efficient per levels.<q>[filler description]</q>",
+			boost: ['level', 1],
 			displayAt: ['level', 100]
 		},
 		// clicks

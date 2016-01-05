@@ -12,7 +12,7 @@ define(['backbone', 'utils'],
 		levelUp: function () {
 			utils.increment(this, 'level');
 			utils.increment(this, 'levelTotalExp', this.get('toNextLevel'));
-			this.set('toNextLevel', this.get('level') * this.get('level') * 100);
+			this.set('toNextLevel', Math.pow(this.get('level'), 3) * 100);
 		},
 		
 		earnExp: function (_exp) {
