@@ -36,7 +36,7 @@ define(function () {
 		{
 			name:"Tan Lightbulb",
 			commonName: "tan lightbulb||shining",
-			baseCost:3141,
+			baseCost:5000,
 			baseVps:15,
 			description:"ahh, much better...",
 			displayAt: 1000,
@@ -52,7 +52,7 @@ define(function () {
 		{
 			name:"Bacterial Lightbulb",
 			commonName: "bacterial lightbulb||producing",
-			baseCost:50000,
+			baseCost:500000,
 			baseVps:500,
 			description:"Small, tiny life forms that will soon take over the WORLD!",
 			displayAt: 10000,
@@ -60,7 +60,7 @@ define(function () {
 		{
 			name:"Dinosaur Lightbulb",
 			commonName: "dinosaur lightbulb||pooping out",
-			baseCost:161803,
+			baseCost:1618030,
 			baseVps:6283,
 			description:"inb4 asteroids",
 			displayAt:19930
@@ -68,10 +68,10 @@ define(function () {
 		{
 			name:"Human Lightbulb",
 			commonName: "human lightbulb||creating",
-			baseCost:200000,
+			baseCost:20000000,
 			baseVps:99999,
 			description:"A civilization since 6000 B.C.",
-			displayAt:100000
+			displayAt:500000
 		},
 		//130760000
 	];

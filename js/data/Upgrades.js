@@ -10,21 +10,21 @@ define(function () {
 		},
 		{
 			name: 'Joseph Swan',
-			cost: 400,
+			cost: 1000,
 			description: 'Incandescent lightbulb are <strong>twice</strong> as efficient.<q>Nice guy, long beard.</q>',
 			boost: ['incandescentlightbulb', 'x2'],
 			displayAt: ['incandescentlightbulb', 10]
 		},
 		{
 			name: 'Hiram Maxim',
-			cost: 10000,
+			cost: 100000,
 			description: 'Incandescent lightbulb are <strong>twice</strong> as efficient.<br><q>Sounds like a Harry Potter spell.</q>',
 			boost: ['incandescentlightbulb', 'x2'],
 			displayAt: ['incandescentlightbulb', 50]
 		},
 		{
 			name: 'Patents',
-			cost: 500000,
+			cost: 5000000,
 			description: 'Incandescent lightbulb are <strong>twice</strong> as efficient.<br><q>PATENT ALL THE THINGS!</q>',
 			boost: ['incandescentlightbulb', 'x2'],
 			displayAt: ['incandescentlightbulb', 100]
@@ -183,21 +183,21 @@ define(function () {
 		// led
 		{
 			name: 'LED Diodes',
-			cost: 1000000,
+			cost: 100000,
 			description: 'LED Lightbulbs gain <strong>+100</strong> base VPS.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 100],
 			displayAt: ['ledlightbulb', 1]
 		},
 		{
 			name: 'Glowstick',
-			cost: 20000000,
+			cost: 2000000,
 			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 'x2'],
 			displayAt: ['ledlightbulb', 1]
 		},
 		{
 			name: 'LED Monitor',
-			cost: 300000000,
+			cost: 30000000,
 			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 'x2'],
 			displayAt: ['ledlightbulb', 1]
@@ -211,7 +211,7 @@ define(function () {
 		},
 		{
 			name: 'Lifi',
-			cost: 800000000,
+			cost: 8000000000,
 			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 'x2'],
 			displayAt: ['ledlightbulb', 1]
@@ -220,70 +220,70 @@ define(function () {
 		{
 			name: 'Fungus',
 			description: "Bacterial Lightbulbs gain <strong>+400</strong> base VPS.<br><q>I have to say, I'm quite a fungi!</q>",
-			cost: 50000,
+			cost: 500000,
 			boost: ['bacteriallightbulb', 400],
 			displayAt: ['bacteriallightbulb', 1]
 		},
 		{
 			name: 'Salmonella',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>Lightbulbs, I salmon thee.</q>",
-			cost: 900000,
+			cost: 9500000,
 			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 10]
 		},
 		{
 			name: 'Cellular division',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>The telomeres man, they limit everything!</q>",
-			cost: 1200000,
+			cost: 120000000,
 			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 50]
 		},
 		{
 			name: 'Cyanidebacteria',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>The bluestuff, man!<br><strong>WE NEED THE BLUE STUFF</strong></q>",
-			cost: 15000000,
+			cost: 1500000000,
 			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 100]
 		},
 		{
 			name: 'Happinessbacteria',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br>",
-			cost: 3000000000,
+			cost: 30000000000,
 			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 250]
 		},
 		// dinosaur
 		{
 			name: 'Jurrasic Quarks',
-			cost: 100000,
+			cost: 1618030,
 			boost: ['dinosaurlightbulb', 800],
 			description: 'Dinosaur Lightbulbs gain <strong>+800</strong> base VPS.<br><q>The essential element of matter, now in dinosaur form</q>',
 			displayAt: ['dinosaurlightbulb', 1]
 		},
 		{
 			name: 'Photinosaurus',
-			cost: 250000,
+			cost: 2000000,
 			boost: ['dinosaurlightbulb', 'x2'],
 			description: "Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>There's no tino!</q>",
 			displayAt: ['dinosaurlightbulb', 10]
 		},
 		{
 			name: 'Photonsaurus',
-			cost: 5000000,
+			cost: 50000000,
 			boost: ['dinosaurlightbulb', 'x2'],
 			description: "Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>You could quantize my electromagnetic waves goodbye.</q>",
 			displayAt: ['dinosaurlightbulb', 50]
 		},
 		{
 			name: 'Mega Dinobulbs',
-			cost: 10000000,
+			cost: 100000000,
 			boost: ['dinosaurlightbulb', 'x2'],
 			description: 'Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>Still better than keys</q>',
 			displayAt: ['dinosaurlightbulb', 100]
 		},
 		{
 			name: 'Unextinction Event',
-			cost: 100000000,
+			cost: 1000000000,
 			boost: ['dinosaurlightbulb', 'x2'],
 			description: 'Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>Meteor?! What meteor?</q>',
 			displayAt: ['dinosaurlightbulb', 250]
@@ -291,35 +291,35 @@ define(function () {
 		// human
 		{
 			name: 'Evolution',
-			cost: 40000,
+			cost: 20000000,
 			boost: ['humanlightbulb', 1500],
 			description: 'Human Lightbulbs gain <strong>+1500</strong> base VPS.<br><q>The Greeks proposed the theory before Charles Darwin</q>',
 			displayAt: ['humanlightbulb', 1]
 		},
 		{
 			name: 'Worship',
-			cost: 400000,
+			cost: 400000000,
 			boost: ['humanlightbulb', 'x2'],
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>All God does is watch us and kill us when we get boring.</q>',
 			displayAt: ['humanlightbulb', 10]
 		},
 		{
 			name: 'Stone Tools',
-			cost: 12345678,
+			cost: 1234567890,
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>Totally stoned, dude.</q>',
 			boost: ['humanlightbulb', 'x2'],
 			displayAt: ['humanlightbulb', 50]
 		},
 		{
 			name: 'Iron Tools',
-			cost: 987654321,
+			cost: 9876543210,
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>One small step for a man.</q>',
 			boost: ['humanlightbulb', 'x2'],
 			displayAt: ['humanlightbulb', 100]
 		},
 		{
 			name: 'Hi Tech',
-			cost: 1234567890,
+			cost: 99999999999,
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>A big leap for mankind.</q>',
 			boost: ['humanlightbulb', 'x2'],
 			displayAt: ['humanlightbulb', 250]
