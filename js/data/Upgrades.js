@@ -39,7 +39,7 @@ define(function () {
 		// bulb smasher
 		{
 			name: 'Experimentation Room',
-			cost: 500,
+			cost: 1000,
 			description: "Bulb smashers gain <strong>+0.5</strong> base VPS.<q>Put on your goggles, prepare your muscles.</q>",
 			boost: ['lightbulbsmasher', 0.5],
 			displayAt: ['lightbulbsmasher', 1]
@@ -97,7 +97,7 @@ define(function () {
 		{
 			name: 'Zeus Worshippers',
 			description: 'Thunder Collectors are <strong>twice</strong> as efficient.<br><q>Actually raised by a goat.</q>',
-			cost: 1000000,
+			cost: 5500000,
 			boost: ['thundercollector', 'x2'],
 			displayAt: ['thundercollector', 100]
 		},
@@ -111,116 +111,116 @@ define(function () {
 		// halogen
 		{
 			name: 'Pressure container',
-			cost: 10000,
+			cost: 5000,
 			description: 'Halogen Lightbulbs gain <strong>+2</strong> base VPS.<q>Ahh, much more better!</q>',
 			boost: ['halogenlightbulb', 5],
 			displayAt: ['halogenlightbulb', 1]
 		},
 		{
 			name: 'Chlorine Lightbulb',
-			cost: 200000,
+			cost: 10000,
 			description: 'Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['halogenlightbulb', 'x2'],
-			displayAt: ['halogenlightbulb', 1]
+			displayAt: ['halogenlightbulb', 10]
 		},
 		{
 			name: 'Hydrocarbon Bromine compounds',
-			cost: 2550000,
+			cost: 255000,
 			description: 'Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['halogenlightbulb', 'x2'],
-			displayAt: ['halogenlightbulb', 1]
+			displayAt: ['halogenlightbulb', 50]
 		},
 		{
 			name: 'Krypton Gas',
-			cost: 50000000,
+			cost: 5000000,
 			description: 'Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['halogenlightbulb', 'x2'],
-			displayAt: ['halogenlightbulb', 1]
+			displayAt: ['halogenlightbulb', 100]
 		},
 		{
 			name: 'Xenon Gas',
-			cost: 500000000,
+			cost: 50000000,
 			description: 'Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['halogenlightbulb', 'x2'],
-			displayAt: ['halogenlightbulb', 1]
+			displayAt: ['halogenlightbulb', 250]
 		},
 		// tan
 		{
 			name: 'Ultraviolet Radiator',
-			cost: 314159,
+			cost: 31415,
 			description: 'Tan Lightbulbs gain <strong>+30</strong> base VPS.<q>Ahh, much more better!</q>',
 			boost: ['tanlightbulb', 30],
 			displayAt: ['tanlightbulb', 1]
 		},
 		{
 			name: 'Sunscreen lotion',
-			cost: 1732050,
+			cost: 173205,
 			description: 'Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['tanlightbulb', 'x2'],
-			displayAt: ['tanlightbulb', 1]
+			displayAt: ['tanlightbulb', 10]
 		},
 		{
 			name: 'Vitamin D Producer',
-			cost: 14142135,
+			cost: 1414213,
 			description: 'Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['tanlightbulb', 'x2'],
-			displayAt: ['tanlightbulb', 1]
+			displayAt: ['tanlightbulb', 50]
 		},
 		{
 			name: 'Cancer Protection Radiator',
-			cost: 223606797,
+			cost: 22360679,
 			description: 'Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['tanlightbulb', 'x2'],
-			displayAt: ['tanlightbulb', 1]
+			displayAt: ['tanlightbulb', 100]
 		},
 		{
 			name: 'Melanin Maker',
-			cost: 3605551275,
+			cost: 360555127,
 			description: 'Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['tanlightbulb', 'x2'],
-			displayAt: ['tanlightbulb', 1]
+			displayAt: ['tanlightbulb', 250]
 		},
 		// led
 		{
 			name: 'LED Diodes',
-			cost: 100000,
+			cost: 50000,
 			description: 'LED Lightbulbs gain <strong>+100</strong> base VPS.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 100],
 			displayAt: ['ledlightbulb', 1]
 		},
 		{
 			name: 'Glowstick',
-			cost: 2000000,
+			cost: 200000,
 			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 'x2'],
-			displayAt: ['ledlightbulb', 1]
+			displayAt: ['ledlightbulb', 10]
 		},
 		{
 			name: 'LED Monitor',
-			cost: 30000000,
+			cost: 3000000,
 			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 'x2'],
-			displayAt: ['ledlightbulb', 1]
+			displayAt: ['ledlightbulb', 50]
 		},
 		{
 			name: 'Superdisplay',
-			cost: 500000000,
+			cost: 50000000,
 			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 'x2'],
-			displayAt: ['ledlightbulb', 1]
+			displayAt: ['ledlightbulb', 100]
 		},
 		{
 			name: 'Lifi',
-			cost: 8000000000,
+			cost: 800000000,
 			description: 'LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>',
 			boost: ['ledlightbulb', 'x2'],
-			displayAt: ['ledlightbulb', 1]
+			displayAt: ['ledlightbulb', 250]
 		},
 		// bacterial
 		{
 			name: 'Fungus',
 			description: "Bacterial Lightbulbs gain <strong>+400</strong> base VPS.<br><q>I have to say, I'm quite a fungi!</q>",
-			cost: 500000,
+			cost: 100000,
 			boost: ['bacteriallightbulb', 400],
 			displayAt: ['bacteriallightbulb', 1]
 		},
@@ -234,28 +234,28 @@ define(function () {
 		{
 			name: 'Cellular division',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>The telomeres man, they limit everything!</q>",
-			cost: 120000000,
+			cost: 12000000,
 			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 50]
 		},
 		{
 			name: 'Cyanidebacteria',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>The bluestuff, man!<br><strong>WE NEED THE BLUE STUFF</strong></q>",
-			cost: 1500000000,
+			cost: 150000000,
 			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 100]
 		},
 		{
 			name: 'Happinessbacteria',
 			description: "Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br>",
-			cost: 30000000000,
+			cost: 3000000000,
 			boost: ['bacteriallightbulb', 'x2'],
 			displayAt: ['bacteriallightbulb', 250]
 		},
 		// dinosaur
 		{
 			name: 'Jurrasic Quarks',
-			cost: 1618030,
+			cost: 161803,
 			boost: ['dinosaurlightbulb', 800],
 			description: 'Dinosaur Lightbulbs gain <strong>+800</strong> base VPS.<br><q>The essential element of matter, now in dinosaur form</q>',
 			displayAt: ['dinosaurlightbulb', 1]
@@ -434,78 +434,78 @@ define(function () {
 		{
 			name:'Let there be light',
 			cost: 100,
-			description: "The mouse gains <strong>+0.1</strong> volts per clicks.<br><q>And then, there was light.</q>",
-			boost: ['click', 0.1],
+			description: "The mouse gains <strong>+0.25</strong> volts per clicks.<br><q>And then, there was light.</q>",
+			boost: ['click', 0.25],
 			displayAt: ['click', 10]
 		},
 		{
 			name:'Taoism',
 			cost: 400,
-			description: "The mouse gains <strong>+0.2</strong> volts per clicks.<br><q>Two heads are better than one.</q>",
-			boost: ['click', 0.2],
+			description: "The mouse is <strong>twice</strong> as efficient.<br><q>Two heads are better than one.</q>",
+			boost: ['click', 'x2'],
 			displayAt: ['click', 100]
 		},
 		{
 			name:'Radiator',
-			cost: 10000,
-			description: "The mouse gains <strong>+0.5</strong> volts per clicks.<br><q>[filler description]</q>",
-			boost: ['click', 0.5],
+			cost: 1000,
+			description: "The mouse is <strong>twice</strong> as efficient.<br><q>[filler description]</q>",
+			boost: ['click', 'x2'],
 			displayAt: ['click', 250]
 		},
 		{
 			name:'Shining Finger',
-			cost: 500000,
-			description: "The mouse gains <strong>+5</strong> volts per building owned.<br><q>What do you mean it's from Gundam?</q>",
-			boost: ['click', 'building', 5],
+			cost: 50000,
+			description: "The mouse is <strong>twice</strong> as efficient.<br><q>What do you mean it's from Gundam?</q>",
+			boost: ['click', 'x2'],
 			displayAt: ['click', 500]
 		},
 		{
 			name:'Voltswaggen',
-			cost: 1000000,
-			description: "The mouse gains <strong>+20</strong> volts per building owned.<br><q>Headlights works at lightspeed, right?</q>",
-			boost: ['click', 'building', 20],
+			cost: 100000,
+			description: "The mouse is <strong>twice</strong> as efficient.<br><q>Headlights works at lightspeed, right?</q>",
+			boost: ['click', 'x2'],
 			displayAt: ['click', 1000]
 		},
 		{
 			name:'Photino Collectors',
-			cost: 15000000,
-			description: "The mouse gains <strong>+30</strong> volts per building owned.<br><q>Aren't even real particles.</q>",
-			boost: ['click', 'building', 30],
+			cost: 1500000,
+			description: "The mouse is <strong>twice</strong> as efficient.<br><q>Aren't even real particles.</q>",
+			boost: ['click', 'x2'],
 			displayAt: ['click', 2000]
 		},
 		{
 			name:'Photon Collectors',
 			cost: 50000000,
-			description: "The mouse gains <strong>+40</strong> volts per building owned.<br><q>Breaks the second law of thermodynamics.</q>",
-			boost: ['click', 'building', 40],
+			description: "The mouse gains <strong>+0.1</strong> volts per building owned.<br><q>Breaks the second law of thermodynamics.</q>",
+			boost: ['click', 'building', 0.1],
 			displayAt: ['click', 5000]
 		},
 		{
 			name:'Cosmic Microwave Collector',
 			cost: 138130000,
-			description: "The mouse gains <strong>+50</strong> volts per building owned.<br><q>[filler description]</q>",
-			boost: ['click', 'building', 50],
+			description: "The mouse gains <strong>+0.5</strong> volts per building owned.<br><q>[filler description]</q>",
+			boost: ['click', 'building', 0.5],
 			displayAt: ['click', 20000]
 		},
 		{
 			name:'Planck Length Observer',
 			cost: 200000000,
-			description: "The mouse gains <strong>+100</strong> volts per building owned.<br><q>Don't do this at home, or anywhere.<br>Unless you want to destroy the world.</q>",
-			boost: ['click', 'building', 100],
+			description: "The mouse gains <strong>+5</strong> volts per building owned.<br><q>Don't do this at home, or anywhere.<br>Unless you want to destroy the world.</q>",
+			boost: ['click', 'building', 5],
 			displayAt: ['click', 500000]
 		},
 		{
 			name:'Supertasking Clicks',
-			cost: 250000000,
-			description: "The mouse gains <strong>+200</strong> volts per building owned.<br><q>Infinite clicks in finite seconds.<br>possibly.</q>",
-			boost: ['click', 'building', 200],
+			cost: 2500000000,
+			description: "The mouse gains <strong>+50</strong> volts per building owned.<br><q>Infinite clicks in finite seconds.<br>possibly.</q>",
+			boost: ['click', 'building', 150],
 			displayAt: ['click', 1500000]
 		},
 		{
 			name:'Lightspeed Manipulator',
-			cost: 500000000,
-			description: "The mouse gains <strong>+400</strong> volts per building owned.<br><q>Yeah, and our dark matter engines are 200% efficient.</q>",
-			boost: ['click', 'building', 400],
+			cost: 50000000000,
+			description: "The mouse gains <strong>+100</strong> volts per building owned.<br><q>Yeah, and our dark matter engines are 200% efficient.</q>",
+			boost: ['click', 'building', 100],
 			displayAt: ['click', 2500000]
 		},
 		

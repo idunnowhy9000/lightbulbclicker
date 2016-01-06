@@ -12,34 +12,34 @@ define(function () {
 		{
 			name:"Lightbulb Smasher",
 			commonName: "lightbulb smasher||smashing",
-			baseCost:100,
+			baseCost:50,
 			baseVps:0.5,
 			description:"Hires some muscular guys to smash bulbs.",
-			displayAt: 50,
+			displayAt: 25,
 		},
 		{
-			name:"Thunder Collector",
+			name:"Lightning Collector",
 			commonName: "thunder collector||collecting",
-			baseCost:500,
+			baseCost:100,
 			baseVps:2.5,
-			description:"Collects thunder whenever they strike.",
-			displayAt: 250
+			description:"Collects lightning whenever they strike.",
+			displayAt: 50
 		},
 		{
 			name:"Halogen Lightbulb",
 			commonName: "halogen lightbulb||shining",
-			baseCost:1000,
+			baseCost:500,
 			baseVps:5,
 			description:"AHH! IT's TOO BRIGHT!",
-			displayAt: 500
+			displayAt: 250
 		},
 		{
 			name:"Tan Lightbulb",
 			commonName: "tan lightbulb||shining",
-			baseCost:5000,
-			baseVps:15,
+			baseCost:1000,
+			baseVps:25,
 			description:"ahh, much better...",
-			displayAt: 1000,
+			displayAt: 500,
 		},
 		{
 			name:"LED Lightbulb",
@@ -52,26 +52,26 @@ define(function () {
 		{
 			name:"Bacterial Lightbulb",
 			commonName: "bacterial lightbulb||producing",
-			baseCost:500000,
+			baseCost:100000,
 			baseVps:500,
 			description:"Small, tiny life forms that will soon take over the WORLD!",
-			displayAt: 10000,
+			displayAt: 19930,
 		},
 		{
 			name:"Dinosaur Lightbulb",
 			commonName: "dinosaur lightbulb||pooping out",
 			baseCost:1618030,
-			baseVps:6283,
+			baseVps:2500,
 			description:"inb4 asteroids",
-			displayAt:19930
+			displayAt:25000
 		},
 		{
 			name:"Human Lightbulb",
 			commonName: "human lightbulb||creating",
 			baseCost:20000000,
 			baseVps:99999,
-			description:"A civilization since 6000 B.C.",
-			displayAt:500000
+			description:"A civilization for 200,000 years",
+			displayAt:5000000
 		},
 		//130760000
 	];

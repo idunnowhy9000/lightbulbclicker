@@ -87,7 +87,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 		switchColumn: function (name, string) {
 			var template = _.template(string);
 			this.$('#col2').html(template(_.extend(this.model.toJSON(), { levelModel: this.model.levelModel.toJSON() })));
-			this.$('.levelContainer').replaceWith(this.levelView.render().el);
+			this.$('.levelContainer').replaceWith(this.levelView.el);
 			
 			this.lastColumn = name;
 			this.lastTemplate = string;

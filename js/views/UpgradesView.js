@@ -1,21 +1,32 @@
-define(['backbone',
+define(['backbone', 'underscore',
 	'views/UpgradeView'],
-	function (Backbone, UpgradeView) {
+	function (Backbone, _, UpgradeView) {
 	
 	var UpgradesView = Backbone.View.extend({
 		
 		tagName: 'div',
 		id: 'upgrade',
 		
-		initialize: function () {
+		initialize: function (options) {
 			this.views = [];
+			if (options.stats) this.stats = options.stats;
 		},
 		
 		render: function () {
 			var self = this;
+			
 			this.$el.empty();
-			this.collection.each(function (building) {
-				var upgradeView = new UpgradeView({ model: building });
+			
+			if (this.stats) {
+				var upgrades = this.collection.models;
+			} else {
+				var upgrades = this.collection.sortBy(function (upgrade) {
+					return upgrade.get('cost');
+				});
+			}
+			
+			_.each(upgrades, function (upgrade) {
+				var upgradeView = new UpgradeView({ model: upgrade });
 				self.views.push(upgradeView);
 				self.$el.append(upgradeView.el);
 			});

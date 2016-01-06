@@ -12,7 +12,7 @@
 		<div class="col-md-6">
 			<p>
 				Level <%= levelModel.level %> (<%= _.beautify(Math.round(levelModel.exp)) %> exp)<br>
-				<%= _.beautify(levelModel.toNextLevel - levelModel.exp) %> exp until next level
+				<%= _.beautify(levelModel.toNextLevel + levelModel.levelTotalExp - Math.floor(levelModel.exp)) %> exp until next level
 			</p>
 		</div>
 	</div>

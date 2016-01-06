@@ -18,11 +18,11 @@ define(['underscore', 'backbone', 'utils',
 		},
 		
 		initialize: function (options) {
-			this.listenTo(this.model, 'change', this.refresh);
+			this.listenTo(this.model, 'change:earned', this.refresh);
 			this.listenTo(AppModel, 'volts', this.refresh);
 			this.listenTo(AppModel.buildingCollection, 'change:amount', this.refresh);
 			this.listenTo(AppModel.Level, 'change:level', this.refresh);
-			
+				
 			this.render()
 				.refresh();
 		},
@@ -45,6 +45,11 @@ define(['underscore', 'backbone', 'utils',
 		},
 		
 		refresh: function () {
+			if (this.model.get('earned')) {
+				this.$el.hide().popover('hide');
+				return this;
+			}
+			
 			this.$el.html(this.template(this.model.attributes));
 			if (this.model.get('cost') > AppModel.get('volts')) {
 				this.$('.upgradeObj').addClass('disabled');
@@ -56,10 +61,6 @@ define(['underscore', 'backbone', 'utils',
 			if (this.model.canDisplay() && !this.model.get('displayed')) {
 				this.model.set('displayed', true);
 				this.$el.fadeIn(400).show();
-			}
-			
-			if (this.model.get('earned')) {
-				this.$el.hide().popover('hide');
 			}
 			
 			return this;
