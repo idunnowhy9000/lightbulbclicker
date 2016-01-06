@@ -68,7 +68,7 @@ define(function () {
 		{
 			name:"Human Lightbulb",
 			commonName: "human lightbulb||creating",
-			baseCost:20000000,
+			baseCost:200000000,
 			baseVps:99999,
 			description:"A civilization for 200,000 years",
 			displayAt:5000000
