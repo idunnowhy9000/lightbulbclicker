@@ -1,9 +1,9 @@
 define(['jquery', 'underscore', 'backbone', 'utils',
-	'collections/AchievementCollection', 'collections/BuildingCollection', 'collections/UpgradeCollection',
+	'collections/AchievementCollection', 'collections/BuildingCollection', 'collections/UpgradeCollection', 'collections/WorkerCollection',
 	'models/levelModel',
 	'data/Achievements', 'data/Buildings', 'data/Upgrades'],
 	function ($, _, Backbone, utils,
-		AchievementCollection, BuildingCollection, UpgradeCollection,
+		AchievementCollection, BuildingCollection, UpgradeCollection, WorkerCollection,
 		LevelModel,
 		AchievementData, BuildingData, UpgradeData) {
 	
@@ -17,23 +17,26 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		defaults: {
 			'version': 2.016,
 			
+			// volts
 			'volts': 0,
 			'voltsTot': 0,
 			'voltsTotAll': 0,
-			'curDate': new Date(),
+			
+			// research
 			
 			// stats
 			'clicked': 0,
 			'vps': 0,
 			'm_vps': 0,
+			'expps': 0,
 			'sessionStart': new Date(),
 			'gameStart': new Date(),
+			'curDate': new Date(),
 			'factName': 'Your Factory',
-			'nameSettable': false,
 			'timeTravelAble': false,
 			
 			// settings
-			'autosave': 60
+			'autosave': 60,
 		},
 		
 		initialize: function () {
@@ -42,6 +45,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			this.buildingCollection = new BuildingCollection(BuildingData);
 			this.upgradeCollection = new UpgradeCollection(UpgradeData);
 			this.achievementCollection = new AchievementCollection();
+			this.workerCollection = new WorkerCollection();
 			this.levelModel = new LevelModel();
 			
 			this.logicElasped = 0;
@@ -52,44 +56,34 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			
 			this.listenTo(this.buildingCollection, 'change:amount', function () {
 				self.buildingsOwned();
-				self.calcVPS();
-				self.calcMouseVPS();
 				self.buildingCollection.updateCost();
+				self.recalc();
 			});
 			
 			this.listenTo(this.upgradeCollection, 'change:earned', function () {
-				self.calcVPS();
-				self.calcMouseVPS();
+				self.recalc();
 			});
 			
 			// hack to calc vps
 			_.defer(function () {
 				self.buildingsOwned();
-				self.calcVPS();
-				self.calcMouseVPS();
+				self.recalc();
 			});
 			
 			this.buildingCollection.updateCost();
 			
 			// optimize for click upgrades
-			this.clickUpgrades = this.upgradeCollection.filter(function (upgrade) {
-				return upgrade.get('boost')[0] === 'click';
-			});
-			
-			this.levelUpgrades = this.upgradeCollection.filter(function (upgrade) {
-				return upgrade.get('boost')[0] === 'level';
-			});
+			this.clickUpgrades = this.upgradePool('click');
+			this.levelUpgrades = this.upgradePool('level');
+			this.exppsUpgrades = this.upgradePool('expps');
 		},
 		
+		// loop
 		loop: function () {
 			this.logicElasped++;
+			this.logic();
+			
 			this.autoSaveElapsed++;
-			
-			if (this.logicElasped >= 1) {
-				this.logic();
-				this.logicElasped = 0;
-			}
-			
 			if (this.get('autosave') && this.autoSaveElapsed >= this.get('autosave')) {
 				this.save();
 				this.autoSaveElapsed = 0;
@@ -102,7 +96,20 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 		},
 		
 		logic: function () {
-			if (this.get('vps')) this.earn(this.get('vps'));
+			this.earn(this.get('vps'));
+			this.levelModel.earnExp(this.get('expps'));
+		},
+		
+		// upgrades
+		hasUpgrade: function (name) {
+			var upgrade = this.upgradeCollection.findWhere({ name: name });
+			return upgrade && upgrade.get('earned');
+		},
+		
+		upgradePool: function (pool) {
+			return this.upgradeCollection.filter(function (upgrade) {
+				return upgrade.get('boost')[0] === pool;
+			});
 		},
 		
 		// save load
@@ -119,7 +126,6 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				saveData.push(this.get('gameStart').getTime());
 				saveData.push(this.get('clicked'));
 				saveData.push(this.get('factName'));
-				saveData.push(this.get('nameSettable'));
 				
 				// buildings
 				var buildingsAmount = [];
@@ -186,8 +192,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 				this.set('sessionStart', new Date(parseInt(decoded[i++])));
 				this.set('gameStart', new Date(parseInt(decoded[i++])));
 				this.set('clicked', parseFloat(decoded[i++]) || 0);
-				this.set('factName', decoded[i++] || '');
-				this.set('nameSettable', decoded[i++] || 'Your Factory');
+				this.set('factName', decoded[i++] || 'Your factory');	
 
 				// buildings
 				var buildings = decoded[i++].split(',');
@@ -230,7 +235,7 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			return this;
 		},
 		
-		// volts per second calculator
+		// calculator
 		calcVPS: function () {
 			var vps = this.buildingCollection.vps();
 			
@@ -245,29 +250,51 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			
 			this.set('vps', vps);
 			this.trigger('volts');
+			return vps;
 		},
 		
 		calcMouseVPS: function () {
 			var self = this;
 			var vps = 1, mult = 1;
-			this.upgradeCollection.each(function (upgrade) {
+			_.each(this.clickUpgrades, function (upgrade) {
 				if (upgrade.get('earned')) {
 					var boost = upgrade.get('boost'),
-						type = boost[0], amount = boost[1];
-					if (type === 'click') {
-						if (typeof amount === 'string' && amount[0] === 'x') {
-							mult += Number(amount.substring(1, amount.length));
-						} else if (amount === 'building') {
-							vps += boost[2] * self.get('buildingsOwned');
-						} else {
-							vps += amount;
-						}
+						amount = boost[1];
+					if (typeof amount === 'string' && amount[0] === 'x') {
+						mult += Number(amount.substring(1, amount.length));
+					} else if (amount === 'building') {
+						vps += boost[2] * self.get('buildingsOwned');
+					} else {
+						vps += amount;
 					}
 				}
 			});
 			var totalVps = vps * mult;
 			this.set('m_vps', totalVps);
 			return totalVps;
+		},
+		
+		calcExpps: function () {
+			var self = this;
+			var expps = 0, mult = 1, totalExpps = 0;
+			if ((expps = this.get('vps'))) {
+				_.each(this.exppsUpgrades, function (upgrade) {
+					if (upgrade.get('earned')) {
+						var boost = upgrade.get('boost');
+						mult += boost[1];
+					}
+				});
+				totalExpps = expps * mult * 0.1;
+			}
+			this.set('expps', totalExpps);
+			return expps;
+		},
+		
+		recalc: function () {
+			this.calcVPS();
+			this.calcMouseVPS();
+			this.calcExpps();
+			return this;
 		},
 		
 		// volts manipulator
@@ -286,11 +313,13 @@ define(['jquery', 'underscore', 'backbone', 'utils',
 			utils.increment(this, 'voltsTot', n);
 			utils.increment(this, 'voltsTotAll', n);
 			this.trigger('volts');
+			return n;
 		},
 		
 		remove: function (n) {
 			utils.decrement(this, 'volts', n);
 			this.trigger('volts');
+			return n;
 		},
 		
 		// story ticker

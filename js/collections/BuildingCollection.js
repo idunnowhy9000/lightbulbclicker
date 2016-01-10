@@ -6,8 +6,6 @@ define(['backbone', 'models/BuildingModel'],
 		model: BuildingModel,
 		
 		vps: function () {
-			var AppModel = require('models/AppModel');
-			
 			var vps = 0;
 			this.each(function (building) {
 				vps += building.vps();

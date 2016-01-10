@@ -17,7 +17,7 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 		
 		model: AppModel,
 		
-		template: _.template(appTemplate),
+		template: _.template(appTemplate, utils),
 		
 		events: {
 			'click #bulb': 'bulbClick',
@@ -58,10 +58,10 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 		},
 		
 		refreshCount: function () {
-			this.$('#count').text(_.suffix(Math.floor(this.model.get('volts'))));
-			document.title = _.suffix(Math.floor(this.model.get('volts')))
+			this.$('#count').text(utils.metric(Math.floor(this.model.get('volts'))));
+			document.title = utils.metric(Math.floor(this.model.get('volts')))
 				+ ' | Lightbulb Inc';
-			this.$('#vps').text(_.suffix(this.model.get('vps').toFixed(2)));
+			this.$('#vps').text(utils.metric(this.model.get('vps'), 2));
 			return this;
 		},
 		
@@ -86,7 +86,11 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 		// Panels
 		switchColumn: function (name, string) {
 			var template = _.template(string);
-			this.$('#col2').html(template(_.extend(this.model.toJSON(), { levelModel: this.model.levelModel.toJSON() })));
+			this.$('#col2').html(template(_.extend(this.model.toJSON(), {
+				levelModel: this.model.levelModel.toJSON(),
+				metric: utils.metric,
+				magnitudes: utils.magnitudes
+			})));
 			this.$('.levelContainer').replaceWith(this.levelView.el);
 			
 			this.lastColumn = name;
@@ -115,14 +119,13 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 			var self = this;
 			bootbox.dialog({
 				title: 'Reset',
-				message: 'Are you sure you want to reset?',
+				message: 'Are you sure you want to reset?<br><span class="warning"><b>Warning:</b> resetting will not gain bonuses.</span>',
 				buttons: {
 					success: {
 						label: "Yes",
 						className: "btn-success",
 						callback: function() {
-							self.model.reset();
-							self.model.destroy();
+							self.model.reset().destroy();
 							self.refresh();
 							return;
 						}
@@ -148,14 +151,12 @@ define(['jquery', 'underscore', 'backbone', 'bootbox', 'utils',
 						callback: function() {
 							var save = $('textarea.import').val();
 							if (save) {
+								self.model.reset().destroy();
 								self.model.fetch({
 									save: save,
 									success: function (model) {
-										self.model.reset();
 										self.refresh();
-									},
-									error: function (model, error) {
-										console.log(error);
+										self.model.recalc();
 									}
 								});
 							}

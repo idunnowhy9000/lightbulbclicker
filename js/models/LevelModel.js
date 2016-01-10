@@ -10,9 +10,15 @@ define(['backbone', 'utils'],
 		},
 		
 		levelUp: function () {
+			try { // i promise i will fix this
+			var AppModel = require('models/AppModel'),
+				vps = AppModel.get('vps');
+			}catch(e){vps=0;}
+			
 			utils.increment(this, 'level');
 			utils.increment(this, 'levelTotalExp', this.get('toNextLevel'));
 			this.set('toNextLevel', Math.pow(this.get('level'), 3) * 100);
+			//this.set('toNextLevel', Math.pow(this.get('level'), 3) * Math.sqrt(vps) * 100);
 		},
 		
 		earnExp: function (_exp) {

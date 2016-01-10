@@ -291,35 +291,35 @@ define(function () {
 		// human
 		{
 			name: 'Evolution',
-			cost: 20000000,
+			cost: 300000000,
 			boost: ['humanlightbulb', 1500],
 			description: 'Human Lightbulbs gain <strong>+1500</strong> base VPS.<br><q>The Greeks proposed the theory before Charles Darwin</q>',
 			displayAt: ['humanlightbulb', 1]
 		},
 		{
 			name: 'Worship',
-			cost: 400000000,
+			cost: 4000000000,
 			boost: ['humanlightbulb', 'x2'],
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>All God does is watch us and kill us when we get boring.</q>',
 			displayAt: ['humanlightbulb', 10]
 		},
 		{
 			name: 'Stone Tools',
-			cost: 1234567890,
+			cost: 12345678900,
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>Totally stoned, dude.</q>',
 			boost: ['humanlightbulb', 'x2'],
 			displayAt: ['humanlightbulb', 50]
 		},
 		{
 			name: 'Iron Tools',
-			cost: 9876543210,
+			cost: 98765432100,
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>One small step for a man.</q>',
 			boost: ['humanlightbulb', 'x2'],
 			displayAt: ['humanlightbulb', 100]
 		},
 		{
 			name: 'Hi Tech',
-			cost: 99999999999,
+			cost: 999999999999,
 			description: 'Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>A big leap for mankind.</q>',
 			boost: ['humanlightbulb', 'x2'],
 			displayAt: ['humanlightbulb', 250]
@@ -327,105 +327,113 @@ define(function () {
 		// level evolution
 		{
 			name: 'Cranking Power',
-			description: "Uses cranks as main energy fuel.<br><q>Hands are better than feets.</q>",
+			description: "Buildings produce <strong>+1%</strong> levels per second.<br><q>Hands are better than feets.</q>",
 			cost: 25,
-			displayAt: ['level', 5]
+			boost: ['expps', 0.01],
+			displayAt: ['level', 1]
 		},
 		{
 			name: 'Bicycle',
-			description: "Uses bicycle as main energy fuel.<br><q>Or are they?! <strong>*dramatic music*</strong></q>",
+			description: "Buildings produce <strong>+5%</strong> levels per second.<br><q>Or are they?! <strong>*dramatic music*</strong></q>",
 			cost: 100,
+			boost: ['expps', 0.05],
 			displayAt: ['level', 15]
 		},
 		{
 			name: 'Lump of Charcoal',
-			description: "Uses charcoal as main energy fuel.<br><q>mfw santa doesn't love me</q>",
+			description: "Buildings produce <strong>+10%</strong> levels per second.<br><q>mfw santa doesn't love me</q>",
 			cost: 1000,
+			boost: ['expps', 0.1],
 			displayAt: ['level', 25]
 		},
 		{
 			name: 'Biomass',
-			description: 'Uses biomass as main energy fuel.<br><q>Poop powered lightbulbs. Yep.</q>',
+			description: 'Buildings produce <strong>+25%</strong> levels per second.<br><q>Poop powered lightbulbs. Yep.</q>',
 			cost: 10000,
+			boost: ['expps', 0.25],
 			displayAt: ['level', 35]
 		},
 		{
 			name: 'Generic Brand Power Generator',
-			description: 'Uses a power generator as main energy fuel.<br><q>Totally trustworthy.</q>',
+			description: 'Buildings produce <strong>+50%</strong> levels per second.<br><q>Totally trustworthy.</q>',
 			cost: 100000,
+			boost: ['expps', 0.5],
 			displayAt: ['level', 45]
 		},
 		{
 			name: 'Wind Turbines',
-			description: 'Uses wind turbines as main energy fuel.<br><q>You take my breath away.</q>',
+			description: 'Buildings produce <strong>+60%</strong> levels per second.<br><q>You take my breath away.</q>',
 			cost: 25000000,
+			boost: ['expps', 0.6],
 			displayAt: ['level', 55]
 		},
 		{
 			name: 'Wave Power',
-			description: "Uses wave power as main energy fuel.<br><q>Tides goes in, tides comes out, you can't explain that</q>",
+			description: "Buildings produce <strong>+75%</strong> levels per second.<br><q>Tides goes in, tides comes out, you can't explain that</q>",
 			cost: 51200000,
+			boost: ['expps', 0.75],
 			displayAt: ['level', 75]
 		},
 		{
 			name: 'Solar Power',
-			description: 'Uses solar power as main energy fuel.<br><q>SolarCity, coming soon.</q>',
+			description: 'Buildings produce <strong>+95%</strong> levels per second.<br><q>SolarCity, coming soon.</q>',
 			cost: 102400000,
+			boost: ['expps', 0.95],
 			displayAt: ['level', 85]
 		},
 		// levels
 		{
 			name: 'Open the Gate of Experience',
-			cost: 1280,
+			cost: 12800,
 			description: "Volts per seconds are <strong>5%</strong> efficient per levels.<q>Powerful spirits shall be with you, for those who dare shall open this gate.</q>",
 			boost: ['level', 0.05],
 			displayAt: ['level', 5]
 		},
 		{
 			name: 'Experience Scrolls',
-			cost: 25600,
+			cost: 256000,
 			description: "Volts per seconds are <strong>10%</strong> efficient per levels.<q>Contains the knowledge of the ancient light waves researchers</q>",
 			boost: ['level', 0.1],
-			displayAt: ['level', 10]
+			displayAt: ['level', 15]
 		},
 		{
 			name: 'Quantum Leaper',
-			cost: 512000,
+			cost: 5120000,
 			description: "Volts per seconds are <strong>15%</strong> efficient per levels.<q>Harnest the energy of an electron leaping in a hydrogen atom</q>",
 			boost: ['level', 0.15],
-			displayAt: ['level', 20]
+			displayAt: ['level', 25]
 		},
 		{
 			name: 'Experience Vortex',
-			cost: 1024000,
+			cost: 10240000,
 			description: "Volts per seconds are <strong>20%</strong> efficient per levels.<q>A swirling electromagnetic energy field, converting experience into photons.</q>",
 			boost: ['level', 0.2],
-			displayAt: ['level', 30]
+			displayAt: ['level', 35]
 		},
 		{
 			name: 'Level Conversion Unit',
-			cost: 2048000,
+			cost: 204800000,
 			description: "Volts per seconds are <strong>25%</strong> efficient per levels.<q>Highly technical machinery, created from a experience vortex and 10 quantum computers.</q>",
 			boost: ['level', 0.25],
 			displayAt: ['level', 45]
 		},
 		{
 			name: 'E=mc2 Converter',
-			cost: 40960000,
+			cost: 4096000000,
 			description: "Volts per seconds are <strong>50%</strong> efficient per levels.<q>Suprisingly complicated conversion machinery involving angular momentum and snake venoms.</q>",
 			boost: ['level', 0.5],
-			displayAt: ['level', 50]
+			displayAt: ['level', 55]
 		},
 		{
 			name: 'Energy State Manipulator',
-			cost: 81920000,
+			cost: 81920000000,
 			description: "Volts per seconds are <strong>75%</strong> efficient per levels.<q>[filler description]</q>",
 			boost: ['level', 0.75],
 			displayAt: ['level', 75]
 		},
 		{
 			name: 'Energy State Manipulator',
-			cost: 163840000,
+			cost: 163840000000,
 			description: "Volts per seconds are <strong>100%</strong> efficient per levels.<q>[filler description]</q>",
 			boost: ['level', 1],
 			displayAt: ['level', 100]
@@ -433,14 +441,14 @@ define(function () {
 		// clicks
 		{
 			name:'Let there be light',
-			cost: 100,
-			description: "The mouse gains <strong>+0.25</strong> volts per clicks.<br><q>And then, there was light.</q>",
-			boost: ['click', 0.25],
+			cost: 150,
+			description: "The mouse gains <strong>+1</strong> volts per clicks.<br><q>And then, there was light.</q>",
+			boost: ['click', 1],
 			displayAt: ['click', 10]
 		},
 		{
 			name:'Taoism',
-			cost: 400,
+			cost: 500,
 			description: "The mouse is <strong>twice</strong> as efficient.<br><q>Two heads are better than one.</q>",
 			boost: ['click', 'x2'],
 			displayAt: ['click', 100]
@@ -454,35 +462,35 @@ define(function () {
 		},
 		{
 			name:'Shining Finger',
-			cost: 50000,
+			cost: 5000,
 			description: "The mouse is <strong>twice</strong> as efficient.<br><q>What do you mean it's from Gundam?</q>",
 			boost: ['click', 'x2'],
 			displayAt: ['click', 500]
 		},
 		{
 			name:'Voltswaggen',
-			cost: 100000,
+			cost: 10000,
 			description: "The mouse is <strong>twice</strong> as efficient.<br><q>Headlights works at lightspeed, right?</q>",
 			boost: ['click', 'x2'],
 			displayAt: ['click', 1000]
 		},
 		{
 			name:'Photino Collectors',
-			cost: 1500000,
+			cost: 150000,
 			description: "The mouse is <strong>twice</strong> as efficient.<br><q>Aren't even real particles.</q>",
 			boost: ['click', 'x2'],
 			displayAt: ['click', 2000]
 		},
 		{
 			name:'Photon Collectors',
-			cost: 50000000,
-			description: "The mouse gains <strong>+0.1</strong> volts per building owned.<br><q>Breaks the second law of thermodynamics.</q>",
+			cost: 5000000,
+			description: "The mouse gains <strong>+0.1</strong> volts per building owned.<br><q>[filler description]</q>",
 			boost: ['click', 'building', 0.1],
 			displayAt: ['click', 5000]
 		},
 		{
 			name:'Cosmic Microwave Collector',
-			cost: 138130000,
+			cost: 13813000,
 			description: "The mouse gains <strong>+0.5</strong> volts per building owned.<br><q>[filler description]</q>",
 			boost: ['click', 'building', 0.5],
 			displayAt: ['click', 20000]
@@ -490,7 +498,7 @@ define(function () {
 		{
 			name:'Planck Length Observer',
 			cost: 200000000,
-			description: "The mouse gains <strong>+5</strong> volts per building owned.<br><q>Don't do this at home, or anywhere.<br>Unless you want to destroy the world.</q>",
+			description: "The mouse gains <strong>+5</strong> volts per building owned.<br><q>Any observations smaller than this will not make sense.<br>You have been warned.</q>",
 			boost: ['click', 'building', 5],
 			displayAt: ['click', 500000]
 		},

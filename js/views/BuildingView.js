@@ -22,7 +22,7 @@ define(['underscore', 'backbone', 'utils',
 		},
 		
 		initialize: function () {
-			this.listenTo(this.model, 'change', this.refresh);
+			this.listenTo(this.model, 'change:amount', this.refresh);
 			this.listenTo(AppModel, 'volts', this.refresh);
 			
 			this.render()
@@ -31,13 +31,13 @@ define(['underscore', 'backbone', 'utils',
 		
 		render: function () {
 			var self = this;
-			this.$el.html(this.template(this.model.attributes))
+			this.$el.html(this.template(_.extend(this.model.attributes, utils)))
 				.popover({
 					trigger: 'hover',
 					html: true,
 					container:'body',
 					content: function () {
-						return self.tooltipTemplate(self.model.attributes);
+						return self.tooltipTemplate(_.extend(self.model.attributes, utils));
 					},
 					placement: 'right',
 					title: this.model.get('name'),
@@ -46,7 +46,7 @@ define(['underscore', 'backbone', 'utils',
 		},
 		
 		refresh: function () {
-			this.$el.html(this.template(this.model.attributes));
+			this.$el.html(this.template(_.extend(this.model.attributes, utils)));
 			if (this.model.getCurrentCost() > AppModel.get('volts')) {
 				this.$('.buildingObj').addClass('disabled');
 			} else {

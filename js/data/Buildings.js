@@ -20,10 +20,10 @@ define(function () {
 		{
 			name:"Lightning Collector",
 			commonName: "thunder collector||collecting",
-			baseCost:100,
+			baseCost:150,
 			baseVps:2.5,
 			description:"Collects lightning whenever they strike.",
-			displayAt: 50
+			displayAt: 100
 		},
 		{
 			name:"Halogen Lightbulb",
@@ -52,7 +52,7 @@ define(function () {
 		{
 			name:"Bacterial Lightbulb",
 			commonName: "bacterial lightbulb||producing",
-			baseCost:100000,
+			baseCost:500000,
 			baseVps:500,
 			description:"Small, tiny life forms that will soon take over the WORLD!",
 			displayAt: 19930,
@@ -60,7 +60,7 @@ define(function () {
 		{
 			name:"Dinosaur Lightbulb",
 			commonName: "dinosaur lightbulb||pooping out",
-			baseCost:1618030,
+			baseCost:2718281,
 			baseVps:2500,
 			description:"inb4 asteroids",
 			displayAt:25000
@@ -68,7 +68,7 @@ define(function () {
 		{
 			name:"Human Lightbulb",
 			commonName: "human lightbulb||creating",
-			baseCost:200000000,
+			baseCost:500000000,
 			baseVps:99999,
 			description:"A civilization for 200,000 years",
 			displayAt:5000000

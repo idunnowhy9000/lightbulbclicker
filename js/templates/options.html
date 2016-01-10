@@ -6,13 +6,13 @@
 	<div class="row">
 		<div class="col-md-6">
 			<p class="medium no-margin" id="factNameDisplay">Your Factory</p>
-			<p class="fond"><strong id="count"><%= _.suffix(Math.floor(volts)) %></strong></p>
-			<p><span id="vps"><%= _.suffix(vps.toFixed(2)) %></span>/second</p>
+			<p class="fond"><strong id="count"><%= metric(Math.floor(volts)) %></strong></p>
+			<p><span id="vps"><%= metric(vps, 2) %></span>/second</p>
 		</div>
 		<div class="col-md-6">
 			<p>
-				Level <%= levelModel.level %> (<%= _.beautify(Math.round(levelModel.exp)) %> exp)<br>
-				<%= _.beautify(levelModel.toNextLevel + levelModel.levelTotalExp - Math.floor(levelModel.exp)) %> exp until next level
+				Level <%= levelModel.level %> (<%= magnitudes(Math.round(levelModel.exp)) %> exp)<br>
+				<%= magnitudes(levelModel.toNextLevel + levelModel.levelTotalExp - Math.floor(levelModel.exp)) %> exp until next level
 			</p>
 		</div>
 	</div>

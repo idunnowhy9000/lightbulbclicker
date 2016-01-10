@@ -1,6 +1,6 @@
 <span><%= description %></span><br>
-Costs <strong><%= _.suffix(cost) %></strong><br>
+Costs <strong><%= metric(cost) %></strong><br>
 <ul>
-	<li>Each <%= single %> <%= actionName %> <strong><%= _.suffix(oneVps.toFixed(2)) %>/second</strong></li>
-	<li><strong><%= amount %></strong> <%= plural %> <%= actionName %> <strong><%= _.suffix(vps.toFixed(2)) %>/second</strong></li>
+	<li>Each <%= single %> produces <strong><%= metric(oneVps) %>/second</strong></li>
+	<li><strong><%= amount %></strong> <%= plural %> <%= actionName %> <strong><%= metric(vps) %>/second</strong></li>
 </ul>

@@ -1,6 +1,6 @@
 <p>
-	Level <span id="level"><%= level %></span> (<span id="exp"><%= _.beautify(Math.floor(exp)) %></span> exp)<br>
-	<span id="neededToNext"><%= _.beautify(toNextLevel + levelTotalExp - Math.floor(exp)) %></span> exp until next level
+	Level <span id="level"><%= level %></span> (<span id="exp"><%= magnitudes(Math.floor(exp)) %></span> exp)<br>
+	<span id="neededToNext"><%= magnitudes(toNextLevel + levelTotalExp - Math.floor(exp)) %></span> exp until next level
 </p>
 <div class="progress" style="margin-top: 15px;  margin-right: 50px; margin-left: 50px; height: 30px">
 	<div class="progress-bar" style="width: <%= ((exp - levelTotalExp) / toNextLevel * 100) %>%">

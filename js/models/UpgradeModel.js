@@ -28,7 +28,7 @@ define(['backbone', 'utils'],
 			} else if (type === 'click') {
 				return AppModel.get('clicked') >= amount;
 			} else if (type === 'level') {
-				return AppModel.levelModel.level >= amount;
+				return AppModel.levelModel.get('level') >= amount;
 			} else if ( (building = AppModel.buildingCollection.findWhere({ id: type })) ) {
 				return building.get('amount') >= amount;
 			} else {

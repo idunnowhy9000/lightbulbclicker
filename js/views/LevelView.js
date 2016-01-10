@@ -7,7 +7,7 @@ define(["underscore", "backbone", "utils",
 	
 	var LevelView = Backbone.View.extend({
 		model: LevelModel,
-		template: _.template(levelTemplate),
+		template: _.template(levelTemplate, utils),
 		
 		id: 'levelContainer',
 		
@@ -19,7 +19,7 @@ define(["underscore", "backbone", "utils",
 		},
 		
 		render: function () {
-			this.$el.html(this.template(this.model.attributes));
+			this.$el.html(this.template(_.extend(this.model.attributes, utils)));
 			return this;
 		},
 		
@@ -30,8 +30,8 @@ define(["underscore", "backbone", "utils",
 				levelTotalExp = Math.floor(this.model.get('levelTotalExp'));
 			
 			this.$('#level').text(level);
-			this.$('#exp').text(_.beautify(exp));
-			this.$('#neededToNext').text(_.beautify(toNextLevel + levelTotalExp - exp));
+			this.$('#exp').text(utils.magnitudes(exp));
+			this.$('#neededToNext').text(utils.magnitudes(toNextLevel + levelTotalExp - exp));
 			
 			this.$('.progress-bar')
 				.css('width', ((exp - levelTotalExp) / toNextLevel * 100) + '%');
