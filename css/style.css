@@ -99,12 +99,9 @@ body{
 }
 
 /* Upgrades */
-.upgradeHolder {
+.upgradeObj {
 	float: left;
 	cursor: pointer;
-}
-
-.upgradeObj {
 	width: 64px;
 	height: 64px;
 	border:1px solid black;

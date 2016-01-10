@@ -13,14 +13,56 @@ Lightbulb Clicker 1.3b
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 	<body>
-		<div id='gameContainer'>
+		<div id="gameContainer">
 			<noscript id="nojs">
 				<p>No JS, no game.</p>
 				<small>(This site requires javascript)</small>
 			</noscript>
-			<div class="container"></div>
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-4" id="col1">
+						<div id="lightbulbListContainer">
+							<p class="large fond">Lightbulbs</p>
+						</div>
+					</div>
+					<div class="col-sm-4" id="col2">
+					<p class="medium no-margin" id="factNameDisplay"></p>
+					<p class="large fond" id="count"></p>
+					<p><span id="vps"></span>/second</p>
+					<div id="bulbContainer">
+						<div id="bulb"></div>
+					</div>
+					<div id="levelContainer"></div>
+					<div id="options">
+						<p>
+							<span id="saveG" class="btn btn-primary">Save Game</span>
+							<span id="importG" class="btn btn-primary">Import Game</span>
+							<span id="exportG" class="btn btn-primary">Export Game</span>
+						</p>
+						<p>
+							<span id="resetG" class="btn btn-primary"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Reset Game</span>
+							<a href="#options" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Options</a>
+						</p>
+						<p>
+							<a href="#stats" role="button" class="btn btn-primary"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Statistics</a>
+						</p>
+					</div>
+					</div>
+					<div class="col-sm-4" id="col3">
+						<div id="upgradeListContainer">
+							<p class="large fond">Upgrades</p>
+						</div>
+					</div>
+				</div>
+				<div id="notify"></div>
+				<div id="particles"></div>
+			</div>
 		</div>
-		<script data-main="js/main" src="js/lib/require.js"></script>
-		<!--<script src="js/script.js"></script>-->
+		<!--<script data-main="js/main" src="js/lib/require.js"></script>-->
+		<script src="js/lib/jquery.js"></script>
+		<script src="js/lib/bootstrap.min.js"></script>
+		<script src="js/lib/bootbox.min.js"></script>
+		<script src="js/lib/tooltip.js"></script>
+		<script src="js/script.js"></script>
 	</body>
 </html>
