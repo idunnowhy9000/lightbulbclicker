@@ -532,6 +532,7 @@
 			var upgrade=Game.Upgrades[i];
 			upgrade.earned=false;
 			upgrade.displayed=false;
+			upgrade.displayable=false;
 		}
 		
 		Game.Level.exp=0;
