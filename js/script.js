@@ -13,86 +13,126 @@
 		}
 	}
 	
+	function dateDiff(left, right){
+		var ms = left - right;
+		if(ms >= 3.154e+10)return Math.floor(ms/3.154e+10)+' years ago';
+		if (ms >= 2.628e+9) return Math.floor(ms/2.628e+9)+' months ago';
+		if (ms >= 8.64e7) return Math.floor(ms/8.64e7)+' days ago';
+		if (ms >= 3.6e6) return Math.floor(ms/3.6e6)+' hours ago';
+		if (ms >= 60000) return Math.floor(ms/60000)+' minutes ago';
+		if (ms >= 1000) return Math.floor(ms/1000)+' seconds ago';
+		return 'just now';
+	}
+	
 	// Number formatters
 	function numberFormatter(units, plural) {
 		var single = units[0]||'';
 		if (!plural) plural = '';
 		
 		return function (num) {
-			return beautify(function () {
-				var decimal;
-				if (num > 1000000) {
-					for(var i=units.length-1; i>=0; i--) {
-						decimal = Math.pow(1000, i+1);
+			var decimal;
+			if (num > 1000000) {
+				for(var i=units.length-1; i>=0; i--) {
+					decimal = Math.pow(1000, i+1);
 
-						if(num <= -decimal || num >= decimal) {
-							return (Math.round((num / decimal) * 1000) / 1000) + units[i];
-						}
+					if(num <= -decimal || num >= decimal) {
+						return (Math.round((num / decimal) * 1000) / 1000) + units[i];
 					}
-				} else {
-					num = Math.round(num * 1000) / 1000;
-					if (num < 1) return num + single;
-					else return num + plural;
 				}
-			}());
+			} else {
+				num = Math.round(num * 1000) / 1000;
+				if (num < 1) return num + single;
+				else return num + plural;
+			}
 		}
 	}
 	
-	function beautify(value) {
-		return value.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+	function addCommas(value) {
+		return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
 	}
 	
-	var metric = numberFormatter([
-		' volt',
-		' megavolts',
-		' gigavolts',
-		' teravolts',
-		' exavolts',
-		' petavolts',
-		' zettavolts',
-		' yottavolts',
-		' rozettavolts',
-		' jiggavolts',
-		' hellavolts',
-		' multivolts'
-	], ' volts'),
+	var metric = [
+		numberFormatter([
+			' volt',
+			' megavolts',
+			' gigavolts',
+			' teravolts',
+			' exavolts',
+			' petavolts',
+			' zettavolts',
+			' yottavolts',
+			' multivolts',
+			' hellavolts',
+			' rozettavolts',
+			' jiggavolts',
+			' nirvanavolts',
+			' wattavolts',
+			' vendettavolts'
+		], ' volts'),
+		numberFormatter([
+			' V',
+			' MV',
+			' GV',
+			' TV',
+			' EV',
+			' PV',
+			' ZV',
+			' YV',
+			' MiV',
+			' HV',
+			' RV',
+			' JV',
+			' NV',
+			' WV',
+			' VV'
+		])
+	],
 	
-	metricShort = numberFormatter([
-		' V',
-		' MV',
-		' GV',
-		' TV',
-		' EV',
-		' PV',
-		' ZV',
-		' YV',
-		' RV',
-		' JV',
-		' HV',
-		' MiV',
-	]),
-	
-	magnitudes = numberFormatter([
-		'',
-		' million',
-		' billion',
-		' trillion',
-		' quadrillion',
-		' quintillion',
-		' sextillion',
-		' septillion',
-		' octillion',
-		' nonillion',
-		' decillion',
-		' undecillion'
-	]);
+	magnitudes = [
+		numberFormatter([
+			'',
+			' million',
+			' billion',
+			' trillion',
+			' quadrillion',
+			' quintillion',
+			' sextillion',
+			' septillion',
+			' octillion',
+			' nonillion',
+			' decillion',
+			' undecillion',
+			' duodecillion',
+			' tredecillion',
+			' quattuordecillion',
+			' quindecillion'
+		]),
+		numberFormatter([
+			'',
+			' M',
+			' B',
+			' T',
+			' Qa',
+			' Qi',
+			' Sx',
+			' Sp',
+			' Oc',
+			' No',
+			' Dc',
+			' UnD',
+			' DoD',
+			' TrD',
+			' QaD',
+			' QiD'
+		])
+	];
 	
 	/************************************
 	GAME
 	************************************/
 	var Game = {};
 	
-	Game.version = 2.016;
+	Game.version = 2.01601; // y.ear month
 	Game.versionRead = '2.016a';
 	
 	Game.ready = 0;
@@ -129,7 +169,9 @@
 		
 		// options
 		Game.prefs = {
-			autoSave:60
+			autoSave:60,
+			focus:1,
+			shortNum:0
 		};
 		
 		// track events
@@ -145,6 +187,17 @@
 		Game.draw();
 		Game.loop();
 	};
+	
+	/************************************
+	BEAUTIFIERS
+	************************************/
+	function metricify(n){
+		return addCommas(metric[Game.prefs.shortNum?1:0](n));
+	}
+	
+	function magnitudify(n){
+		return addCommas(magnitudes[Game.prefs.shortNum?1:0](n));
+	}
 	
 	/************************************
 	BIND EVENTS
@@ -216,22 +269,21 @@
 	COUNTS
 	************************************/
 	Game.refreshCount=function(){
-		$('#count').text(metric(Math.floor(this.volts)));
-		$('#vps').text(metric(this.vps, 2));
+		$('#count').text(metricify(Math.floor(this.volts)));
+		$('#vps').text(metricify(this.vps) + (Game.prefs.shortNum?"/s":"/second"));
 	}
 		
 	/************************************
 	FACTORY NAME
 	************************************/
 	Game.openFactoryName=function(){
-		var self = this;
 		bootbox.prompt({
 			title: 'Name your factory',
-			value: this.factName,
+			value: Game.factName,
 			callback: function (name) {
 				if (name) {
-					self.factName = name;
-					self.refreshFactoryName();
+					Game.factName = name;
+					Game.refreshFactoryName();
 				}
 			}
 		});
@@ -328,7 +380,7 @@
 		if (Game.Level.level>=45)Game.unlock("Generic Brand Power Generator");
 		if (Game.Level.level>=55)Game.unlock("Wind Turbines");
 		if (Game.Level.level>=75)Game.unlock("Wave Power");
-		if (Game.Level.level>=85)Game.unlock("Solar Power");
+		if (Game.Level.level>=80)Game.unlock("Solar Power");
 		
 		if (Game.Level.level>=5)Game.unlock("Open the Gate of Experience");
 		if (Game.Level.level>=15)Game.unlock("Experience Scrolls");
@@ -355,10 +407,11 @@
 			Game.save();
 		}
 		if(Game.T%(Game.fps*2) ==0){
-			document.title = metric(Math.floor(this.volts))
+			document.title = metricify(Math.floor(this.volts))
 				+ ' | Lightbulb Inc';
 		}
 		
+		Game.lastDate =Date.now();
 		Game.T++;
 	};
 	
@@ -369,7 +422,7 @@
 		Game.logicElasped++;
 		Game.logic();
 		
-		if (document.hasFocus() || Game.T%5==0) Game.refresh();
+		if (document.hasFocus() || Game.prefs.focus || Game.T%5==0) Game.refresh();
 		
 		setTimeout(Game.loop, 1000/Game.fps);
 	};
@@ -391,6 +444,10 @@
 		
 		Game.bindEvents();
 	};
+	
+	/************************************
+	DRAW COLUMNS
+	************************************/
 	
 	/************************************
 	REFRESH
@@ -420,6 +477,7 @@
 	};
 	
 	Game.spend = function(n){
+		if (n>Game.volts) return 0;
 		Game.volts-=n;
 		return n;
 	};
@@ -468,10 +526,15 @@
 					}
 				}
 				
+				Game.refreshFactoryName();
 				Game.recalc();
 				
 				Game.Level.exp=0;
 				Game.Level.earnExp(parseFloat(decoded[10]));
+				
+				Game.prefs.autoSave=parseInt(decoded[11]);
+				Game.prefs.focus=!!decoded[12];
+				Game.prefs.shortNum=!!decoded[13];
 			} else {
 				Game.Notify('Save error', "Sorry, we don't support this version anymore.");
 			}
@@ -512,6 +575,8 @@
 		
 		// preferences
 		saveData.push(Game.prefs.autoSave);
+		saveData.push(Game.prefs.focus);
+		saveData.push(Game.prefs.shortNum);
 		
 		var saveStr = saveData.join('!');
 		
@@ -559,10 +624,13 @@
 		
 		// options
 		Game.prefs = {
-			autoSave:60
+			autoSave:60,
+			focus:1,
+			shortNum:0
 		};
 		
 		Game.refresh();
+		Game.refreshFactoryName();
 		Game.recalc();
 	}
 	
@@ -576,15 +644,15 @@
 		}
 		
 		var level=0;
-		if (Game.has('Open the Gate of Experience')) level = 1.05;
-		if (Game.has('Experience Scrolls')) level = 1.1;
-		if (Game.has('Quantum Leaper')) level = 1.15;
-		if (Game.has('Experience Vortex')) level = 1.2;
-		if (Game.has('Level Conversion Unit')) level = 1.25;
-		if (Game.has('E=mc2 Converter')) level = 1.5;
-		if (Game.has('Energy State Manipulator')) level = 1.75;
-		if (Game.has('Energy State Manipulator')) level = 2;
-		vps *= 1+(level * 0.1);
+		if (Game.has('Open the Gate of Experience')) level = 0.05;
+		if (Game.has('Experience Scrolls')) level = 0.1;
+		if (Game.has('Quantum Leaper')) level = 0.15;
+		if (Game.has('Experience Vortex')) level = 0.2;
+		if (Game.has('Level Conversion Unit')) level = 0.25;
+		if (Game.has('E=mc2 Converter')) level = 0.5;
+		if (Game.has('Energy State Manipulator')) level = 0.75;
+		if (Game.has('Energy State Manipulator')) level = 1;
+		vps *= (1+level)*0.1;
 		
 		return Game.vps = vps;
 	};
@@ -595,18 +663,14 @@
 			expps += Game.Buildings[i].calcVPS();
 		}
 		expps *= 0.1;
-		
-		var mult = 1;
-		if(Game.has("Cranking Power")) mult+=0.01;
-		if(Game.has("Bicycle")) mult+=0.05;
-		if(Game.has("Lump of Charcoal")) mult+=0.1;
-		if(Game.has("Biomass")) mult+=0.25;
-		if(Game.has("Generic Brand Power Generator")) mult+=0.5;
-		if(Game.has("Wind Turbines")) mult+=0.6;
-		if(Game.has("Wave Power")) mult+=0.75;
-		if(Game.has("Solar Power")) mult+=0.95;
-		expps *= mult;
-		
+		if(Game.has("Cranking Power")) expps*=1.01;
+		if(Game.has("Bicycle")) expps*=1.05;
+		if(Game.has("Lump of Charcoal")) expps*=1.1;
+		if(Game.has("Biomass")) expps*=1.25;
+		if(Game.has("Generic Brand Power Generator")) expps*=1.5;
+		if(Game.has("Wind Turbines")) expps*=1.6;
+		if(Game.has("Wave Power")) expps*=1.75;
+		if(Game.has("Solar Power")) expps*=1.95;
 		return Game.expps = expps;
 	};
 	
@@ -618,23 +682,29 @@
 		if(Game.has("Shining Finger"))vps*=2;
 		if(Game.has("Voltswaggen"))vps*=2;
 		if(Game.has("Photino Collectors"))vps*=2;
+		
 		if(Game.has("Photon Collectors"))vps+=Game.BuildingsOwned*0.1;
 		if(Game.has("Cosmic Microwave Collector"))vps+=Game.BuildingsOwned*0.5;
 		if(Game.has("Planck Length Observer"))vps+=Game.BuildingsOwned*10;
 		if(Game.has("Supertasking Clicks"))vps+=Game.BuildingsOwned*100;
 		if(Game.has("Lightspeed Manipulator"))vps+=Game.BuildingsOwned*150;
+		
 		return Game.m_vps = vps;
 	}
 	
 	Game.recalc = function () {
-		Game.calcVPS();
-		Game.calcExpps();
-		Game.calcMouseVPS();
-		Game.Level.calculateNextLevel();
+		
 		
 		for (var i in Game.Buildings) {
 			Game.Buildings[i].updateCost();
 		}
+		Game.calculateBuildingsOwned();
+		Game.calculateUpgradesOwned();
+		
+		Game.calcVPS();
+		Game.calcExpps();
+		Game.calcMouseVPS();
+		Game.Level.calculateNextLevel();
 	};
 	
 	/************************************
@@ -647,7 +717,7 @@
 		Game.Level.earnExp(m_vps);
 		Game.clicked++;
 		
-		Game.Particle('+'+m_vps, Game.cursor.x, Game.cursor.y - 25);
+		Game.Particle('+'+magnitudify(m_vps), Game.cursor.x, Game.cursor.y - 25);
 		
 		return m_vps;
 	}
@@ -700,6 +770,7 @@
 				
 				Game.spend(this.cost);
 				this.amount++;
+				Game.BuildingsOwned++;
 				this.updateCost();
 			}
 			
@@ -711,6 +782,7 @@
 			while(Game.volts>this.cost){
 				Game.spend(this.cost);
 				this.amount++;
+				Game.BuildingsOwned++;
 				this.updateCost();
 			}
 			
@@ -728,6 +800,7 @@
 				}
 				
 				this.amount--;
+				Game.BuildingsOwned--;
 				this.updateCost();
 				totalCost += this.cost * 0.25;
 			}
@@ -742,6 +815,7 @@
 			
 			while(this.amount>0){
 				this.amount--;
+				Game.BuildingsOwned--;
 				this.updateCost();
 				totalCost += this.cost * 0.25;
 			}
@@ -782,12 +856,13 @@
 					'<div class="buildingAmount">' + this.amount + '</div>' +
 					'<div class="buildingInfo">' +
 						'<div class="buildingName">' + name + '</div>' +
-						'<div class="buildingCost">' + metric(this.cost) + '</div>' +
+						'<div class="buildingCost">' + metricify(this.cost) + '</div>' +
 					'</div>' +
 				'</div>' +
 				'<div class="buySell">' +
 					'<a class="buy10">Buy 10</a>' +
 					'<a class="buyMax">Buy Max</a>' +
+					'<a class="sell1">Sell 1</a>' +
 					'<a class="sell10">Sell 10</a>' +
 					'<a class="sellMax">Sell Max</a>' +
 				'</div>'
@@ -798,10 +873,10 @@
 				container:'body',
 				content:function(){
 					return '<span>'+description+'</span><br>' +
-							'Costs <strong>'+metric(self.cost)+'</strong><br>' +
+							'Costs <strong>'+metricify(self.cost)+'</strong><br>' +
 							'<ul>' +
-								'<li>Each '+single+' produces <strong>'+metric(self.oneVps)+'/second</strong></li>' +
-								'<li><strong>'+self.amount+'</strong> '+plural+' '+actionName+' <strong>'+metric(self.vps)+'/second</strong></li>' +
+								'<li>Each '+single+' produces <strong>'+metricify(self.oneVps)+'/second</strong></li>' +
+								'<li><strong>'+self.amount+'</strong> '+plural+' '+actionName+' <strong>'+metricify(self.vps)+'/second</strong></li>' +
 							'</ul>';
 				},
 				placement: 'right',
@@ -815,12 +890,13 @@
 			this.el.children('.buildingObj').click(function() {self.buy(1)});
 			this.el.find('.buy10').click(function() {self.buy(10)});
 			this.el.find('.buyMax').click(function() {self.buyMax()});
+			this.el.find('.sell1').click(function() {self.sell(1)});
 			this.el.find('.sell10').click(function() {self.sell(10)});
 			this.el.find('.sellMax').click(function() {self.sellMax()});
 		}
 		this.refresh = function() {
-			this.el.find('.buildingCost').text(metric(this.cost));
-			this.el.find('.buildingAmount').text(magnitudes(this.amount));
+			this.el.find('.buildingCost').text(metricify(this.cost));
+			this.el.find('.buildingAmount').text(magnitudify(this.amount));
 			if (this.cost > Game.volts) {
 				this.el.children('.buildingObj').addClass('disabled');
 			} else {
@@ -834,90 +910,13 @@
 		}
 		
 		Game.Buildings[name] = this;
-		Game.BuildingsOwned++;
 	};
 	
-	/************************************
-	UPGRADES
-	************************************/
-	Game.Upgrades = {};
-	Game.UpgradesById = {};
-	Game.UpgradesOwned = 0;
-	Game.Upgrade = function (name, cost, description) {
-		this.id=toId(name);
-		this.name=name;
-		this.description=description;
-		this.cost=cost;
-		this.earned=false;
-		
-		this.displayed=false;
-		this.displayable=false;
-		
-		this.buy=function(){
-			if (this.cost > Game.volts) return false;
-			Game.spend(this.cost);
-			this.earned = true;
-			Game.recalc();
+	Game.calculateBuildingsOwned = function(){
+		for(var i in Game.Buildings){
+			Game.BuildingsOwned += Game.Buildings[i].amount;
 		}
-		
-		// draw
-		this.el=null;
-		this.draw=function(){
-			if(this.el)return;
-			var self=this;
-			this.el=$('<div class="upgradeObj"></div>')
-			.css('background-image', 'url("images/upgrades/' + this.id + '.png")')
-			.popover({
-				trigger:'hover',
-				html:true,
-				container:'body',
-				content:function(){
-					return '<p>Costs <strong class="cost">' + metric(cost) + '</strong></p>' +
-						'<p>' + description + '</p>';
-				},
-				placement: 'bottom',
-				title: this.name
-			});
-			
-			if (!this.displayed)this.el.hide();
-			this.el.click(function(){self.buy()});
-			$('#upgradeListContainer').append(this.el);
-		}
-		this.refresh=function(){
-			if (this.earned) {
-				this.el.hide().popover('hide');
-				return;
-			}
-			
-			if (this.cost > Game.volts) {
-				this.el.addClass('disabled');
-			} else {
-				this.el.removeClass('disabled');
-			}
-			
-			if (!this.displayed) this.el.hide();
-			if (this.displayable && !this.displayed){
-				this.displayed = true;
-				this.el.fadeIn(400).show();
-			}
-		}
-		
-		Game.Upgrades[name] = this;
-		Game.UpgradesById[this.id] = this;
-		Game.UpgradesOwned++;
-	};
-	
-	Game.has = function (name) {
-		return Game.Upgrades[name] && Game.Upgrades[name].earned;
-	};
-	
-	Game.unlock=function(name){
-		return Game.Upgrades[name].displayable=true;
-	};
-	
-	Game.lock=function(name){
-		return Game.Upgrades[name].displayable=false;
-	};
+	}
 	
 	/************************************
 	BUILDINGS DATA
@@ -1005,6 +1004,93 @@
 	});
 	
 	/************************************
+	UPGRADES
+	************************************/
+	Game.Upgrades = {};
+	Game.UpgradesById = {};
+	Game.UpgradesOwned = 0;
+	Game.Upgrade = function (name, cost, description) {
+		this.id=toId(name);
+		this.name=name;
+		this.description=description;
+		this.cost=cost;
+		this.earned=false;
+		
+		this.displayed=false;
+		this.displayable=false;
+		
+		this.buy=function(){
+			if (this.cost > Game.volts) return false;
+			Game.spend(this.cost);
+			this.earned = true;
+			Game.recalc();
+		}
+		
+		// draw
+		this.el=null;
+		this.draw=function(){
+			if(this.el)return;
+			var self=this;
+			this.el=$('<div class="upgradeObj"></div>')
+			.css('background-image', 'url("images/upgrades/' + this.id + '.png")')
+			.popover({
+				trigger:'hover',
+				html:true,
+				container:'body',
+				content:function(){
+					return '<p>Costs <strong class="cost">' + metricify(cost) + '</strong></p>' +
+						'<p>' + description + '</p>';
+				},
+				placement: 'bottom',
+				title: this.name
+			});
+			
+			if (!this.displayed)this.el.hide();
+			this.el.click(function(){self.buy()});
+			$('#upgradeListContainer').append(this.el);
+		}
+		this.refresh=function(){
+			if (this.earned) {
+				this.el.hide().popover('hide');
+				return;
+			}
+			
+			if (this.cost > Game.volts) {
+				this.el.addClass('disabled');
+			} else {
+				this.el.removeClass('disabled');
+			}
+			
+			if (!this.displayed) this.el.hide();
+			if (this.displayable && !this.displayed){
+				this.displayed = true;
+				this.el.fadeIn(400).show();
+			}
+		}
+		
+		Game.Upgrades[name] = this;
+		Game.UpgradesById[this.id] = this;
+	};
+	
+	Game.has = function (name) {
+		return Game.Upgrades[name] && Game.Upgrades[name].earned;
+	};
+	
+	Game.unlock=function(name){
+		return Game.Upgrades[name].displayable=true;
+	};
+	
+	Game.lock=function(name){
+		return Game.Upgrades[name].displayable=false;
+	};
+	
+	Game.calculateUpgradesOwned=function(){
+		for(var i in Game.Upgrades){
+			if (Game.Upgrades[i].earned) Game.UpgradesOwned++;
+		}
+	}
+	
+	/************************************
 	UPGRADES DATA
 	************************************/
 	// incandescent
@@ -1071,11 +1157,11 @@
 	new Game.Upgrade("Hi Tech",999999999999,"Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>A big leap for mankind.</q>");
 	
 	// levels
-	new Game.Upgrade("Cranking Power",25,"Buildings produce <strong>+1%</strong> levels per second.<br><q>Hands are better than feets.</q>");
-	new Game.Upgrade("Bicycle",100,"Buildings produce <strong>+5%</strong> levels per second.<br><q>Or are they?! <strong>*dramatic music*</strong></q>");
-	new Game.Upgrade("Lump of Charcoal",1000,"Buildings produce <strong>+10%</strong> levels per second.<br><q>mfw santa doesn't love me</q>");
-	new Game.Upgrade("Biomass",10000,"Buildings produce <strong>+25%</strong> levels per second.<br><q>Poop powered lightbulbs. Yep.</q>");
-	new Game.Upgrade("Generic Brand Power Generator",100000,"Buildings produce <strong>+50%</strong> levels per second.<br><q>Totally trustworthy.</q>");
+	new Game.Upgrade("Cranking Power",100,"Buildings produce <strong>+1%</strong> levels per second.<br><q>Hands are better than feets.</q>");
+	new Game.Upgrade("Bicycle",750,"Buildings produce <strong>+5%</strong> levels per second.<br><q>Or are they?! <strong>*dramatic music*</strong></q>");
+	new Game.Upgrade("Lump of Charcoal",5000,"Buildings produce <strong>+10%</strong> levels per second.<br><q>mfw santa doesn't love me</q>");
+	new Game.Upgrade("Biomass",50000,"Buildings produce <strong>+25%</strong> levels per second.<br><q>Poop powered lightbulbs. Yep.</q>");
+	new Game.Upgrade("Generic Brand Power Generator",500000,"Buildings produce <strong>+50%</strong> levels per second.<br><q>Totally trustworthy.</q>");
 	new Game.Upgrade("Wind Turbines",25000000,"Buildings produce <strong>+60%</strong> levels per second.<br><q>You take my breath away.</q>");
 	new Game.Upgrade("Wave Power",51200000,"Buildings produce <strong>+75%</strong> levels per second.<br><q>Tides goes in, tides comes out, you can't explain that</q>");
 	new Game.Upgrade("Solar Power",102400000,"Buildings produce <strong>+95%</strong> levels per second.<br><q>SolarCity, coming soon.</q>");
@@ -1133,17 +1219,17 @@
 		if(this.el)return;
 		this.el=$('#levelContainer')
 		.html('<p>'+
-			'Level <span class="level">'+this.level+'</span> (<span class="exp">'+magnitudes(this.exp)+'</span> exp)<br>'+
-			'<span class="neededToNext">' + magnitudes(this.toNextLevel + this.levelTotalExp - Math.floor(this.exp)) + '</span> exp until next level'+
+			'Level <span id="level">'+this.level+'</span> (<span id="exp">'+magnitudify(this.exp)+'</span> exp)<br>'+
+			'<span id="neededToNext">' + magnitudify(this.toNextLevel + this.levelTotalExp - Math.floor(this.exp)) + '</span> exp until next level'+
 		'</p>'+
 		'<div class="progress" style="margin-top: 15px;  margin-right: 50px; margin-left: 50px; height: 30px">'+
 			'<div class="progress-bar"></div>'+
 		'</div>')
 	}
 	Game.Level.refresh=function(){
-		this.el.find('.level').text(this.level);
-		this.el.find('.exp').text(magnitudes(Math.floor(this.exp)));
-		this.el.find('.neededToNext').text(magnitudes(this.toNextLevel + this.levelTotalExp - Math.floor(this.exp)));
+		this.el.find('#level').text(this.level);
+		this.el.find('#exp').text(magnitudify(Math.floor(this.exp)));
+		this.el.find('#neededToNext').text(magnitudify(this.toNextLevel + this.levelTotalExp - Math.floor(this.exp)));
 		this.el.find('.progress-bar').css('width', ((this.exp - this.levelTotalExp) / this.toNextLevel * 100) + '%');
 	}
 	

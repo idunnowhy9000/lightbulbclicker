@@ -13,7 +13,7 @@ body{
 /* Columns */
 #col1, #col2, #col3{
 	text-align: center;
-	padding: 5px 2px;
+	padding: 5px 10px;
 	min-height:100vh;
 	max-height:100vh;
 	overflow:auto;
@@ -23,6 +23,12 @@ body{
 	/* No support for these yet, use at own risk */
 	-o-user-select: none;
 	user-select: none;
+}
+
+/* Level */
+#levelContainer .progress{
+	width: 50%;
+	margin: 15px auto !important;
 }
 /* Lightbulb */
 #bulb{
