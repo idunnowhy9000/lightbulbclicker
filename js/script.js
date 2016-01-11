@@ -5,6 +5,14 @@
 		return text.toString().toLowerCase().replace(/[^a-z0-9]+/g, '');
 	}
 	
+	function choose(arr) {return arr[Math.floor(Math.random()*arr.length)];}
+	
+	function removeFromArray(array, item){
+		if(array.indexOf(item)!==-1){
+			array.splice(array.indexOf(item),1);
+		}
+	}
+	
 	// Number formatters
 	function numberFormatter(units, plural) {
 		var single = units[0]||'';
@@ -98,9 +106,13 @@
 		Game.T=0;
 		Game.drawT=0;
 		
-		Game.volts = 0;
-		Game.voltsTot = 0;
-		Game.voltsTotAll = 0;
+		Game.volts = 0; // in bank
+		Game.voltsTot = 0; // total
+		Game.voltsTotAll = 0; // all time
+		
+		Game.research = 0; // in bank
+		Game.researchTot = 0; // total
+		Game.researchTotAll = 0; // all time
 		
 		Game.vps = 0;
 		Game.m_vps = 0;
@@ -132,24 +144,6 @@
 		
 		Game.draw();
 		Game.loop();
-	};
-	
-	/************************************
-	DRAW
-	************************************/
-	Game.draw = function() {
-		for (var i in Game.Buildings){
-			Game.Buildings[i].draw();
-		}
-		
-		for (var i in Game.Upgrades) {
-			Game.Upgrades[i].draw();
-		}
-		
-		Game.Level.draw();
-		Game.refreshFactoryName();
-		
-		Game.bindEvents();
 	};
 	
 	/************************************
@@ -219,33 +213,13 @@
 	}
 	
 	/************************************
-	REFRESH
-	************************************/
-	Game.refresh=function(){
-		Game.refreshCount();
-		for(var i in Game.Buildings){
-			Game.Buildings[i].refresh();
-		}
-		for(var i in Game.Upgrades){
-			Game.Upgrades[i].refresh();
-		}
-		
-		Game.Level.refresh();
-	}
-	
-	/************************************
 	COUNTS
 	************************************/
 	Game.refreshCount=function(){
 		$('#count').text(metric(Math.floor(this.volts)));
 		$('#vps').text(metric(this.vps, 2));
 	}
-	
-	Game.refreshTitle = function(){
-		document.title = metric(Math.floor(this.volts))
-			+ ' | Lightbulb Inc';
-	}
-	
+		
 	/************************************
 	FACTORY NAME
 	************************************/
@@ -268,22 +242,30 @@
 	}
 	
 	/************************************
-	LOOP
+	NOTIFICATIONS
 	************************************/
-	Game.loop = function () {
-		Game.logicElasped++;
-		Game.logic();
+	Game.Notify=function(title,description,type,duration){
+		type=type||'alert-success';
+		duration=duration||1000;
 		
-		if (document.hasFocus || Game.T%5==0) Game.refresh();
-		if (Game.T%15==0)Game.refreshTitle();
-		
-		setTimeout(Game.loop, 1000/Game.fps);
-	};
-
+		var notify=$('<div class="alert ' + type + '">' +
+			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+				'<span aria-hidden="true">&times;</span>' +
+			'</button>' +
+			'<strong>'+title+'</strong>'+
+			(description?'<p>'+description+'</p>':'')+
+		'</div>');
+		notify.fadeIn().delay(duration).fadeOut(function(){$(this).remove()});
+		$('#notify').append(notify);
+	}
+	
+	/************************************
+	LOGIC
+	************************************/
 	Game.logic= function () {
 		Game.earn(Game.vps / Game.fps);
-		Game.Level.calculateNextLevel();
 		Game.Level.earnExp(Game.expps / Game.fps);
+		Game.Level.calculateNextLevel();
 		
 		if (Game.Buildings["Incandescent Lightbulb"].amount>=1)Game.unlock("Thomas Edison");
 		if (Game.Buildings["Incandescent Lightbulb"].amount>=10)Game.unlock("Joseph Swan");
@@ -369,10 +351,63 @@
 		if (Game.clicked>=1500000)Game.unlock("Supertasking Clicks");
 		if (Game.clicked>=2500000)Game.unlock("Lightspeed Manipulator");
 		
-		if (Game.prefs.autoSave && Game.T%(Game.prefs.autoSave*Game.fps)===0 && Game.T>Game.fps*10) Game.save();
+		if (Game.prefs.autoSave && Game.T%(Game.prefs.autoSave*Game.fps)===0 && Game.T>Game.fps*10){
+			Game.save();
+		}
+		if(Game.T%(Game.fps*2) ==0){
+			document.title = metric(Math.floor(this.volts))
+				+ ' | Lightbulb Inc';
+		}
 		
 		Game.T++;
 	};
+	
+	/************************************
+	LOOP
+	************************************/
+	Game.loop = function () {
+		Game.logicElasped++;
+		Game.logic();
+		
+		if (document.hasFocus() || Game.T%5==0) Game.refresh();
+		
+		setTimeout(Game.loop, 1000/Game.fps);
+	};
+	
+	/************************************
+	DRAW
+	************************************/
+	Game.draw = function() {
+		for (var i in Game.Buildings){
+			Game.Buildings[i].draw();
+		}
+		
+		for (var i in Game.Upgrades) {
+			Game.Upgrades[i].draw();
+		}
+		
+		Game.Level.draw();
+		Game.refreshFactoryName();
+		
+		Game.bindEvents();
+	};
+	
+	/************************************
+	REFRESH
+	************************************/
+	Game.refresh=function(){
+		Game.refreshCount();
+		Game.Level.refresh();
+		
+		for(var i in Game.Buildings){
+			Game.Buildings[i].refresh();
+		}
+		for(var i in Game.Upgrades){
+			Game.Upgrades[i].refresh();
+		}
+		
+		Game.drawT++;
+	}
 	
 	/************************************
 	VOLTS MANIPULATOR
@@ -405,11 +440,11 @@
 			version = parseFloat(decoded[0]);
 		
 		if (!decoded.length) {
-			Game.notify('Your save file is invalid.');
+			Game.Notify('Save error', 'Your save file is invalid.');
 		} else if (isNaN(version)) {
-			Game.notify('Your save file version is invalid.');
+			Game.Notify('Save error', 'Your save file version is invalid.');
 		} else if (version > Game.version) {
-			Game.notify('Your save file is from a future version.');
+			Game.Notify('Save error', 'Your save file is from a future version.');
 		} else {
 			if (version >= 2) {
 				Game.volts = parseInt(decoded[1]);
@@ -433,10 +468,12 @@
 					}
 				}
 				
+				Game.recalc();
+				
 				Game.Level.exp=0;
 				Game.Level.earnExp(parseFloat(decoded[10]));
 			} else {
-				Game.notify("Sorry, we don't support this version anymore.");
+				Game.Notify('Save error', "Sorry, we don't support this version anymore.");
 			}
 		}
 	};
@@ -479,6 +516,7 @@
 		var saveStr = saveData.join('!');
 		
 		localStorage.setItem(Game.saveFile, saveStr);
+		Game.Notify('Game saved');
 		return saveStr;
 	}
 	
@@ -591,6 +629,7 @@
 		Game.calcVPS();
 		Game.calcExpps();
 		Game.calcMouseVPS();
+		Game.Level.calculateNextLevel();
 		
 		for (var i in Game.Buildings) {
 			Game.Buildings[i].updateCost();
@@ -826,7 +865,7 @@
 			if(this.el)return;
 			var self=this;
 			this.el=$('<div class="upgradeObj"></div>')
-			.css('background-image', 'url(images/upgrades/' + this.id + ')')
+			.css('background-image', 'url("images/upgrades/' + this.id + '.png")')
 			.popover({
 				trigger:'hover',
 				html:true,
@@ -1062,6 +1101,7 @@
 	new Game.Upgrade("Planck Length Observer",200000000,"The mouse gains <strong>+5</strong> volts per building owned.<br><q>Any observations smaller than this will not make sense.<br>You have been warned.</q>");
 	new Game.Upgrade("Supertasking Clicks",2500000000,"The mouse gains <strong>+50</strong> volts per building owned.<br><q>Infinite clicks in finite seconds.<br>possibly.</q>");
 	new Game.Upgrade("Lightspeed Manipulator",50000000000,"The mouse gains <strong>+100</strong> volts per building owned.<br><q>Yeah, and our dark matter engines are 200% efficient.</q>");
+	new Game.Upgrade("Superdupersymetric String Theory",500000000000,"The mouse gains <strong>+150</strong> volts per building owned.<br><q>e<sup>-</sup> + p &#10141; <u>n</u> + v<sub>e</sub></q>");
 
 	/************************************
 	LEVEL
@@ -1082,7 +1122,7 @@
 	
 	Game.Level.calculateNextLevel= function () {
 		var exp = Math.pow(this.level,3) * 100;
-		if (Game.vps) exp *= Math.pow(Game.vps, 0.2);
+		exp *= (1+Math.pow(Game.vps, 0.15));
 		exp = Math.floor(exp);
 		return this.toNextLevel = exp;
 	};
