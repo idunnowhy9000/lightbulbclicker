@@ -11,9 +11,13 @@ body{
 	font-family: 'Lato', sans-serif;
 }
 /* Columns */
+#gameContainer{
+	width:80%;
+}
+
 #col1, #col2, #col3{
 	text-align: center;
-	padding: 5px 10px;
+	padding: 5px 0;
 	min-height:100vh;
 	max-height:100vh;
 	overflow:auto;
@@ -25,11 +29,8 @@ body{
 	user-select: none;
 }
 
-/* Level */
-#levelContainer .progress{
-	width: 50%;
-	margin: 15px auto !important;
-}
+#col1,#col3{width:30%;}
+#col2{width:40%}
 /* Lightbulb */
 #bulb{
 	cursor:pointer;
@@ -49,7 +50,11 @@ body{
 	-moz-transform: scale(0.97);
 	transform: scale(0.97);
 }
-
+/* Levels */
+#levelContainer .progress{
+	width: 60%;
+	margin: 15px auto!important;
+}
 /* Buildings */
 .buildingObj{
 	width:100%;
@@ -92,7 +97,7 @@ body{
 }
 
 /* On hover */
-.buildingHolder > .buildingObj {
+.buildingHolder:hover > .buildingObj {
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
 }
@@ -183,6 +188,8 @@ body{
 /* Factory name */
 #factNameDisplay{
 	cursor: pointer;
+	text-align: center;
+	display: inline-block;
 }
 
 /* Misc */

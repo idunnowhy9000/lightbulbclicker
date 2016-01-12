@@ -1,10 +1,6 @@
 (function (window, $) {
 	
 	// Utilities
-	function toId(text) {
-		return text.toString().toLowerCase().replace(/[^a-z0-9]+/g, '');
-	}
-	
 	function choose(arr) {return arr[Math.floor(Math.random()*arr.length)];}
 	
 	function removeFromArray(array, item){
@@ -27,7 +23,7 @@
 	// Number formatters
 	function numberFormatter(units, plural) {
 		var single = units[0]||'';
-		if (!plural) plural = '';
+		plural = plural||units[0];
 		
 		return function (num) {
 			var decimal;
@@ -45,10 +41,6 @@
 				else return num + plural;
 			}
 		}
-	}
-	
-	function addCommas(value) {
-		return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
 	}
 	
 	var metric = [
@@ -181,9 +173,14 @@
 			Game.cursor.y = e.pageY;
 		});
 		
+		// displays
+		Game.displayJobs = false;
+		
+		// load
 		Game.load();
 		Game.recalc();
 		
+		// loop and draw
 		Game.draw();
 		Game.loop();
 	};
@@ -191,13 +188,18 @@
 	/************************************
 	BEAUTIFIERS
 	************************************/
-	function metricify(n){
-		return addCommas(metric[Game.prefs.shortNum?1:0](n));
+	function beautify(fn) {
+		return function(value, base){
+			var negative=(value<0)?'-':'';
+			if (value < 1000000) value = +value.toFixed(base);
+			var formatter=fn[Game.prefs.shortNum?1:0];
+			var output=formatter(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+			return negative+output;
+		}
 	}
 	
-	function magnitudify(n){
-		return addCommas(magnitudes[Game.prefs.shortNum?1:0](n));
-	}
+	var metricify=beautify(metric),
+		magnitudify=beautify(magnitudes);
 	
 	/************************************
 	BIND EVENTS
@@ -209,6 +211,7 @@
 		$('#importG').click(Game.importGClick);
 		$('#exportG').click(Game.exportGClick);
 		$('#factNameDisplay').click(Game.openFactoryName);
+		$('#job').click(Game.openJobManagement);
 	}
 	
 	Game.saveGClick=function(){
@@ -265,12 +268,15 @@
 		});
 	}
 	
+	Game.openJobManagement=function(){
+	}
+	
 	/************************************
 	COUNTS
 	************************************/
 	Game.refreshCount=function(){
 		$('#count').text(metricify(Math.floor(this.volts)));
-		$('#vps').text(metricify(this.vps) + (Game.prefs.shortNum?"/s":"/second"));
+		$('#vps').text(metricify(this.vps,2) + (Game.prefs.shortNum?"/s":"/second"));
 	}
 		
 	/************************************
@@ -296,19 +302,23 @@
 	/************************************
 	NOTIFICATIONS
 	************************************/
-	Game.Notify=function(title,description,type,duration){
-		type=type||'alert-success';
-		duration=duration||1000;
-		
-		var notify=$('<div class="alert ' + type + '">' +
+	Game.NotifyN = 0;
+	Game.Notify=function(title,description,type){
+		var notify=$('<div class="alert' + (type?' '+type:' alert-success') + '">' +
 			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
 				'<span aria-hidden="true">&times;</span>' +
 			'</button>' +
 			'<strong>'+title+'</strong>'+
 			(description?'<p>'+description+'</p>':'')+
 		'</div>');
-		notify.fadeIn().delay(duration).fadeOut(function(){$(this).remove()});
+		
+		notify.delay(Game.NotifyN*100).fadeIn()
+			.delay(1000).fadeOut(function(){
+			$(this).remove();
+			Game.NotifyN--;
+		});
 		$('#notify').append(notify);
+		Game.NotifyN++;
 	}
 	
 	/************************************
@@ -403,13 +413,12 @@
 		if (Game.clicked>=1500000)Game.unlock("Supertasking Clicks");
 		if (Game.clicked>=2500000)Game.unlock("Lightspeed Manipulator");
 		
-		if (Game.prefs.autoSave && Game.T%(Game.prefs.autoSave*Game.fps)===0 && Game.T>Game.fps*10){
-			Game.save();
-		}
 		if(Game.T%(Game.fps*2) ==0){
-			document.title = metricify(Math.floor(this.volts))
+			document.title = metricify(this.volts)
 				+ ' | Lightbulb Inc';
 		}
+		
+		if (Game.prefs.autoSave && Game.T%(Game.prefs.autoSave*Game.fps)===0 && Game.T>Game.fps*10) Game.save();
 		
 		Game.lastDate =Date.now();
 		Game.T++;
@@ -435,19 +444,15 @@
 			Game.Buildings[i].draw();
 		}
 		
-		for (var i in Game.Upgrades) {
-			Game.Upgrades[i].draw();
-		}
+		Game.drawUpgrades();
 		
 		Game.Level.draw();
 		Game.refreshFactoryName();
 		
+		$('#job').hide();
+		
 		Game.bindEvents();
 	};
-	
-	/************************************
-	DRAW COLUMNS
-	************************************/
 	
 	/************************************
 	REFRESH
@@ -463,7 +468,19 @@
 			Game.Upgrades[i].refresh();
 		}
 		
+		if (!Game.displayJobs && Game.WorkersN){
+			$('#job').show();
+			Game.displayJobs = true;
+		}
+		
 		Game.drawT++;
+	}
+
+	/************************************
+	REFRESH COLUMN
+	************************************/
+	Game.refreshColumn=function(menu){
+		
 	}
 	
 	/************************************
@@ -520,9 +537,11 @@
 				}
 				
 				var upgrades = decoded[9].split(','), i;
-				for (i = 0; i < upgrades.length; i++) {
-					if(Game.UpgradesById[upgrades[i]]) {
-						Game.UpgradesById[upgrades[i]].earned = true;
+				if (version > 2.016){
+					for (i = 0; i < upgrades.length; i++) {
+						if (Game.UpgradesById[i]) {
+							Game.UpgradesById[i].earned = !!upgrades[i];
+						}
 					}
 				}
 				
@@ -533,8 +552,10 @@
 				Game.Level.earnExp(parseFloat(decoded[10]));
 				
 				Game.prefs.autoSave=parseInt(decoded[11]);
-				Game.prefs.focus=!!decoded[12];
-				Game.prefs.shortNum=!!decoded[13];
+				Game.prefs.focus=parseInt(decoded[12]);
+				Game.prefs.shortNum=parseInt(decoded[13]);
+		
+				Game.Notify('Game loaded');
 			} else {
 				Game.Notify('Save error', "Sorry, we don't support this version anymore.");
 			}
@@ -565,8 +586,7 @@
 		// upgrades
 		var upgradesAmount=[];
 		for(var i in Game.Upgrades) {
-			var upgrade = Game.Upgrades[i];
-			if(upgrade.earned) upgradesAmount.push(upgrade.id);
+			upgradesAmount.push(Game.Upgrades[i].earned?'1':'0');
 		}
 		saveData.push(upgradesAmount.join(','));
 		
@@ -652,7 +672,7 @@
 		if (Game.has('E=mc2 Converter')) level = 0.5;
 		if (Game.has('Energy State Manipulator')) level = 0.75;
 		if (Game.has('Energy State Manipulator')) level = 1;
-		vps *= (1+level)*0.1;
+		vps *= 1+(level*Game.Level.level*0.1);
 		
 		return Game.vps = vps;
 	};
@@ -693,8 +713,6 @@
 	}
 	
 	Game.recalc = function () {
-		
-		
 		for (var i in Game.Buildings) {
 			Game.Buildings[i].updateCost();
 		}
@@ -717,7 +735,7 @@
 		Game.Level.earnExp(m_vps);
 		Game.clicked++;
 		
-		Game.Particle('+'+magnitudify(m_vps), Game.cursor.x, Game.cursor.y - 25);
+		Game.Particle('+'+metricify(m_vps), Game.cursor.x, Game.cursor.y - 25);
 		
 		return m_vps;
 	}
@@ -738,14 +756,16 @@
 	BUILDINGS
 	************************************/
 	Game.Buildings = {};
+	Game.BuildingsById=[];
+	Game.BuildingsN = 0;
 	Game.BuildingsOwned = 0;
-	Game.Building = function Building(name, commonName, baseCost, description, displayAt, vps) {
+	Game.Building = function Building(name, commonName, baseCost, description, displayAt, vpsFunction) {
 		var commonName = commonName.split('|'),
 			single = commonName[0] || name,
 			plural = (commonName[1] ? commonName[1] : (single + 's')),
 			actionName = (commonName[2] || 'producing');
 		
-		this.id=toId(name);
+		this.id=Game.BuildingsN++;
 		this.name = name;
 		this.single=single;
 		this.plural=plural;
@@ -763,9 +783,7 @@
 		this.buy=function(n) {
 			for (var i = 0; i < n; i++) {
 				if (Game.volts < this.cost) {
-					Game.calcVPS();
-					Game.calcExpps();
-					return i;
+					break;
 				}
 				
 				Game.spend(this.cost);
@@ -776,7 +794,6 @@
 			
 			Game.calcVPS();
 			Game.calcExpps();
-			return n;
 		};
 		this.buyMax=function(){
 			while(Game.volts>this.cost){
@@ -808,7 +825,6 @@
 			Game.earn(totalCost);
 			Game.calcVPS();
 			Game.calcExpps();
-			return n;
 		};
 		this.sellMax=function(){
 			var totalCost = 0;
@@ -840,7 +856,7 @@
 		
 		// vps
 		this.calcVPS=function(){
-			this.oneVps = vps();
+			this.oneVps = vpsFunction();
 			this.vps = this.oneVps * this.amount;
 			return this.vps;
 		};
@@ -852,7 +868,7 @@
 			var self=this;
 			this.el = $('<div class="buildingHolder"></div>')
 			.html(
-				'<div class="buildingObj btn btn-primary" id="<%= id %>">' +
+				'<div class="buildingObj btn btn-primary">' +
 					'<div class="buildingAmount">' + this.amount + '</div>' +
 					'<div class="buildingInfo">' +
 						'<div class="buildingName">' + name + '</div>' +
@@ -875,8 +891,11 @@
 					return '<span>'+description+'</span><br>' +
 							'Costs <strong>'+metricify(self.cost)+'</strong><br>' +
 							'<ul>' +
-								'<li>Each '+single+' produces <strong>'+metricify(self.oneVps)+'/second</strong></li>' +
-								'<li><strong>'+self.amount+'</strong> '+plural+' '+actionName+' <strong>'+metricify(self.vps)+'/second</strong></li>' +
+								'<li>Each '+single+' produces <strong>'+metricify(self.oneVps, 2)+'/second</strong></li>' +
+								'<li>' +
+								'<strong>'+self.amount+'</strong> '+plural+' '+actionName+' <strong>'+metricify(self.vps, 2)+'/second</strong>' +
+								' (<strong>' + magnitudify((self.amount>0?(self.vps/Game.vps):0)*100, 2) + '%</strong> of total)' +
+								'</li>' +
 							'</ul>';
 				},
 				placement: 'right',
@@ -892,7 +911,12 @@
 			this.el.find('.buyMax').click(function() {self.buyMax()});
 			this.el.find('.sell1').click(function() {self.sell(1)});
 			this.el.find('.sell10').click(function() {self.sell(10)});
-			this.el.find('.sellMax').click(function() {self.sellMax()});
+			this.el.find('.sellMax').click(function() {
+				bootbox.confirm('Are you really sure you want to sell all of your '+self.amount+' '+(self.amount===1?self.single:self.plural),
+				function(result){
+					if (result) self.sellMax();
+				});
+			});
 		}
 		this.refresh = function() {
 			this.el.find('.buildingCost').text(metricify(this.cost));
@@ -910,6 +934,8 @@
 		}
 		
 		Game.Buildings[name] = this;
+		Game.BuildingsById.push(this);
+		return this;
 	};
 	
 	Game.calculateBuildingsOwned = function(){
@@ -921,7 +947,7 @@
 	/************************************
 	BUILDINGS DATA
 	************************************/
-	new Game.Building("Incandescent Lightbulb", "incandescent lightbulb||shining", 15, "The greatest invasion in history has now begun.", -1, function () {
+	new Game.Building("Incandescent Lightbulb", "incandescent lightbulb|incandescent lightbulbs|shining", 15, "The greatest invasion in history has now begun.", -1, function () {
 		var add = 0, mult = 1;
 		if (Game.has("Thomas Edison")) add += 0.1;
 		if (Game.has("Joseph Swan")) mult *= 2;
@@ -930,7 +956,7 @@
 		if (Game.has("Albert Einstein Clone")) mult *= 2;
 		return (0.1 + add) * mult;
 	});
-	new Game.Building("Lightbulb Smasher", "lightbulb smasher||smashing", 50, "Hires some muscular guys to smash bulbs.", 25, function () {
+	new Game.Building("Lightbulb Smasher", "lightbulb smasher|lightbulb smashers|smashing", 50, "Hires some muscular guys to smash bulbs.", 25, function () {
 		var add = 0, mult = 1;
 		if(Game.has("Experimentation Room")) add+=0.5
 		if(Game.has("Big Hammer")) mult*=2
@@ -939,7 +965,7 @@
 		if(Game.has("Thor")) mult*=2
 		return (0.5 + add) * mult;
 	});
-	new Game.Building("Lightning Collector", "thunder collector||collecting", 150, "Collects lightning whenever they strike.", 100, function () {
+	new Game.Building("Lightning Collector", "lightning collector|lightning collectors|collecting", 150, "Collects lightning whenever they strike.", 100, function () {
 		var add = 0, mult = 1;
 		if(Game.has("Electric Panel")) add+=2
 		if(Game.has("Plasma Ball")) mult*=2
@@ -948,7 +974,7 @@
 		if(Game.has("Zeus Angerers")) mult*=2
 		return (2.5 + add) * mult;
 	});
-	new Game.Building("Halogen Lightbulb", "halogen lightbulb||shining", 500, "AHH! IT's TOO BRIGHT!", 250, function () {
+	new Game.Building("Halogen Lightbulb", "halogen lightbulb|halogen lightbulbs|shining", 500, "AHH! IT's TOO BRIGHT!", 250, function () {
 		var add = 0, mult = 1;
 		if(Game.has("Pressure container")) add+=5
 		if(Game.has("Chlorine Lightbulb")) mult*=2
@@ -957,23 +983,23 @@
 		if(Game.has("Xenon Gas")) mult*=2
 		return (5 + add) * mult;
 	});
-	new Game.Building("Tan Lightbulb", "tan lightbulb||shining", 1000, "ahh, much better...", 500, function () {
+	new Game.Building("Tan Lightbulb", "tan lightbulb|tan lightbulbs|shining", 1000, "ahh, much better...", 500, function () {
 		var add = 0, mult = 1;
 		if(Game.has("Ultraviolet Radiator")) add+=30
 		if(Game.has("Sunscreen lotion")) mult*=2
 		if(Game.has("Vitamin D Producer")) mult*=2
 		if(Game.has("Cancer Protection Radiator")) mult*=2
 		if(Game.has("Melanin Maker")) mult*=2
-		return (25 + add) * mult;
+		return (50 + add) * mult;
 	});
-	new Game.Building("LED Lightbulb", "LED lightbulb||shining", 10000, "LEDs you to your destiny.", 5000, function () {
+	new Game.Building("LED Lightbulb", "LED lightbulb|LED lightbulbs|shining", 10000, "LEDs you to your destiny.", 5000, function () {
 		var add = 0, mult = 1;
 		if(Game.has("LED Diodes")) add+=100
 		if(Game.has("Glowstick")) mult*=2
 		if(Game.has("LED Monitor")) mult*=2
 		if(Game.has("Superdisplay")) mult*=2
 		if(Game.has("Lifi")) mult*=2
-		return (50 + add) * mult;
+		return (100 + add) * mult;
 	});
 	new Game.Building("Bacterial Lightbulb", "bacterial lightbulb||producing", 500000, "Small, tiny life forms that will soon take over the WORLD!", 19930, function () {
 		var add = 0, mult = 1;
@@ -984,16 +1010,16 @@
 		if(Game.has("Happinessbacteria")) mult*=2
 		return (500 + add) * mult;
 	});
-	new Game.Building("Dinosaur Lightbulb", "dinosaur lightbulb||pooping out", 2718281, "inb4 asteroids", 25000, function () {
+	new Game.Building("Dinosaur Lightbulb", "dinosaur lightbulb|dinosaur lightbulbs|pooping out", 2718281, "inb4 asteroids", 25000, function () {
 		var add = 0, mult = 1;
 		if(Game.has("Jurrasic Quarks")) add+=800
 		if(Game.has("Photinosaurus")) mult*=2
 		if(Game.has("Photonsaurus")) mult*=2
 		if(Game.has("Mega Dinobulbs")) mult*=2
 		if(Game.has("Unextinction Event")) mult*=2
-		return (2500 + add) * mult;
+		return (5000 + add) * mult;
 	});
-	new Game.Building("Human Lightbulb", "human lightbulb||creating", 500000000, "A civilization for 200,000 years", 5000000, function () {
+	new Game.Building("Human Lightbulb", "human lightbulb|human lightbulbs|creating", 500000000, "A civilization for 200,000 years", 5000000, function () {
 		var add = 0, mult = 1;
 		if(Game.has("Evolution")) add+=1500
 		if(Game.has("Worship")) mult*=2
@@ -1007,10 +1033,11 @@
 	UPGRADES
 	************************************/
 	Game.Upgrades = {};
-	Game.UpgradesById = {};
+	Game.UpgradesById = [];
+	Game.UpgradesN = 0;
 	Game.UpgradesOwned = 0;
 	Game.Upgrade = function (name, cost, description) {
-		this.id=toId(name);
+		this.id=Game.UpgradesN++;
 		this.name=name;
 		this.description=description;
 		this.cost=cost;
@@ -1018,6 +1045,9 @@
 		
 		this.displayed=false;
 		this.displayable=false;
+		
+		this.order = this.id;
+		if(order) this.order=order+this.id*0.001;
 		
 		this.buy=function(){
 			if (this.cost > Game.volts) return false;
@@ -1032,7 +1062,8 @@
 			if(this.el)return;
 			var self=this;
 			this.el=$('<div class="upgradeObj"></div>')
-			.css('background-image', 'url("images/upgrades/' + this.id + '.png")')
+			.html(this.id)
+			//.css('background-image', 'url("images/upgrades/' + this.id + '.png")')
 			.popover({
 				trigger:'hover',
 				html:true,
@@ -1047,7 +1078,7 @@
 			
 			if (!this.displayed)this.el.hide();
 			this.el.click(function(){self.buy()});
-			$('#upgradeListContainer').append(this.el);
+			return this.el;
 		}
 		this.refresh=function(){
 			if (this.earned) {
@@ -1069,7 +1100,18 @@
 		}
 		
 		Game.Upgrades[name] = this;
-		Game.UpgradesById[this.id] = this;
+		Game.UpgradesById.push(this);
+		return this;
+	};
+	
+	Game.drawUpgrades=function(){
+		var fn = function(a,b){
+			return a.cost > b.cost;
+		};
+		var sorted = Game.UpgradesById.sort(fn);
+		for (var i in sorted){
+			$('#upgradeListContainer').append(sorted[i].draw());
+		}
 	};
 	
 	Game.has = function (name) {
@@ -1092,8 +1134,12 @@
 	
 	/************************************
 	UPGRADES DATA
+	(don't add upgrades in the middle of these to preserve savefile)
 	************************************/
+	var order;
+	
 	// incandescent
+	order=100;
 	new Game.Upgrade("Thomas Edison",100,"Incandescent lightbulb gain <strong>+0.1</strong> base VPS.<br><q>1% percent inspiration, 99% perspriation.</q>");
 	new Game.Upgrade("Joseph Swan",1000,"Incandescent lightbulb are <strong>twice</strong> as efficient.<q>Nice guy, long beard.</q>");
 	new Game.Upgrade("Hiram Maxim",100000,"Incandescent lightbulb are <strong>twice</strong> as efficient.<br><q>Sounds like a Harry Potter spell.</q>");
@@ -1101,6 +1147,7 @@
 	new Game.Upgrade("Albert Einstein Clone",50000000,"Incandescent lightbulb are <strong>twice</strong> as efficient.<br><q>Hire a clone and he'll probably help you out!</q>");
 	
 	// smashers
+	order=200;
 	new Game.Upgrade("Experimentation Room",1000,"Bulb smashers gain <strong>+0.5</strong> base VPS.<q>Put on your goggles, prepare your muscles.</q>");
 	new Game.Upgrade("Big Hammer",50000,"Bulb smashers are <strong>twice</strong> as efficient.<q>Probably not a sexual innuendo.</q>");
 	new Game.Upgrade("Sludgehammer",550000,"Bulb smashers are <strong>twice</strong> as efficient.<q>Stickiest weapon on Earth.</q>");
@@ -1108,6 +1155,7 @@
 	new Game.Upgrade("Thor",725000000,"Bulb smashers are <strong>twice</strong> as efficient.<q>The Key to Valhalla.</q>");
 	
 	// lightning
+	order=300;
 	new Game.Upgrade("Electric Panel",5000,"Thunder Collectors gain <strong>+2</strong> base VPS.<q>Ahh, much more better!</q>");
 	new Game.Upgrade("Plasma Ball",50000,"Thunder Collectors are <strong>twice</strong> as efficient.<br><q>The ultimate Electric Party!</q>");
 	new Game.Upgrade("Hotter than Lead",100000,"Thunder Collectors are <strong>twice</strong> as efficient.<br><q>But not hotter than Venus.</q>");
@@ -1115,6 +1163,7 @@
 	new Game.Upgrade("Zeus Angerers",10000000,"Thunder Collectors are <strong>twice</strong> as efficient.<br><q>Let's just worship Uranus.</q>");
 	
 	// halogen
+	order=400;
 	new Game.Upgrade("Pressure container",5000,"Halogen Lightbulbs gain <strong>+2</strong> base VPS.<q>Ahh, much more better!</q>");
 	new Game.Upgrade("Chlorine Lightbulb",10000,"Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
 	new Game.Upgrade("Hydrocarbon Bromine compounds",255000,"Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
@@ -1122,6 +1171,7 @@
 	new Game.Upgrade("Xenon Gas",50000000,"Halogen Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
 	
 	// tan
+	order=500;
 	new Game.Upgrade("Ultraviolet Radiator",31415,"Tan Lightbulbs gain <strong>+30</strong> base VPS.<q>Ahh, much more better!</q>");
 	new Game.Upgrade("Sunscreen lotion",173205,"Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
 	new Game.Upgrade("Vitamin D Producer",1414213,"Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
@@ -1129,6 +1179,7 @@
 	new Game.Upgrade("Melanin Maker",360555127,"Tan Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
 	
 	// led
+	order=600;
 	new Game.Upgrade("LED Diodes",50000,"LED Lightbulbs gain <strong>+100</strong> base VPS.<q>Ahh, much more better!</q>");
 	new Game.Upgrade("Glowstick",200000,"LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
 	new Game.Upgrade("LED Monitor",3000000,"LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
@@ -1136,6 +1187,7 @@
 	new Game.Upgrade("Lifi",800000000,"LED Lightbulbs are <strong>twice</strong> as efficient.<q>Ahh, much more better!</q>");
 	
 	// bacterial
+	order=700;
 	new Game.Upgrade("Fungus",100000,"Bacterial Lightbulbs gain <strong>+400</strong> base VPS.<br><q>I have to say, I'm quite a fungi!</q>");
 	new Game.Upgrade("Salmonella",9500000,"Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>Lightbulbs, I salmon thee.</q>");
 	new Game.Upgrade("Cellular division",12000000,"Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br><q>The telomeres man, they limit everything!</q>");
@@ -1143,6 +1195,7 @@
 	new Game.Upgrade("Happinessbacteria",3000000000,"Bacterial Lightbulbs are <strong>twice</strong> as efficient.<br>");
 	
 	// dinosaur lightbulb
+	order=800;
 	new Game.Upgrade("Jurrasic Quarks",161803,"Dinosaur Lightbulbs gain <strong>+800</strong> base VPS.<br><q>The essential element of matter, now in dinosaur form</q>");
 	new Game.Upgrade("Photinosaurus",2000000,"Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>There's no tino!</q>");
 	new Game.Upgrade("Photonsaurus",50000000,"Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>You could quantize my electromagnetic waves goodbye.</q>");
@@ -1150,6 +1203,7 @@
 	new Game.Upgrade("Unextinction Event",1000000000,"Dinosaur Lightbulbs are <strong>twice</strong> as efficient.<br><q>Meteor?! What meteor?</q>");
 	
 	// human
+	order=1000;
 	new Game.Upgrade("Evolution",300000000,"Human Lightbulbs gain <strong>+1500</strong> base VPS.<br><q>The Greeks proposed the theory before Charles Darwin</q>");
 	new Game.Upgrade("Worship",4000000000,"Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>All God does is watch us and kill us when we get boring.</q>");
 	new Game.Upgrade("Stone Tools",12345678900,"Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>Totally stoned, dude.</q>");
@@ -1157,6 +1211,7 @@
 	new Game.Upgrade("Hi Tech",999999999999,"Human Lightbulbs are <strong>twice</strong> as efficient.<br><q>A big leap for mankind.</q>");
 	
 	// levels
+	order=1500;
 	new Game.Upgrade("Cranking Power",100,"Buildings produce <strong>+1%</strong> levels per second.<br><q>Hands are better than feets.</q>");
 	new Game.Upgrade("Bicycle",750,"Buildings produce <strong>+5%</strong> levels per second.<br><q>Or are they?! <strong>*dramatic music*</strong></q>");
 	new Game.Upgrade("Lump of Charcoal",5000,"Buildings produce <strong>+10%</strong> levels per second.<br><q>mfw santa doesn't love me</q>");
@@ -1167,6 +1222,7 @@
 	new Game.Upgrade("Solar Power",102400000,"Buildings produce <strong>+95%</strong> levels per second.<br><q>SolarCity, coming soon.</q>");
 	
 	// levels per vps
+	order=1600;
 	new Game.Upgrade("Open the Gate of Experience",12800,"Volts per seconds are <strong>5%</strong> efficient per levels.<q>Powerful spirits shall be with you, for those who dare shall open this gate.</q>");
 	new Game.Upgrade("Experience Scrolls",256000,"Volts per seconds are <strong>10%</strong> efficient per levels.<q>Contains the knowledge of the ancient light waves researchers</q>");
 	new Game.Upgrade("Quantum Leaper",5120000,"Volts per seconds are <strong>15%</strong> efficient per levels.<q>Harnest the energy of an electron leaping in a hydrogen atom</q>");
@@ -1177,6 +1233,7 @@
 	new Game.Upgrade("Energy State Manipulator",163840000000,"Volts per seconds are <strong>100%</strong> efficient per levels.<q>[filler description]</q>");
 	
 	// clicks
+	order=0;
 	new Game.Upgrade("Let there be light",150,"The mouse gains <strong>+1</strong> volts per clicks.<br><q>And then, there was light.</q>");
 	new Game.Upgrade("Taoism",500,"The mouse is <strong>twice</strong> as efficient.<br><q>Two heads are better than one.</q>");
 	new Game.Upgrade("Radiator",1000,"The mouse is <strong>twice</strong> as efficient.<br><q>[filler description]</q>");
@@ -1231,6 +1288,96 @@
 		this.el.find('#exp').text(magnitudify(Math.floor(this.exp)));
 		this.el.find('#neededToNext').text(magnitudify(this.toNextLevel + this.levelTotalExp - Math.floor(this.exp)));
 		this.el.find('.progress-bar').css('width', ((this.exp - this.levelTotalExp) / this.toNextLevel * 100) + '%');
+	}
+	
+	/************************************
+	WORKERS
+	************************************/
+	Game.Workers = [];
+	Game.WorkersBattle=[];
+	Game.maxBattleWorkers=0;
+	Game.WorkersN = 0;
+	Game.BattleWorkersN = 0;
+	Game.Worker=function(){
+		this.id=Game.WorkersN++;
+		this.battleId=-1;
+		
+		this.name=Game.generateWorkerName();
+		
+		this.level = 1;
+		this.toNextLevel = 100;
+		this.rps = 0;
+		
+		this.getRPS=function(){
+			return this.rps=Math.floor(this.level * Math.pow(Game.Level.level,1.15));
+		}
+		
+		this.levelUp=function(){
+			this.level++;
+			Game.spend(this.toNextLevel);
+			this.toNextLevel=Math.round(25 * Math.pow(this.level, 2) * Math.pow(Game.Level.level, 1.15));
+		}
+		
+		this.fire=function(){
+			Game.Workers.splice(this.id, 1);
+			this.unsetBattle();
+			Game.WorkersN--;
+		}
+		
+		this.setBattle=function(){
+			if (Game.maxBattleWorkers>Game.BattleWorkersN) return false;
+			Game.Workers.push(this);
+			this.battleId=Game.BattleWorkersN++;
+		}
+		
+		this.unsetBattle=function(){
+			if(this.battleId===-1) return false;
+			Game.WorkersBattle.splice(this.battleId,1);
+			Game.BattleWorkersN--;
+		}
+		
+		Game.Workers.push(this);
+		return this;
+	}
+	
+	Game.calcRPS=function(){
+		var rps = 0;
+		for(var i in Game.Workers){
+			rps+=Game.Workers[i].getRPS();
+		}
+		return rps;
+	}
+	
+	Game.calculateMaxBattleWorkers=function(){
+		return Game.maxBattleWorkers=6;
+	}
+	
+	Game.generateWorkerName=function(){
+		return choose(['Arthur','Amadeus','Amelia','Bailey','Barly','Christ','Cyntheia','Derek','Dobby','Eric','Emmy','George','Hectic','Issac','Jeremie','Joe','Jonathan','Kelly','Linda','Nathan','Sally','Sal','Zoe']);
+	}
+	
+	/************************************
+	SPAWN WORKERS
+	************************************/
+	Game.WorkerSpawner={x:0,y:0};
+	
+	Game.WorkerSpawner.getTimeMod=function(){
+		return Math.ceil(Game.fps*60);
+	}
+	
+	Game.WorkerSpawner.getProbability=function(){
+		return 1;
+	}
+	
+	Game.WorkerSpawner.spawn=function(){
+		var worker = new Game.Worker();
+		Game.Notify(worker.name+' has joined your team!', 'Click the <strong>Job</strong> button to manage the team.');
+	}
+	
+	Game.WorkerSpawner.refresh=function(){
+		if(Math.random()<this.getProbability()){
+			this.spawn();
+		}
 	}
 	
 	/************************************
