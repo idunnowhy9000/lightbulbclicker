@@ -10,40 +10,40 @@
 	}
 	
 	function dateDiff(left, right){
-		var ms = left - right;
-		if(ms >= 3.154e+10)return Math.floor(ms/3.154e+10)+' years ago';
-		if (ms >= 2.628e+9) return Math.floor(ms/2.628e+9)+' months ago';
-		if (ms >= 8.64e7) return Math.floor(ms/8.64e7)+' days ago';
-		if (ms >= 3.6e6) return Math.floor(ms/3.6e6)+' hours ago';
-		if (ms >= 60000) return Math.floor(ms/60000)+' minutes ago';
-		if (ms >= 1000) return Math.floor(ms/1000)+' seconds ago';
+		var ms=left - right;
+		if(ms>=3.154e+10)return Math.floor(ms/3.154e+10)+' years ago';
+		if (ms>=2.628e+9) return Math.floor(ms/2.628e+9)+' months ago';
+		if (ms>=8.64e7) return Math.floor(ms/8.64e7)+' days ago';
+		if (ms>=3.6e6) return Math.floor(ms/3.6e6)+' hours ago';
+		if (ms>=60000) return Math.floor(ms/60000)+' minutes ago';
+		if (ms>=1000) return Math.floor(ms/1000)+' seconds ago';
 		return 'just now';
 	}
 	
 	// Number formatters
 	function numberFormatter(units, plural) {
-		var single = units[0]||'';
-		plural = plural||units[0];
+		var single=units[0]||'';
+		plural=plural||units[0];
 		
 		return function (num) {
 			var decimal;
-			if (num > 1000000) {
+			if (num>1000000) {
 				for(var i=units.length-1; i>=0; i--) {
-					decimal = Math.pow(1000, i+1);
+					decimal=Math.pow(1000, i+1);
 
-					if(num <= -decimal || num >= decimal) {
+					if(num <= -decimal || num>=decimal) {
 						return (Math.round((num / decimal) * 1000) / 1000) + units[i];
 					}
 				}
 			} else {
-				num = Math.round(num * 1000) / 1000;
-				if (num < 1) return num + single;
+				num=Math.round(num * 1000) / 1000;
+				if (num <= 1) return num + single;
 				else return num + plural;
 			}
 		}
 	}
 	
-	var metric = [
+	var metric=[
 		numberFormatter([
 			' volt',
 			' megavolts',
@@ -80,7 +80,7 @@
 		])
 	],
 	
-	magnitudes = [
+	magnitudes=[
 		numberFormatter([
 			'',
 			' million',
@@ -122,45 +122,53 @@
 	/************************************
 	GAME
 	************************************/
-	var Game = {};
+	var Game={};
 	
-	Game.version = 2.01601; // y.ear month
-	Game.versionRead = '2.016a';
+	Game.version=2.01601; // y.ear month
+	Game.versionRead='2.016a';
 	
-	Game.ready = 0;
+	Game.ready=0;
 	
-	Game.saveFile = 'LBClicker';
+	Game.saveFile='LBClicker';
 	
-	Game.init = function () {
-		Game.ready = 1;
+	Game.init=function () {
+		Game.ready=1;
 		
 		Game.fps=30;
 		Game.T=0;
 		Game.drawT=0;
 		
-		Game.volts = 0; // in bank
-		Game.voltsTot = 0; // total
-		Game.voltsTotAll = 0; // all time
+		Game.volts=0; // in bank
+		Game.voltsTot=0; // total
+		Game.voltsTotAll=0; // all time
 		
-		Game.research = 0; // in bank
-		Game.researchTot = 0; // total
-		Game.researchTotAll = 0; // all time
+		Game.research=0; // in bank
+		Game.researchTot=0; // total
+		Game.researchTotAll=0; // all time
 		
-		Game.vps = 0;
-		Game.m_vps = 0;
-		Game.expps = 0;
+		Game.vps=0;
+		Game.m_vps=0;
+		Game.expps=0;
 		
 		// stats
-		Game.clicked = 0;
-		Game.factName = 'Your Factory';
+		Game.clicked=0;
+		Game.factName='Your Factory';
+		
+		// battles
+		Game.currentBattle=false;
 		
 		// dates
 		Game.sessionStart=Date.now();
 		Game.gameStart=Date.now();
 		Game.lastDate =Date.now();
 		
+		// bonuses
+		Game.productionBonus=0;
+		Game.clickBonus=0;
+		Game.expBonus=0;
+		
 		// options
-		Game.prefs = {
+		Game.prefs={
 			autoSave:60,
 			focus:1,
 			shortNum:0
@@ -169,12 +177,12 @@
 		// track events
 		Game.cursor={x:0,y:0};
 		$(document).on('mousemove mouseover', function(e) {
-			Game.cursor.x = e.pageX;
-			Game.cursor.y = e.pageY;
+			Game.cursor.x=e.pageX;
+			Game.cursor.y=e.pageY;
 		});
 		
 		// displays
-		Game.displayJobs = false;
+		Game.displayJobs=false;
 		
 		// load
 		Game.load();
@@ -191,7 +199,7 @@
 	function beautify(fn) {
 		return function(value, base){
 			var negative=(value<0)?'-':'';
-			if (value < 1000000) value = +value.toFixed(base);
+			if (value < 1000000) value=+value.toFixed(base);
 			var formatter=fn[Game.prefs.shortNum?1:0];
 			var output=formatter(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
 			return negative+output;
@@ -250,7 +258,7 @@
 					label: "Import",
 					className: "btn-primary",
 					callback: function() {
-						var save = $('textarea.import').val();
+						var save=$('textarea.import').val();
 						if (save) {
 							Game.load(save);
 							Game.recalc();
@@ -288,7 +296,7 @@
 			value: Game.factName,
 			callback: function (name) {
 				if (name) {
-					Game.factName = name;
+					Game.factName=name;
 					Game.refreshFactoryName();
 				}
 			}
@@ -302,7 +310,7 @@
 	/************************************
 	NOTIFICATIONS
 	************************************/
-	Game.NotifyN = 0;
+	Game.NotifyN=0;
 	Game.Notify=function(title,description,type){
 		var notify=$('<div class="alert' + (type?' '+type:' alert-success') + '">' +
 			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -327,7 +335,7 @@
 	Game.logic= function () {
 		Game.earn(Game.vps / Game.fps);
 		Game.Level.earnExp(Game.expps / Game.fps);
-		Game.Level.calculateNextLevel();
+		Game.Lightning.refresh();
 		
 		if (Game.Buildings["Incandescent Lightbulb"].amount>=1)Game.unlock("Thomas Edison");
 		if (Game.Buildings["Incandescent Lightbulb"].amount>=10)Game.unlock("Joseph Swan");
@@ -414,7 +422,7 @@
 		if (Game.clicked>=2500000)Game.unlock("Lightspeed Manipulator");
 		
 		if(Game.T%(Game.fps*2) ==0){
-			document.title = metricify(this.volts)
+			document.title=metricify(this.volts)
 				+ ' | Lightbulb Inc';
 		}
 		
@@ -427,8 +435,7 @@
 	/************************************
 	LOOP
 	************************************/
-	Game.loop = function () {
-		Game.logicElasped++;
+	Game.loop=function () {
 		Game.logic();
 		
 		if (document.hasFocus() || Game.prefs.focus || Game.T%5==0) Game.refresh();
@@ -439,7 +446,7 @@
 	/************************************
 	DRAW
 	************************************/
-	Game.draw = function() {
+	Game.draw=function() {
 		for (var i in Game.Buildings){
 			Game.Buildings[i].draw();
 		}
@@ -470,7 +477,7 @@
 		
 		if (!Game.displayJobs && Game.WorkersN){
 			$('#job').show();
-			Game.displayJobs = true;
+			Game.displayJobs=true;
 		}
 		
 		Game.drawT++;
@@ -486,14 +493,14 @@
 	/************************************
 	VOLTS MANIPULATOR
 	************************************/
-	Game.earn = function(n){
+	Game.earn=function(n){
 		Game.volts+=n;
 		Game.voltsTot+=n;
 		Game.voltsTotAll+=n;
 		return n;
 	};
 	
-	Game.spend = function(n){
+	Game.spend=function(n){
 		if (n>Game.volts) return 0;
 		Game.volts-=n;
 		return n;
@@ -502,58 +509,59 @@
 	/************************************
 	SAVE
 	************************************/
-	Game.load = function (save) {
+	Game.load=function (save) {
 		if (!save) {
 			if (localStorage.hasOwnProperty(Game.saveFile)) {
-				save = localStorage.getItem(Game.saveFile);
+				save=localStorage.getItem(Game.saveFile);
 			} else {
 				return false;
 			}
 		}
 		
-		var decoded = save.split('!'),
-			version = parseFloat(decoded[0]);
+		var decoded=save.split('!'),
+			version=parseFloat(decoded[0]);
 		
 		if (!decoded.length) {
 			Game.Notify('Save error', 'Your save file is invalid.');
 		} else if (isNaN(version)) {
 			Game.Notify('Save error', 'Your save file version is invalid.');
-		} else if (version > Game.version) {
+		} else if (version>Game.version) {
 			Game.Notify('Save error', 'Your save file is from a future version.');
 		} else {
-			if (version >= 2) {
-				Game.volts = parseInt(decoded[1]);
-				Game.voltsTot = parseInt(decoded[2]);
-				Game.voltsTotAll = parseInt(decoded[3]);
+			if (version>=2) {
+				Game.volts=parseInt(decoded[1]);
+				Game.voltsTot=parseInt(decoded[2]);
+				Game.voltsTotAll=parseInt(decoded[3]);
 				
-				Game.sessionStart = parseInt(decoded[4]);
-				Game.gameStart = parseInt(decoded[5]);
-				Game.clicked = parseInt(decoded[6]);
-				Game.factName = decoded[7];
+				Game.sessionStart=parseInt(decoded[4]);
+				Game.gameStart=parseInt(decoded[5]);
+				Game.clicked=parseInt(decoded[6]);
 				
-				var buildings = decoded[8].split(','), n = 0;
+				Game.factName=decoded[7];
+				Game.refreshFactoryName();
+				
+				var buildings=decoded[8].split(','), n=0;
 				for (i in Game.Buildings) {
-					Game.Buildings[i].amount = parseInt(buildings[n++])||0;
+					Game.Buildings[i].amount=parseInt(buildings[n++])||0;
 				}
 				
-				var upgrades = decoded[9].split(','), i;
-				if (version > 2.016){
-					for (i = 0; i < upgrades.length; i++) {
+				var upgrades=decoded[9].split(','), i;
+				if (version>2.016){
+					for (i=0; i < upgrades.length; i++) {
 						if (Game.UpgradesById[i]) {
-							Game.UpgradesById[i].earned = !!upgrades[i];
+							Game.UpgradesById[i].earned=upgrades[i]==='1';
 						}
 					}
 				}
 				
-				Game.refreshFactoryName();
-				Game.recalc();
+				Game.Level.exp=parseFloat(decoded[10]);
+				Game.Level.level=parseFloat(decoded[11]);
+				Game.Level.toNextLevel=parseFloat(decoded[12]);
+				Game.Level.levelTotalExp=parseFloat(decoded[13]);
 				
-				Game.Level.exp=0;
-				Game.Level.earnExp(parseFloat(decoded[10]));
-				
-				Game.prefs.autoSave=parseInt(decoded[11]);
-				Game.prefs.focus=parseInt(decoded[12]);
-				Game.prefs.shortNum=parseInt(decoded[13]);
+				Game.prefs.autoSave=parseInt(decoded[14]);
+				Game.prefs.focus=parseInt(decoded[15]);
+				Game.prefs.shortNum=parseInt(decoded[16]);
 		
 				Game.Notify('Game loaded');
 			} else {
@@ -578,7 +586,7 @@
 		// levels
 		var buildingsAmount=[];
 		for(var i in Game.Buildings) {
-			var building = Game.Buildings[i];
+			var building=Game.Buildings[i];
 			buildingsAmount.push(building.amount);
 		}
 		saveData.push(buildingsAmount.join(','));
@@ -592,13 +600,16 @@
 		
 		// levels
 		saveData.push(Game.Level.exp);
+		saveData.push(Game.Level.level);
+		saveData.push(Game.Level.toNextLevel);
+		saveData.push(Game.Level.levelTotalExp);
 		
 		// preferences
 		saveData.push(Game.prefs.autoSave);
 		saveData.push(Game.prefs.focus);
 		saveData.push(Game.prefs.shortNum);
 		
-		var saveStr = saveData.join('!');
+		var saveStr=saveData.join('!');
 		
 		localStorage.setItem(Game.saveFile, saveStr);
 		Game.Notify('Game saved');
@@ -609,7 +620,7 @@
 		for(var i in Game.Buildings){
 			var building=Game.Buildings[i];
 			building.amount=0;
-			building.cost = building.baseCost;
+			building.cost=building.baseCost;
 			building.displayed=false;
 		}
 		
@@ -625,17 +636,17 @@
 		Game.Level.toNextLevel=100;
 		Game.Level.levelTotalExp=0;
 		
-		Game.volts = 0;
-		Game.voltsTot = 0;
-		Game.voltsTotAll = 0;
+		Game.volts=0;
+		Game.voltsTot=0;
+		Game.voltsTotAll=0;
 		
-		Game.vps = 0;
-		Game.m_vps = 0;
-		Game.expps = 0;
+		Game.vps=0;
+		Game.m_vps=0;
+		Game.expps=0;
 		
 		// stats
-		Game.clicked = 0;
-		Game.factName = 'Your Factory';
+		Game.clicked=0;
+		Game.factName='Your Factory';
 		
 		// dates
 		Game.sessionStart=Date.now();
@@ -643,7 +654,7 @@
 		Game.lastDate =Date.now();
 		
 		// options
-		Game.prefs = {
+		Game.prefs={
 			autoSave:60,
 			focus:1,
 			shortNum:0
@@ -657,45 +668,51 @@
 	/************************************
 	CALCULATOR
 	************************************/
-	Game.calcVPS = function(){
-		var vps = 0;
+	Game.calcVPS=function(){
+		var vps=0;
 		for (var i in Game.Buildings) {
 			vps += Game.Buildings[i].calcVPS();
 		}
 		
 		var level=0;
-		if (Game.has('Open the Gate of Experience')) level = 0.05;
-		if (Game.has('Experience Scrolls')) level = 0.1;
-		if (Game.has('Quantum Leaper')) level = 0.15;
-		if (Game.has('Experience Vortex')) level = 0.2;
-		if (Game.has('Level Conversion Unit')) level = 0.25;
-		if (Game.has('E=mc2 Converter')) level = 0.5;
-		if (Game.has('Energy State Manipulator')) level = 0.75;
-		if (Game.has('Energy State Manipulator')) level = 1;
+		if (Game.has('Open the Gate of Experience')) level=0.05;
+		if (Game.has('Experience Scrolls')) level=0.1;
+		if (Game.has('Quantum Leaper')) level=0.15;
+		if (Game.has('Experience Vortex')) level=0.2;
+		if (Game.has('Level Conversion Unit')) level=0.25;
+		if (Game.has('E=mc2 Converter')) level=0.5;
+		if (Game.has('Energy State Manipulator')) level=0.75;
+		if (Game.has('Energy State Manipulator')) level=1;
 		vps *= 1+(level*Game.Level.level*0.1);
 		
-		return Game.vps = vps;
+		if(Game.productionBonus) vps*=Game.productionBonus;
+		
+		return Game.vps=vps;
 	};
 	
-	Game.calcExpps = function(){
-		var expps = 0;
+	Game.calcExpps=function(){
+		var expps=0;
 		for (var i in Game.Buildings) {
 			expps += Game.Buildings[i].calcVPS();
 		}
 		expps *= 0.1;
+		
 		if(Game.has("Cranking Power")) expps*=1.01;
 		if(Game.has("Bicycle")) expps*=1.05;
 		if(Game.has("Lump of Charcoal")) expps*=1.1;
-		if(Game.has("Biomass")) expps*=1.25;
+		if(Game.has("Biomass")) expps*=1.2;
 		if(Game.has("Generic Brand Power Generator")) expps*=1.5;
 		if(Game.has("Wind Turbines")) expps*=1.6;
-		if(Game.has("Wave Power")) expps*=1.75;
-		if(Game.has("Solar Power")) expps*=1.95;
-		return Game.expps = expps;
+		if(Game.has("Wave Power")) expps*=1.7;
+		if(Game.has("Solar Power")) expps*=1.9;
+		
+		if(Game.expBonus) vps*=Game.expBonus;
+		
+		return Game.expps=expps;
 	};
 	
-	Game.calcMouseVPS = function(){
-		var vps = 1;
+	Game.calcMouseVPS=function(){
+		var vps=1;
 		if(Game.has("Let there be light"))vps+=1;
 		if(Game.has("Taoism"))vps*=2;
 		if(Game.has("Radiator"))vps*=2;
@@ -709,10 +726,12 @@
 		if(Game.has("Supertasking Clicks"))vps+=Game.BuildingsOwned*100;
 		if(Game.has("Lightspeed Manipulator"))vps+=Game.BuildingsOwned*150;
 		
-		return Game.m_vps = vps;
+		if(Game.clickBonus)vps*=Game.clickBonus;
+		
+		return Game.m_vps=vps;
 	}
 	
-	Game.recalc = function () {
+	Game.recalc=function () {
 		for (var i in Game.Buildings) {
 			Game.Buildings[i].updateCost();
 		}
@@ -728,8 +747,8 @@
 	/************************************
 	CLICKS
 	************************************/
-	Game.click = function(){
-		var m_vps = Game.m_vps || Game.calcMouseVPS();
+	Game.click=function(){
+		var m_vps=Game.m_vps || Game.calcMouseVPS();
 		
 		Game.earn(m_vps);
 		Game.Level.earnExp(m_vps);
@@ -755,33 +774,33 @@
 	/************************************
 	BUILDINGS
 	************************************/
-	Game.Buildings = {};
+	Game.Buildings={};
 	Game.BuildingsById=[];
-	Game.BuildingsN = 0;
-	Game.BuildingsOwned = 0;
-	Game.Building = function Building(name, commonName, baseCost, description, displayAt, vpsFunction) {
-		var commonName = commonName.split('|'),
-			single = commonName[0] || name,
-			plural = (commonName[1] ? commonName[1] : (single + 's')),
-			actionName = (commonName[2] || 'producing');
+	Game.BuildingsN=0;
+	Game.BuildingsOwned=0;
+	Game.Building=function Building(name, commonName, baseCost, description, displayAt, vpsFunction) {
+		var commonName=commonName.split('|'),
+			single=commonName[0] || name,
+			plural=(commonName[1] ? commonName[1] : (single + 's')),
+			actionName=(commonName[2] || 'producing');
 		
 		this.id=Game.BuildingsN++;
-		this.name = name;
+		this.name=name;
 		this.single=single;
 		this.plural=plural;
 		this.actionName=actionName;
 
-		this.baseCost = this.cost = baseCost;
-		this.description = description;
-		this.displayAt = displayAt;
-		this.amount = 0;
+		this.baseCost=this.cost=baseCost;
+		this.description=description;
+		this.displayAt=displayAt;
+		this.amount=0;
 		
-		this.oneVps = 0;
-		this.vps = 0;
+		this.oneVps=0;
+		this.vps=0;
 		
 		// buy sell
 		this.buy=function(n) {
-			for (var i = 0; i < n; i++) {
+			for (var i=0; i < n; i++) {
 				if (Game.volts < this.cost) {
 					break;
 				}
@@ -809,9 +828,9 @@
 		}
 		
 		this.sell=function (n) {
-			var totalCost = 0;
+			var totalCost=0;
 			
-			for (var i = 1; i < n; i++) {
+			for (var i=1; i < n; i++) {
 				if (this.amount <= 0) {
 					break;
 				}
@@ -827,7 +846,7 @@
 			Game.calcExpps();
 		};
 		this.sellMax=function(){
-			var totalCost = 0;
+			var totalCost=0;
 			
 			while(this.amount>0){
 				this.amount--;
@@ -851,22 +870,22 @@
 		};
 		
 		this.updateCost= function () {
-			return this.cost = this.getCurrentCost();
+			return this.cost=this.getCurrentCost();
 		};
 		
 		// vps
 		this.calcVPS=function(){
-			this.oneVps = vpsFunction();
-			this.vps = this.oneVps * this.amount;
+			this.oneVps=vpsFunction();
+			this.vps=this.oneVps * this.amount;
 			return this.vps;
 		};
 		
 		// draw
-		this.el = null;
+		this.el=null;
 		this.draw=function(){
 			if (this.el) return;
 			var self=this;
-			this.el = $('<div class="buildingHolder"></div>')
+			this.el=$('<div class="buildingHolder"></div>')
 			.html(
 				'<div class="buildingObj btn btn-primary">' +
 					'<div class="buildingAmount">' + this.amount + '</div>' +
@@ -912,33 +931,33 @@
 			this.el.find('.sell1').click(function() {self.sell(1)});
 			this.el.find('.sell10').click(function() {self.sell(10)});
 			this.el.find('.sellMax').click(function() {
-				bootbox.confirm('Are you really sure you want to sell all of your '+self.amount+' '+(self.amount===1?self.single:self.plural),
+				bootbox.confirm('Are you really sure you want to sell all of your '+self.amount+' '+(self.amount===1?self.single:self.plural+'?'),
 				function(result){
 					if (result) self.sellMax();
 				});
 			});
 		}
-		this.refresh = function() {
+		this.refresh=function() {
 			this.el.find('.buildingCost').text(metricify(this.cost));
 			this.el.find('.buildingAmount').text(magnitudify(this.amount));
-			if (this.cost > Game.volts) {
+			if (this.cost>Game.volts) {
 				this.el.children('.buildingObj').addClass('disabled');
 			} else {
 				this.el.children('.buildingObj').removeClass('disabled');
 			}
 			if (!this.displayed) this.el.hide();
-			if(Game.volts>=this.displayAt && !this.displayed){
-				this.displayed = true;
+			if((Game.volts>=this.displayAt||this.amount) && !this.displayed){
+				this.displayed=true;
 				this.el.fadeIn(400).show();
 			}
 		}
 		
-		Game.Buildings[name] = this;
+		Game.Buildings[name]=this;
 		Game.BuildingsById.push(this);
 		return this;
 	};
 	
-	Game.calculateBuildingsOwned = function(){
+	Game.calculateBuildingsOwned=function(){
 		for(var i in Game.Buildings){
 			Game.BuildingsOwned += Game.Buildings[i].amount;
 		}
@@ -948,7 +967,7 @@
 	BUILDINGS DATA
 	************************************/
 	new Game.Building("Incandescent Lightbulb", "incandescent lightbulb|incandescent lightbulbs|shining", 15, "The greatest invasion in history has now begun.", -1, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if (Game.has("Thomas Edison")) add += 0.1;
 		if (Game.has("Joseph Swan")) mult *= 2;
 		if (Game.has("Hiram Maxim")) mult *= 2;
@@ -957,7 +976,7 @@
 		return (0.1 + add) * mult;
 	});
 	new Game.Building("Lightbulb Smasher", "lightbulb smasher|lightbulb smashers|smashing", 50, "Hires some muscular guys to smash bulbs.", 25, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if(Game.has("Experimentation Room")) add+=0.5
 		if(Game.has("Big Hammer")) mult*=2
 		if(Game.has("Sludgehammer")) mult*=2
@@ -966,7 +985,7 @@
 		return (0.5 + add) * mult;
 	});
 	new Game.Building("Lightning Collector", "lightning collector|lightning collectors|collecting", 150, "Collects lightning whenever they strike.", 100, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if(Game.has("Electric Panel")) add+=2
 		if(Game.has("Plasma Ball")) mult*=2
 		if(Game.has("Hotter than Lead")) mult*=2
@@ -975,7 +994,7 @@
 		return (2.5 + add) * mult;
 	});
 	new Game.Building("Halogen Lightbulb", "halogen lightbulb|halogen lightbulbs|shining", 500, "AHH! IT's TOO BRIGHT!", 250, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if(Game.has("Pressure container")) add+=5
 		if(Game.has("Chlorine Lightbulb")) mult*=2
 		if(Game.has("Hydrocarbon Bromine compounds")) mult*=2
@@ -984,7 +1003,7 @@
 		return (5 + add) * mult;
 	});
 	new Game.Building("Tan Lightbulb", "tan lightbulb|tan lightbulbs|shining", 1000, "ahh, much better...", 500, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if(Game.has("Ultraviolet Radiator")) add+=30
 		if(Game.has("Sunscreen lotion")) mult*=2
 		if(Game.has("Vitamin D Producer")) mult*=2
@@ -993,7 +1012,7 @@
 		return (50 + add) * mult;
 	});
 	new Game.Building("LED Lightbulb", "LED lightbulb|LED lightbulbs|shining", 10000, "LEDs you to your destiny.", 5000, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if(Game.has("LED Diodes")) add+=100
 		if(Game.has("Glowstick")) mult*=2
 		if(Game.has("LED Monitor")) mult*=2
@@ -1002,7 +1021,7 @@
 		return (100 + add) * mult;
 	});
 	new Game.Building("Bacterial Lightbulb", "bacterial lightbulb||producing", 500000, "Small, tiny life forms that will soon take over the WORLD!", 19930, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if(Game.has("Fungus")) add+=400
 		if(Game.has("Salmonella")) mult*=2
 		if(Game.has("Cellular division")) mult*=2
@@ -1011,7 +1030,7 @@
 		return (500 + add) * mult;
 	});
 	new Game.Building("Dinosaur Lightbulb", "dinosaur lightbulb|dinosaur lightbulbs|pooping out", 2718281, "inb4 asteroids", 25000, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if(Game.has("Jurrasic Quarks")) add+=800
 		if(Game.has("Photinosaurus")) mult*=2
 		if(Game.has("Photonsaurus")) mult*=2
@@ -1020,7 +1039,7 @@
 		return (5000 + add) * mult;
 	});
 	new Game.Building("Human Lightbulb", "human lightbulb|human lightbulbs|creating", 500000000, "A civilization for 200,000 years", 5000000, function () {
-		var add = 0, mult = 1;
+		var add=0, mult=1;
 		if(Game.has("Evolution")) add+=1500
 		if(Game.has("Worship")) mult*=2
 		if(Game.has("Stone Tools")) mult*=2
@@ -1032,11 +1051,11 @@
 	/************************************
 	UPGRADES
 	************************************/
-	Game.Upgrades = {};
-	Game.UpgradesById = [];
-	Game.UpgradesN = 0;
-	Game.UpgradesOwned = 0;
-	Game.Upgrade = function (name, cost, description) {
+	Game.Upgrades={};
+	Game.UpgradesById=[];
+	Game.UpgradesN=0;
+	Game.UpgradesOwned=0;
+	Game.Upgrade=function (name, cost, description) {
 		this.id=Game.UpgradesN++;
 		this.name=name;
 		this.description=description;
@@ -1046,13 +1065,13 @@
 		this.displayed=false;
 		this.displayable=false;
 		
-		this.order = this.id;
+		this.order=this.id;
 		if(order) this.order=order+this.id*0.001;
 		
 		this.buy=function(){
-			if (this.cost > Game.volts) return false;
+			if (this.cost>Game.volts) return false;
 			Game.spend(this.cost);
-			this.earned = true;
+			this.earned=true;
 			Game.recalc();
 		}
 		
@@ -1086,7 +1105,7 @@
 				return;
 			}
 			
-			if (this.cost > Game.volts) {
+			if (this.cost>Game.volts) {
 				this.el.addClass('disabled');
 			} else {
 				this.el.removeClass('disabled');
@@ -1094,27 +1113,27 @@
 			
 			if (!this.displayed) this.el.hide();
 			if (this.displayable && !this.displayed){
-				this.displayed = true;
+				this.displayed=true;
 				this.el.fadeIn(400).show();
 			}
 		}
 		
-		Game.Upgrades[name] = this;
+		Game.Upgrades[name]=this;
 		Game.UpgradesById.push(this);
 		return this;
 	};
 	
 	Game.drawUpgrades=function(){
-		var fn = function(a,b){
-			return a.cost > b.cost;
+		var fn=function(a,b){
+			return a.cost>b.cost;
 		};
-		var sorted = Game.UpgradesById.sort(fn);
+		var sorted=Game.UpgradesById.sort(fn);
 		for (var i in sorted){
 			$('#upgradeListContainer').append(sorted[i].draw());
 		}
 	};
 	
-	Game.has = function (name) {
+	Game.has=function (name) {
 		return Game.Upgrades[name] && Game.Upgrades[name].earned;
 	};
 	
@@ -1215,11 +1234,11 @@
 	new Game.Upgrade("Cranking Power",100,"Buildings produce <strong>+1%</strong> levels per second.<br><q>Hands are better than feets.</q>");
 	new Game.Upgrade("Bicycle",750,"Buildings produce <strong>+5%</strong> levels per second.<br><q>Or are they?! <strong>*dramatic music*</strong></q>");
 	new Game.Upgrade("Lump of Charcoal",5000,"Buildings produce <strong>+10%</strong> levels per second.<br><q>mfw santa doesn't love me</q>");
-	new Game.Upgrade("Biomass",50000,"Buildings produce <strong>+25%</strong> levels per second.<br><q>Poop powered lightbulbs. Yep.</q>");
+	new Game.Upgrade("Biomass",50000,"Buildings produce <strong>+20%</strong> levels per second.<br><q>Poop powered lightbulbs. Yep.</q>");
 	new Game.Upgrade("Generic Brand Power Generator",500000,"Buildings produce <strong>+50%</strong> levels per second.<br><q>Totally trustworthy.</q>");
 	new Game.Upgrade("Wind Turbines",25000000,"Buildings produce <strong>+60%</strong> levels per second.<br><q>You take my breath away.</q>");
-	new Game.Upgrade("Wave Power",51200000,"Buildings produce <strong>+75%</strong> levels per second.<br><q>Tides goes in, tides comes out, you can't explain that</q>");
-	new Game.Upgrade("Solar Power",102400000,"Buildings produce <strong>+95%</strong> levels per second.<br><q>SolarCity, coming soon.</q>");
+	new Game.Upgrade("Wave Power",51200000,"Buildings produce <strong>+70%</strong> levels per second.<br><q>Tides goes in, tides comes out, you can't explain that</q>");
+	new Game.Upgrade("Solar Power",102400000,"Buildings produce <strong>+90%</strong> levels per second.<br><q>SolarCity, coming soon.</q>");
 	
 	// levels per vps
 	order=1600;
@@ -1250,25 +1269,25 @@
 	/************************************
 	LEVEL
 	************************************/
-	Game.Level = {exp:0, level:1, toNextLevel:100, levelTotalExp:0};
-	Game.Level.levelUp = function () {
+	Game.Level={exp:0, level:1, toNextLevel:100, levelTotalExp:0};
+	Game.Level.levelUp=function () {
 		this.level++;
 		this.levelTotalExp += this.toNextLevel;
 		this.calculateNextLevel();
 	};
 	
-	Game.Level.earnExp = function (exp) {
+	Game.Level.earnExp=function (exp) {
 		this.exp += exp;
-		while (this.exp >= this.toNextLevel + this.levelTotalExp) {
+		while (this.exp>=this.toNextLevel + this.levelTotalExp) {
 			this.levelUp();
 		}
 	};
 	
 	Game.Level.calculateNextLevel= function () {
-		var exp = Math.pow(this.level,3) * 100;
+		var exp=Math.pow(this.level,3) * 100;
 		exp *= (1+Math.pow(Game.vps, 0.15));
-		exp = Math.floor(exp);
-		return this.toNextLevel = exp;
+		exp=Math.floor(exp);
+		return this.toNextLevel=exp;
 	};
 	
 	Game.Level.el=null;
@@ -1291,22 +1310,40 @@
 	}
 	
 	/************************************
+	ENTITIES
+	************************************/
+	/*Game.Entity=function(stats){
+		this.types=stats.type;
+		this.stats={hp:0,atk:0,def:0,spd:0};
+		for(var i in stats) this.stats[i]=stats[i];
+		
+		this.hasType=function(type){
+			return types.indexOf(type)!==-1;
+		}
+		
+		return this;
+	}*/
+	
+	/************************************
 	WORKERS
 	************************************/
-	Game.Workers = [];
+	Game.Workers=[];
 	Game.WorkersBattle=[];
 	Game.maxBattleWorkers=0;
-	Game.WorkersN = 0;
-	Game.BattleWorkersN = 0;
+	Game.WorkersN=0;
+	Game.BattleWorkersN=0;
 	Game.Worker=function(){
+		//Game.Entity.apply(this);
+		this.type=Game.generateRandomType();
+		
 		this.id=Game.WorkersN++;
 		this.battleId=-1;
 		
 		this.name=Game.generateWorkerName();
 		
-		this.level = 1;
-		this.toNextLevel = 100;
-		this.rps = 0;
+		this.level=1;
+		this.toNextLevel=100;
+		this.rps=0;
 		
 		this.getRPS=function(){
 			return this.rps=Math.floor(this.level * Math.pow(Game.Level.level,1.15));
@@ -1324,15 +1361,16 @@
 			Game.WorkersN--;
 		}
 		
-		this.setBattle=function(){
-			if (Game.maxBattleWorkers>Game.BattleWorkersN) return false;
-			Game.Workers.push(this);
-			this.battleId=Game.BattleWorkersN++;
+		this.setBattle=function(slot){
+			if (slot<Game.maxBattleWorkers) return false;
+			Game.Workers[slot]=this;
+			this.battleId=slot;
+			Game.BattleWorkersN++;
 		}
 		
 		this.unsetBattle=function(){
 			if(this.battleId===-1) return false;
-			Game.WorkersBattle.splice(this.battleId,1);
+			delete Game.WorkersBattle[this.battleId];
 			Game.BattleWorkersN--;
 		}
 		
@@ -1341,7 +1379,7 @@
 	}
 	
 	Game.calcRPS=function(){
-		var rps = 0;
+		var rps=0;
 		for(var i in Game.Workers){
 			rps+=Game.Workers[i].getRPS();
 		}
@@ -1352,38 +1390,255 @@
 		return Game.maxBattleWorkers=6;
 	}
 	
-	Game.generateWorkerName=function(){
-		return choose(['Arthur','Amadeus','Amelia','Bailey','Barly','Christ','Cyntheia','Derek','Dobby','Eric','Emmy','George','Hectic','Issac','Jeremie','Joe','Jonathan','Kelly','Linda','Nathan','Sally','Sal','Zoe']);
-	}
-	
-	/************************************
-	SPAWN WORKERS
-	************************************/
-	Game.WorkerSpawner={x:0,y:0};
-	
-	Game.WorkerSpawner.getTimeMod=function(){
-		return Math.ceil(Game.fps*60);
-	}
-	
-	Game.WorkerSpawner.getProbability=function(){
-		return 1;
-	}
-	
-	Game.WorkerSpawner.spawn=function(){
-		var worker = new Game.Worker();
+	Game.spawnWorker=function(){
+		var worker=new Game.Worker();
 		Game.Notify(worker.name+' has joined your team!', 'Click the <strong>Job</strong> button to manage the team.');
 	}
 	
-	Game.WorkerSpawner.refresh=function(){
-		if(Math.random()<this.getProbability()){
-			this.spawn();
+	Game.generateWorkerName=function(){
+		return choose(['Arthur','Amadeus','Amelia','Bailey','Barly','Chris','Cynthea','Derek','Dobby','Eric','Emmy','George','Hectic','Issac','Jeremie','Joe','Jonathan','Kelly','Linda','Nathan','Sally','Sam','Zoe']);
+	}
+	
+	/************************************
+	MOVES
+	************************************/
+	/*Game.Moves={};
+	Game.MovesById=[];
+	Game.Move=function(name,category,type,basePower){
+		this.name=name;
+		this.category=category;
+		this.type=type;
+		this.basePower=basePower;
+		
+		Game.Moves[name]=this;
+		Game.MovesById.push(this);
+		return this;
+	}
+	
+	new Game.Move('test','Attack',['???']);*/
+	
+	/************************************
+	TYPES
+	************************************/
+	/*Game.Types={
+		'???':{id:-1},
+		'Philosophy':{id:0,damageTaken:{'Mathematics':0.5,'Metaphysics':2}},
+		'Mathematics':{id:1,damageTaken:{'Physics':2,'Astrophysics':2,'Philosophy':0.5,'Compsci':0.5}},
+	}
+	Game.TypesArray=[];
+	
+	Game.compareTypes=function(sideType,moveType){
+		var compare = 0;
+		for(var i in sideType){
+			if (Game.Types[type1]) compare*=Game.Types[type].damageTaken[sideType[i]];
 		}
+		return compare;
+	}
+	
+	Game.generateRandomType=function(){
+		return Math.random>0.5?[choose(Game.TypesArray)]:[choose(Game.TypesArray),choose(Game.TypesArray)];
+	}*/
+	
+	/************************************
+	BATTLE
+	************************************/
+	/*Game.Battle=function(left,right){
+		this.left=left;
+		this.right=right;
+		
+		this.turnN=0;
+		this.turn=function(){
+			if(this.left.health<=0||this.right.health<=0){
+				return false;
+			}
+			
+			if(this.turnN%2==0){
+				var self=this;
+				this.left.inputMove(function(move){
+					self.log(left.name+' used '+move.name+'!');
+					self.doTurn(self.left,self.right, move);
+				});
+			}else{
+				var move = this.right.chooseMove();
+				this.doTurn(this.right,this.left,move);
+			}
+			
+			return true;
+		}
+		this.doTurn=function(left,right,move){
+			if(move.category==='Attack'){
+				var effectiveness=Game.compareTypes(right.type,move.type);
+				if(right.hasType(move.type) && effectiveness<2){
+					effectiveness++;
+				}
+				
+				var power=((left.level/10) * move.base * left.stats.atk)/right.stats.def;
+				
+				if (!power) self.log("It didn't do anything...");
+				else if (effectiveness>0) self.log('It was super effective!');
+				else if(effectiveness<0) self.log('It was not very super effective...');
+				
+				right.health-=power;
+			} else if (move.category==='Defense'){
+				// todo
+			}
+			
+			this.turnN++;
+			this.turn();
+		}
+		
+		this.log=function(){
+			
+		}
+		
+		Game.currentBattle=this;
+		return this;
+	}*/
+	
+	/************************************
+	SPECIAL SPAWNERS
+	************************************/
+	Game.Lightning={
+		x:0,
+		y:0,
+		life:0, // disappear when spawn
+		maxLife:0, // max time for disappearance
+		effect:'', // crystal's effect
+		effectTime:0, // life of crystal's effect
+		maxEffectTime:0,
+		cooldownTime:(Game.fps*300), // cooldown time for spawning (5 minutes)
+		forced:'' // forced crystal effect
+	};
+	
+	Game.Lightning.effectProbability=[
+		['energeticphoton', 60], // 0.2 second of production bonus
+		['production', 30], // x20 production bonus for 60s
+		//['worker', 5], // workers
+		['crystalcursor', 5], // x121 click boost for 88 seconds
+		['clickmult',2.5],// x88 EXP/click for 10s
+		['levelup',0.5],// level up
+	];
+	
+	Game.Lightning.effects={
+		'energeticphoton': {
+			effect:function(){
+				var bonus = Game.vps*0.25;
+				Game.earn(bonus);
+				Game.Particle('Energetic Photon! Earned '+metricify(bonus)+'!', Game.cursor.x, Game.cursor.y);
+			}
+		},
+		'production':{
+			effect:function(){
+				Game.productionBonus=20;
+				Game.Lightning.effectTime=Game.Lightning.maxEffectTime=60;
+				Game.recalc();
+				Game.Particle('Uncertainty Principle! x20 production bonus for 60s!', Game.cursor.x, Game.cursor.y);
+			},
+			stop:function(){
+				Game.productionBonus=0;
+				Game.recalc();
+			}
+		},
+		'worker':{
+			effect:function(){
+				Game.spawnWorker();
+				Game.Particle('+1 Worker!', Game.cursor.x, Game.cursor.y);
+			}
+		},
+		'crystalcursor':{
+			effect:function(){
+				Game.clickBonus=121;
+				Game.Lightning.effectTime=Game.Lightning.maxEffectTime=888;
+				Game.recalc();
+				Game.Particle('Crystalline Cursor! x121 click bonus for 888s!', Game.cursor.x, Game.cursor.y);
+			},
+			stop:function(){
+				Game.clickBonus=0;
+				Game.recalc();
+			}
+		},
+		'clickmult':{
+			effect:function(){
+				Game.expBonus=88;
+				Game.Lightning.effectTime=Game.Lightning.maxEffectTime=60;
+				Game.recalc();
+				Game.Particle('Click Frenzy! x88 exp/click for 60s!', Game.cursor.x, Game.cursor.y);
+			},
+			stop:function(){
+				Game.expBonus=0;
+				Game.recalc();
+			}
+		},
+		'levelup':{
+			effect:function(){
+				Game.Level.levelUp();
+				Game.recalc();
+				Game.Particle('Level up!', Game.cursor.x, Game.cursor.y);
+			}
+		}
+	}
+	
+	Game.Lightning.refresh=function(){
+		if (this.cooldownTime>0){
+			this.cooldownTime--;
+		}else if(this.life>0){
+			this.life--;
+			if(this.life<=0) $('#crystal').hide();
+			else $('#crystal').css('opacity', this.life/this.maxLife);
+		}else if(this.effectTime>0){
+			this.effectTime--;
+			$('#timer').css('width',(this.effectTime/this.maxEffectTime*100)+'%');
+			if (this.effectTime<=0&&this.effects[this.effect].stop){
+				this.effects[this.effect].stop();
+			}
+		}else if(Math.random()>0.995||this.forced) {
+			this.x=Math.random()*($(window).width()-$('#crystal').width())
+			this.y=Math.random()*($(window).height()-$('#crystal').height())
+			
+			var self=this;
+			$('#crystal').show().css({left: this.x, top:this.y,opacity:1})
+				.click(this.click);
+			
+			this.life=this.maxLife=240;
+		}
+	}
+	
+	Game.Lightning.click=function(){
+		if (Game.Lightning.forced) {
+			Game.Lightning.effect=Game.Lightning.forced;
+			Game.Lightning.effects[Game.Lightning.effect].effect();
+		} else {
+			var n = Math.random();
+			for (var i in Game.Lightning.effectProbability){
+				var probability = Game.Lightning.effectProbability[i];
+				if(n < probability[1]){
+					Game.Lightning.effect=probability[0];
+					Game.Lightning.effects[probability[0]].effect();
+					break;
+				}
+			}
+		}
+		
+		Game.Lightning.life = 0;
+		Game.Lightning.refresh();
+		$('#crystal').hide();
+	}
+	
+	Game.Lightning.changeProbability=function(name,prob){
+		for (var i in this.effectProbability){
+			if(this.effectProbability[i][0] === name){
+				return this.effectProbability[i][1] = prob;
+			}
+		}
+		
+		this.effectProbability.push([name, prob]);
+		this.effectProbability.sort(function(a,b){return a[1]<b[1]});
 	}
 	
 	/************************************
 	INITIALIZE GAME
 	************************************/
 	Game.init();
-	window.Game = Game;
+	window.Game=Game;
 	
 })(window, $);

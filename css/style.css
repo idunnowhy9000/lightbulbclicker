@@ -192,6 +192,52 @@ body{
 	display: inline-block;
 }
 
+/* Vertically center modal */
+.modal {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Timer */
+#timer{
+	width: 0%;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	z-index: 9999;
+	pointer-events: none;
+	background-image: linear-gradient(to bottom, #337AB7 0px, #286090 100%);
+	background-repeat: repeat-x;
+	height:10px;
+}
+
+/* Lightning */
+#crystal{
+	background-image: url("../images/lightning.png");
+	filter: drop-shadow(0px 5px 5px #000);
+	position: absolute;
+	width: 64px;
+	height: 64px;
+	display:none;
+	background-size: cover;
+	cursor:pointer;
+}
+
 /* Misc */
 p{margin:0 auto;}
 #options p {margin: 0px 0px 10px;}
