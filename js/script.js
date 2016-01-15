@@ -558,10 +558,10 @@
 				page.html(html);
 				page.append(stats);
 			} else if(menu==='changelog'){
-				$.ajax('../changelog.html').done(function(data){
+				$.ajax('changelog.html').done(function(data){
 					page.html('<div class="stats">'+data+'</div>');
 				}).fail(function(){
-					page.html('If you see this, you are offline.<br><q>sup</q>');
+					page.html('If you see this, you are either offline or I cannot code.<br><q>sup</q>');
 				});
 			}
 		}
