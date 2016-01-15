@@ -20,6 +20,17 @@
 		return 'just now';
 	}
 	
+	//http://stackoverflow.com/a/9756789
+	function escapeHTML(str, preserveCR) {
+		return (str+'')
+			.replace(/&/g, '&amp;') /* This MUST be the 1st replacement. */
+			.replace(/'/g, '&apos;') /* The 4 other predefined entities, required. */
+			.replace(/"/g, '&quot;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			;
+	}
+	
 	// Number formatters
 	function numberFormatter(units, plural) {
 		var single=units[0]||'';
@@ -174,15 +185,35 @@
 			shortNum:0
 		};
 		
+		// menu
+		Game.onMenu='';
+		if(location.hash) Game.onMenu = location.hash.substr(1);
+		if(Game.onMenu==='main')Game.onMenu=''; // fix for refresh
+		
 		// track events
-		Game.cursor={x:0,y:0};
+		Game.cursorX=0;
+		Game.cursorY=0;
 		$(document).on('mousemove mouseover', function(e) {
-			Game.cursor.x=e.pageX;
-			Game.cursor.y=e.pageY;
+			Game.cursorX=e.pageX;
+			Game.cursorY=e.pageY;
+		});
+		
+		Game.mousedown=0;
+		$(document).mousedown(function(){Game.mouseDown=1});
+		$(document).mouseup(function(){Game.mouseDown=0});
+		
+		Game.windowW=$(window).width();
+		Game.windowH=$(window).height();
+		$(window).resize(function(){
+			Game.windowW=$(window).width()
+			Game.windowH=$(window).height()
 		});
 		
 		// displays
 		Game.displayJobs=false;
+		
+		// lightning
+		Game.Energy.reset();
 		
 		// load
 		Game.load();
@@ -192,6 +223,13 @@
 		Game.draw();
 		Game.loop();
 	};
+	
+	/************************************
+	PREFERENCES
+	************************************/
+	Game.toggle=function(name){
+		Game.prefs[name] = Game.prefs[name]?0:1;
+	}
 	
 	/************************************
 	BEAUTIFIERS
@@ -213,78 +251,29 @@
 	BIND EVENTS
 	************************************/
 	Game.bindEvents=function(){
-		$('#bulb').click(Game.click);
-		$('#saveG').click(Game.saveGClick);
-		$('#resetG').click(Game.resetGClick);
-		$('#importG').click(Game.importGClick);
-		$('#exportG').click(Game.exportGClick);
-		$('#factNameDisplay').click(Game.openFactoryName);
-		$('#job').click(Game.openJobManagement);
+		$('#menu-main').click(Game.mainClick);
+		$('#menu-options').click(Game.optionsClick);
+		$('#menu-stats').click(Game.statsClick);
+		$('#menu-changelog').click(Game.changelogClick);
 	}
 	
-	Game.saveGClick=function(){
-		Game.save();
+	Game.mainClick=function(){
+		Game.onMenu='';
 	}
 	
-	Game.resetGClick=function(){
-		bootbox.dialog({
-			title: 'Reset',
-			message: 'Are you sure you want to reset?<br><span class="warning"><b>Warning:</b> resetting will not gain bonuses.</span>',
-			buttons: {
-				success: {
-					label: "Yes",
-					className: "btn-success",
-					callback: function() {
-						Game.reset();
-						Game.refresh();
-						return;
-					}
-				},
-				danger: {
-					label: "No",
-					className: "btn-danger",
-					callback: function() {return;}
-				}
-			}
-		});
+	Game.optionsClick=function(){
+		Game.onMenu='options';
 	}
 	
-	Game.importGClick=function(){
-		bootbox.dialog({
-			title: 'Import Game',
-			message: '<div class="form-group"><textarea class="form-control import" rows="5"></textarea></div>',
-			buttons: {
-				success: {
-					label: "Import",
-					className: "btn-primary",
-					callback: function() {
-						var save=$('textarea.import').val();
-						if (save) {
-							Game.load(save);
-							Game.recalc();
-						}
-					}
-				}
-			}
-		});
+	Game.statsClick=function(){
+		Game.onMenu='stats';
 	}
 	
-	Game.exportGClick=function(){
-		bootbox.alert({
-			title: 'Export Game',
-			message: '<div class="form-group"><textarea class="form-control" rows="5">' + localStorage.getItem('LBClicker') + '</textarea></div>'
-		});
+	Game.changelogClick=function(){
+		Game.onMenu='changelog';
 	}
 	
 	Game.openJobManagement=function(){
-	}
-	
-	/************************************
-	COUNTS
-	************************************/
-	Game.refreshCount=function(){
-		$('#count').text(metricify(Math.floor(this.volts)));
-		$('#vps').text(metricify(this.vps,2) + (Game.prefs.shortNum?"/s":"/second"));
 	}
 		
 	/************************************
@@ -312,10 +301,8 @@
 	************************************/
 	Game.NotifyN=0;
 	Game.Notify=function(title,description,type){
-		var notify=$('<div class="alert' + (type?' '+type:' alert-success') + '">' +
-			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-				'<span aria-hidden="true">&times;</span>' +
-			'</button>' +
+		var notify=$('<div class="alert' + (type?' '+type:'') + '">' +
+			'<button type="button">&times;</button>'+
 			'<strong>'+title+'</strong>'+
 			(description?'<p>'+description+'</p>':'')+
 		'</div>');
@@ -335,7 +322,7 @@
 	Game.logic= function () {
 		Game.earn(Game.vps / Game.fps);
 		Game.Level.earnExp(Game.expps / Game.fps);
-		Game.Lightning.refresh();
+		Game.Energy.refresh();
 		
 		if (Game.Buildings["Incandescent Lightbulb"].amount>=1)Game.unlock("Thomas Edison");
 		if (Game.Buildings["Incandescent Lightbulb"].amount>=10)Game.unlock("Joseph Swan");
@@ -437,8 +424,7 @@
 	************************************/
 	Game.loop=function () {
 		Game.logic();
-		
-		if (document.hasFocus() || Game.prefs.focus || Game.T%5==0) Game.refresh();
+		Game.refresh();
 		
 		setTimeout(Game.loop, 1000/Game.fps);
 	};
@@ -452,10 +438,7 @@
 		}
 		
 		Game.drawUpgrades();
-		
-		Game.Level.draw();
-		Game.refreshFactoryName();
-		
+		Game.Tooltip.hide();
 		$('#job').hide();
 		
 		Game.bindEvents();
@@ -465,8 +448,8 @@
 	REFRESH
 	************************************/
 	Game.refresh=function(){
-		Game.refreshCount();
-		Game.Level.refresh();
+		Game.refreshMenu();
+		Game.Tooltip.refresh();
 		
 		for(var i in Game.Buildings){
 			Game.Buildings[i].refresh();
@@ -484,10 +467,113 @@
 	}
 
 	/************************************
+	BUTTONS
+	************************************/
+	Game.PreferenceButton=function(name,prefName){
+		return '<p><label>'+name+':</label><input type="checkbox" id="input-'+prefName+'" '+(Game.prefs[prefName]?'checked':'')+' onclick="Game.toggle(\''+(prefName)+'\')"/></p>'
+	}
+	
+	Game.Button=function(name,click){
+		return '<button onclick="'+escapeHTML(click)+'">'+name+'</button>';
+	}
+	
+	/************************************
 	REFRESH COLUMN
 	************************************/
-	Game.refreshColumn=function(menu){
+	Game.refreshMenu=function(){
+		var menu=Game.onMenu;
+		var page=$('#page');
 		
+		var lvl=Game.Level;
+		if(menu==='main'){
+			$('#count').text(metricify(Math.floor(Game.volts)));
+			$('#vps').text(metricify(Game.vps,2)+'/second');
+			$('#level').text(lvl.level);
+			$('#exp').text(magnitudify(lvl.level));
+			$('#toNextLevel').text(magnitudify(lvl.toNextLevel + Game.Level.levelTotalExp - Math.floor(lvl.exp)));
+			$('#levelContainer .progress-bar').css('width',((lvl.exp - lvl.levelTotalExp) / lvl.toNextLevel * 100)+'%');
+		}
+		else if(!menu){
+			page.html(
+				'<p>'+Game.factName+'</p>'+
+				'<h1 id="count">'+metricify(Math.floor(Game.volts))+'</h1>'+
+				'<p id="vps">'+metricify(Game.vps,2)+'/second</p>'+
+				'<div id="bulbContainer">'+
+					'<div id="bulb"></div>'+
+				'</div>'+
+				'<div id="levelContainer">'+
+					'<p>'+
+						'Level <span id="level">'+lvl.level+'</span> (<span id="exp">'+magnitudify(lvl.exp)+'</span> exp)<br>'+
+						'<span id="toNextLevel">' + magnitudify(lvl.toNextLevel + lvl.levelTotalExp - Math.floor(lvl.exp)) + '</span> exp until next level'+
+					'</p>'+
+					'<div class="progress">'+
+						'<div class="progress-bar" style="width:'+((lvl.exp - lvl.levelTotalExp) / lvl.toNextLevel * 100)+'%"></div>'+
+					'</div>'+
+				'</div>'
+			)
+			$('#bulb').click(Game.click);
+			Game.onMenu = 'main';
+		}
+		else{
+			if(Game.drawT%5!==0)return;
+			var html='<strong class="fond">'+metricify(Math.floor(Game.volts))+'</strong>'+
+				' ('+metricify(Game.vps,2)+'/second)<br>'+
+				'Level <span>'+lvl.level+'</span> (<span>'+magnitudify(lvl.exp)+'</span> exp)<br>'+
+				'<span>' + magnitudify(lvl.toNextLevel + lvl.levelTotalExp - Math.floor(lvl.exp)) + '</span> exp until next level';
+			if(menu==='options'&&!Game.mouseDown){
+				html+='<div class="stats">'+
+					Game.Button('Save Game', 'Game.save()')+
+					Game.Button('Reset Game', 'Game.Prompt(\'Are you sure you want to reset?<br><span class="warning"><b>Warning:</b> resetting will not gain bonuses.</span>\',[["Yes", "Game.reset();Game.ClosePrompt()"],"No"])')+
+					Game.Button('Import Game', 'Game.Prompt(\'<textarea rows="5"></textarea>\',[["Import", "Game.import($(\'textarea\').val());Game.ClosePrompt()"],"Cancel"])')+
+					Game.Button('Export Game', 'Game.Prompt(\'<textarea rows="5">\'+localStorage.getItem(Game.saveFile)+\'</textarea>\',["OK"])')+
+					'<p><label>Autosave frequency:</label><input type="number" min="0" value='+Game.prefs.autoSave+' onchange="Game.prefs.autoSave=$(this).val()"/>'+
+					Game.PreferenceButton('Defocus', 'focus')+
+					Game.PreferenceButton('Short Numbers', 'shortNum')+
+				'</div>';
+				page.html(html);
+			} else if(menu==='stats'){
+				var stats = $('<div class="stats"></div>');
+				
+				stats.append('<h1>Upgrades</h1>');
+				stats.append('<p>'+Game.UpgradesOwned+'/'+Game.UpgradesN+' bought ('+magnitudify((Game.UpgradesOwned/Game.UpgradesN)*100,2)+'%)</p>');
+				var sort=function(a,b){
+					return a.order>b.order;
+				}
+				var upgrades=Game.UpgradesById.sort(sort);
+				for (var i in upgrades) {
+					var upgrade=upgrades[i];
+					if(upgrade.earned){
+						var el=$('<div class="upgradeObj"></div>');
+						var name=upgrade.name, cost=upgrade.cost,description=upgrade.description;
+						Game.Tooltip.bindTo(el,0,function(){
+							console.log(name);
+							return '<h2>'+name+'</h2>'+
+									'<p>Costs <strong class="cost">' + metricify(cost) + '</strong></p>' +
+									'<p>' + description + '</p>';
+						});
+						stats.append(el);
+					}
+				}
+				
+				page.html(html);
+				page.append(stats);
+			} else if(menu==='changelog'){
+				$.ajax('../changelog.html').done(function(data){
+					page.html('<div class="stats">'+data+'</div>');
+				}).fail(function(){
+					page.html('If you see this, you are offline.<br><q>sup</q>');
+				});
+			}
+		}
+		
+		$('#menu div').each(function(btn){
+			if($(this).attr('id').substr(5)===menu) $(this).addClass('active');
+			else $(this).removeClass('active');
+		});
+	}
+	
+	Game.openMenu=function(menu){
+		Game.onMenu=menu;
 	}
 	
 	/************************************
@@ -754,7 +840,7 @@
 		Game.Level.earnExp(m_vps);
 		Game.clicked++;
 		
-		Game.Particle('+'+metricify(m_vps), Game.cursor.x, Game.cursor.y - 25);
+		Game.Particle('+'+metricify(m_vps), Game.cursorX, Game.cursorY - 25);
 		
 		return m_vps;
 	}
@@ -769,6 +855,78 @@
 			.animate({ 'top': '-=20px', 'opacity': 0 }, 2000, function () {
 				$(this).remove();
 			}))
+	}
+	
+	/************************************
+	TOOLTIPS
+	************************************/
+	Game.Tooltip={x:0,y:0,showed:0,text:'',type:0,el:$('#tooltip'),box:null};
+	Game.Tooltip.show=function(){
+		this.el.show();
+		this.showed=1;
+	}
+	Game.Tooltip.hide=function(){
+		this.el.hide();
+		this.showed=0;
+	}
+	Game.Tooltip.refresh=function(){
+		var type=this.type,el=this.box;
+		
+		var top,left;
+		if(type===1){
+			var top=Game.cursorY;
+			var left=el.width()+el.offset().left+5;
+		}else if(type===2){
+			var top=el.height()+el.offset().top+5;
+			var left=el.offset().left;
+		}else{
+			var top=Game.cursorY;
+			var left=Game.cursorX+10;
+		}
+		left=Math.min(left,Game.windowW-380)
+		
+		this.el.css({'top':top+'px','left':left+'px'});
+		if(typeof this.text === 'function') this.el.html(this.text());
+		else this.el.html(this.text);
+	}
+	Game.Tooltip.bindTo=function(el,type,text){
+		var tooltip=Game.Tooltip;
+		el.mouseover(function(){
+			tooltip.type = type;
+			tooltip.box=el;
+			tooltip.text=text;
+			tooltip.show();
+		}).mouseout(function(){
+			tooltip.hide();
+		});
+	}
+	
+	/************************************
+	PROMPTS
+	************************************/
+	Game.promptOverlay=$('#overlay');
+	Game.promptClose=$('#closePrompt');
+	Game.promptEl=$('#prompt');
+	Game.promptContent=$('#promptContent');
+	Game.promptButtons=$('#promptButtons');
+	Game.Prompt=function(content,buttons,updateFunc){
+		Game.promptOverlay.show();
+		Game.promptEl.css({'top':Game.windowH/2,'left':(Game.windowW/2-300)})
+		.show();
+		Game.promptContent.html(content);
+		var button='';
+		for (var i in buttons){
+			if(typeof buttons[i]==='string') button+='<button onclick="Game.ClosePrompt()">'+buttons[i]+'</button>';
+			else button+='<button onclick="'+escapeHTML(buttons[i][1])+'">'+buttons[i][0]+'</button>';
+		}
+		Game.promptButtons.html(button);
+	}
+	
+	Game.promptOverlay.click(function(){Game.ClosePrompt()});
+	
+	Game.ClosePrompt=function(){
+		Game.promptEl.hide();
+		Game.promptOverlay.hide();
 	}
 	
 	/************************************
@@ -886,13 +1044,12 @@
 			if (this.el) return;
 			var self=this;
 			this.el=$('<div class="buildingHolder"></div>')
+			.attr('id',this.id)
 			.html(
 				'<div class="buildingObj btn btn-primary">' +
 					'<div class="buildingAmount">' + this.amount + '</div>' +
-					'<div class="buildingInfo">' +
-						'<div class="buildingName">' + name + '</div>' +
-						'<div class="buildingCost">' + metricify(this.cost) + '</div>' +
-					'</div>' +
+					'<div class="buildingName">' + name + '</div>' +
+					'<div class="buildingCost">' + metricify(this.cost) + '</div>' +
 				'</div>' +
 				'<div class="buySell">' +
 					'<a class="buy10">Buy 10</a>' +
@@ -901,24 +1058,18 @@
 					'<a class="sell10">Sell 10</a>' +
 					'<a class="sellMax">Sell Max</a>' +
 				'</div>'
-			)
-			.popover({
-				trigger:'hover',
-				html:true,
-				container:'body',
-				content:function(){
-					return '<span>'+description+'</span><br>' +
-							'Costs <strong>'+metricify(self.cost)+'</strong><br>' +
-							'<ul>' +
-								'<li>Each '+single+' produces <strong>'+metricify(self.oneVps, 2)+'/second</strong></li>' +
-								'<li>' +
-								'<strong>'+self.amount+'</strong> '+plural+' '+actionName+' <strong>'+metricify(self.vps, 2)+'/second</strong>' +
-								' (<strong>' + magnitudify((self.amount>0?(self.vps/Game.vps):0)*100, 2) + '%</strong> of total)' +
+			);
+			Game.Tooltip.bindTo(this.el,1, function(){
+				return '<h2>'+name+'</h2>'+
+						'<span>'+description+'</span><br>' +
+						'Costs <strong>'+metricify(self.cost)+'</strong><br>' +
+						'<ul>' +
+							'<li>Each '+single+' produces <strong>'+metricify(self.oneVps, 2)+'/second</strong></li>' +
+							'<li>' +
+							'<strong>'+self.amount+'</strong> '+plural+' '+actionName+' <strong>'+metricify(self.vps, 2)+'/second</strong>' +
+							' (<strong>' + magnitudify((self.amount>0?(self.vps/Game.vps):0)*100, 2) + '%</strong> of total)' +
 								'</li>' +
-							'</ul>';
-				},
-				placement: 'right',
-				title: this.name
+						'</ul>';
 			});
 			this.bindEvents();
 			$('#lightbulbListContainer').append(this.el);
@@ -931,10 +1082,7 @@
 			this.el.find('.sell1').click(function() {self.sell(1)});
 			this.el.find('.sell10').click(function() {self.sell(10)});
 			this.el.find('.sellMax').click(function() {
-				bootbox.confirm('Are you really sure you want to sell all of your '+self.amount+' '+(self.amount===1?self.single:self.plural+'?'),
-				function(result){
-					if (result) self.sellMax();
-				});
+				Game.Prompt('Are you really sure you want to sell all of your '+self.amount+' '+(self.amount===1?self.single:self.plural)+'?',[['Yes','Game.BuildingsById[$(this).parent().attr("id")].sellMax()'], 'No']);
 			});
 		}
 		this.refresh=function() {
@@ -1083,16 +1231,11 @@
 			this.el=$('<div class="upgradeObj"></div>')
 			.html(this.id)
 			//.css('background-image', 'url("images/upgrades/' + this.id + '.png")')
-			.popover({
-				trigger:'hover',
-				html:true,
-				container:'body',
-				content:function(){
-					return '<p>Costs <strong class="cost">' + metricify(cost) + '</strong></p>' +
+			
+			Game.Tooltip.bindTo(this.el,2, function(){
+				return '<h2>'+name+'</h2>'+
+						'<p>Costs <strong class="cost">' + metricify(cost) + '</strong></p>' +
 						'<p>' + description + '</p>';
-				},
-				placement: 'bottom',
-				title: this.name
 			});
 			
 			if (!this.displayed)this.el.hide();
@@ -1101,7 +1244,8 @@
 		}
 		this.refresh=function(){
 			if (this.earned) {
-				this.el.hide().popover('hide');
+				this.el.hide();
+				//Game.Tooltip.hide();
 				return;
 			}
 			
@@ -1146,6 +1290,7 @@
 	};
 	
 	Game.calculateUpgradesOwned=function(){
+		Game.UpgradesOwned=0;
 		for(var i in Game.Upgrades){
 			if (Game.Upgrades[i].earned) Game.UpgradesOwned++;
 		}
@@ -1284,35 +1429,16 @@
 	};
 	
 	Game.Level.calculateNextLevel= function () {
-		var exp=Math.pow(this.level,3) * 100;
-		exp *= (1+Math.pow(Game.vps, 0.15));
+		var exp=Math.pow(this.level,2.5) * 100;
+		exp *= (1+Math.pow(Game.vps, 0.1));
 		exp=Math.floor(exp);
 		return this.toNextLevel=exp;
 	};
 	
-	Game.Level.el=null;
-	Game.Level.draw=function(){
-		if(this.el)return;
-		this.el=$('#levelContainer')
-		.html('<p>'+
-			'Level <span id="level">'+this.level+'</span> (<span id="exp">'+magnitudify(this.exp)+'</span> exp)<br>'+
-			'<span id="neededToNext">' + magnitudify(this.toNextLevel + this.levelTotalExp - Math.floor(this.exp)) + '</span> exp until next level'+
-		'</p>'+
-		'<div class="progress" style="margin-top: 15px;  margin-right: 50px; margin-left: 50px; height: 30px">'+
-			'<div class="progress-bar"></div>'+
-		'</div>')
-	}
-	Game.Level.refresh=function(){
-		this.el.find('#level').text(this.level);
-		this.el.find('#exp').text(magnitudify(Math.floor(this.exp)));
-		this.el.find('#neededToNext').text(magnitudify(this.toNextLevel + this.levelTotalExp - Math.floor(this.exp)));
-		this.el.find('.progress-bar').css('width', ((this.exp - this.levelTotalExp) / this.toNextLevel * 100) + '%');
-	}
-	
 	/************************************
 	ENTITIES
 	************************************/
-	/*Game.Entity=function(stats){
+	Game.Entity=function(stats){
 		this.types=stats.type;
 		this.stats={hp:0,atk:0,def:0,spd:0};
 		for(var i in stats) this.stats[i]=stats[i];
@@ -1322,7 +1448,7 @@
 		}
 		
 		return this;
-	}*/
+	}
 	
 	/************************************
 	WORKERS
@@ -1402,47 +1528,17 @@
 	/************************************
 	MOVES
 	************************************/
-	/*Game.Moves={};
-	Game.MovesById=[];
-	Game.Move=function(name,category,type,basePower){
+	Game.Move=function(name,description,category,basePower){
 		this.name=name;
+		this.description=description;
 		this.category=category;
-		this.type=type;
 		this.basePower=basePower;
-		
-		Game.Moves[name]=this;
-		Game.MovesById.push(this);
-		return this;
 	}
-	
-	new Game.Move('test','Attack',['???']);*/
-	
-	/************************************
-	TYPES
-	************************************/
-	/*Game.Types={
-		'???':{id:-1},
-		'Philosophy':{id:0,damageTaken:{'Mathematics':0.5,'Metaphysics':2}},
-		'Mathematics':{id:1,damageTaken:{'Physics':2,'Astrophysics':2,'Philosophy':0.5,'Compsci':0.5}},
-	}
-	Game.TypesArray=[];
-	
-	Game.compareTypes=function(sideType,moveType){
-		var compare = 0;
-		for(var i in sideType){
-			if (Game.Types[type1]) compare*=Game.Types[type].damageTaken[sideType[i]];
-		}
-		return compare;
-	}
-	
-	Game.generateRandomType=function(){
-		return Math.random>0.5?[choose(Game.TypesArray)]:[choose(Game.TypesArray),choose(Game.TypesArray)];
-	}*/
 	
 	/************************************
 	BATTLE
 	************************************/
-	/*Game.Battle=function(left,right){
+	Game.Battle=function(left,right){
 		this.left=left;
 		this.right=right;
 		
@@ -1467,17 +1563,8 @@
 		}
 		this.doTurn=function(left,right,move){
 			if(move.category==='Attack'){
-				var effectiveness=Game.compareTypes(right.type,move.type);
-				if(right.hasType(move.type) && effectiveness<2){
-					effectiveness++;
-				}
-				
 				var power=((left.level/10) * move.base * left.stats.atk)/right.stats.def;
-				
-				if (!power) self.log("It didn't do anything...");
-				else if (effectiveness>0) self.log('It was super effective!');
-				else if(effectiveness<0) self.log('It was not very super effective...');
-				
+				self.log(left.name+' did '+power+' damage!');
 				right.health-=power;
 			} else if (move.category==='Defense'){
 				// todo
@@ -1493,12 +1580,12 @@
 		
 		Game.currentBattle=this;
 		return this;
-	}*/
+	}
 	
 	/************************************
 	SPECIAL SPAWNERS
 	************************************/
-	Game.Lightning={
+	Game.Energy={
 		x:0,
 		y:0,
 		life:0, // disappear when spawn
@@ -1506,11 +1593,23 @@
 		effect:'', // crystal's effect
 		effectTime:0, // life of crystal's effect
 		maxEffectTime:0,
-		cooldownTime:(Game.fps*300), // cooldown time for spawning (5 minutes)
+		cooldownTime:0, // cooldown time for spawning (5 minutes)
 		forced:'' // forced crystal effect
 	};
 	
-	Game.Lightning.effectProbability=[
+	Game.Energy.reset=function(){
+		this.x=0;
+		this.y=0;
+		this.life=0;
+		this.maxLife=0;
+		this.effect='';
+		this.effectTime=0;
+		this.maxEffectTime=0;
+		this.cooldownTime=Game.fps*300;
+		this.forced='';
+	}
+	
+	Game.Energy.effectProbability=[
 		['energeticphoton', 60], // 0.2 second of production bonus
 		['production', 30], // x20 production bonus for 60s
 		//['worker', 5], // workers
@@ -1519,20 +1618,21 @@
 		['levelup',0.5],// level up
 	];
 	
-	Game.Lightning.effects={
+	Game.Energy.effects={
 		'energeticphoton': {
 			effect:function(){
-				var bonus = Game.vps*0.25;
+				var bonus = (Game.vps*120)+(Game.m_vps*60);
 				Game.earn(bonus);
-				Game.Particle('Energetic Photon! Earned '+metricify(bonus)+'!', Game.cursor.x, Game.cursor.y);
+				Game.Energy.setEffectTime(0);
+				Game.Particle('Energetic Photon! Earned '+metricify(bonus)+'!', Game.cursorX, Game.cursorY);
 			}
 		},
 		'production':{
 			effect:function(){
-				Game.productionBonus=20;
-				Game.Lightning.effectTime=Game.Lightning.maxEffectTime=60;
+				Game.productionBonus=15;
 				Game.recalc();
-				Game.Particle('Uncertainty Principle! x20 production bonus for 60s!', Game.cursor.x, Game.cursor.y);
+				Game.Energy.setEffectTime(60);
+				Game.Particle('Uncertainty Principle! x15 production bonus for 60s!', Game.cursorX, Game.cursorY);
 			},
 			stop:function(){
 				Game.productionBonus=0;
@@ -1542,15 +1642,16 @@
 		'worker':{
 			effect:function(){
 				Game.spawnWorker();
-				Game.Particle('+1 Worker!', Game.cursor.x, Game.cursor.y);
+				Game.Energy.setEffectTime(0);
+				Game.Particle('+1 Worker!', Game.cursorX, Game.cursorY);
 			}
 		},
 		'crystalcursor':{
 			effect:function(){
 				Game.clickBonus=121;
-				Game.Lightning.effectTime=Game.Lightning.maxEffectTime=888;
+				Game.Energy.setEffectTime(40);
 				Game.recalc();
-				Game.Particle('Crystalline Cursor! x121 click bonus for 888s!', Game.cursor.x, Game.cursor.y);
+				Game.Particle('Crystalline Cursor! x120 click bonus for 40s!', Game.cursorX, Game.cursorY);
 			},
 			stop:function(){
 				Game.clickBonus=0;
@@ -1560,9 +1661,9 @@
 		'clickmult':{
 			effect:function(){
 				Game.expBonus=88;
-				Game.Lightning.effectTime=Game.Lightning.maxEffectTime=60;
+				Game.Energy.setEffectTime(60);
 				Game.recalc();
-				Game.Particle('Click Frenzy! x88 exp/click for 60s!', Game.cursor.x, Game.cursor.y);
+				Game.Particle('Click Frenzy! x88 exp/click for 60s!', Game.cursorX, Game.cursorY);
 			},
 			stop:function(){
 				Game.expBonus=0;
@@ -1573,25 +1674,27 @@
 			effect:function(){
 				Game.Level.levelUp();
 				Game.recalc();
-				Game.Particle('Level up!', Game.cursor.x, Game.cursor.y);
+				Game.Energy.setEffectTime(0);
+				Game.Particle('Level up!', Game.cursorX, Game.cursorY);
 			}
 		}
 	}
 	
-	Game.Lightning.refresh=function(){
-		if (this.cooldownTime>0){
-			this.cooldownTime--;
-		}else if(this.life>0){
-			this.life--;
-			if(this.life<=0) $('#crystal').hide();
-			else $('#crystal').css('opacity', this.life/this.maxLife);
-		}else if(this.effectTime>0){
+	Game.Energy.refresh=function(){
+		if(this.effectTime>0){
 			this.effectTime--;
 			$('#timer').css('width',(this.effectTime/this.maxEffectTime*100)+'%');
 			if (this.effectTime<=0&&this.effects[this.effect].stop){
 				this.effects[this.effect].stop();
 			}
-		}else if(Math.random()>0.995||this.forced) {
+		}
+		else if (this.cooldownTime>0){
+			this.cooldownTime--;
+		}else if(this.life>0){
+			this.life--;
+			if(this.life<=0) $('#crystal').hide();
+			else $('#crystal').css('opacity', this.life/this.maxLife);
+		}else if(this.forced||Math.random()>0.995) {
 			this.x=Math.random()*($(window).width()-$('#crystal').width())
 			this.y=Math.random()*($(window).height()-$('#crystal').height())
 			
@@ -1603,28 +1706,29 @@
 		}
 	}
 	
-	Game.Lightning.click=function(){
-		if (Game.Lightning.forced) {
-			Game.Lightning.effect=Game.Lightning.forced;
-			Game.Lightning.effects[Game.Lightning.effect].effect();
+	Game.Energy.click=function(){
+		if (Game.Energy.forced) {
+			Game.Energy.effect=Game.Energy.forced;
+			Game.Energy.effects[Game.Energy.effect].effect();
 		} else {
 			var n = Math.random();
-			for (var i in Game.Lightning.effectProbability){
-				var probability = Game.Lightning.effectProbability[i];
+			for (var i in Game.Energy.effectProbability){
+				var probability = Game.Energy.effectProbability[i];
 				if(n < probability[1]){
-					Game.Lightning.effect=probability[0];
-					Game.Lightning.effects[probability[0]].effect();
+					Game.Energy.effect=probability[0];
+					Game.Energy.effects[probability[0]].effect();
 					break;
 				}
 			}
 		}
 		
-		Game.Lightning.life = 0;
-		Game.Lightning.refresh();
+		Game.Energy.life = 0;
+		Game.Energy.cooldownTime = Game.fps*300;
+		Game.Energy.refresh();
 		$('#crystal').hide();
 	}
 	
-	Game.Lightning.changeProbability=function(name,prob){
+	Game.Energy.changeProbability=function(name,prob){
 		for (var i in this.effectProbability){
 			if(this.effectProbability[i][0] === name){
 				return this.effectProbability[i][1] = prob;
@@ -1633,6 +1737,10 @@
 		
 		this.effectProbability.push([name, prob]);
 		this.effectProbability.sort(function(a,b){return a[1]<b[1]});
+	}
+	
+	Game.Energy.setEffectTime=function(time){
+		Game.Energy.effectTime=Game.Energy.maxEffectTime=time*Game.fps;
 	}
 	
 	/************************************

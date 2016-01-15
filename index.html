@@ -7,54 +7,31 @@ Lightbulb Clicker 1.3b
 		<title>Lightbulb Inc</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<link rel="stylesheet" href="css/bootstrap.min.css">
-		<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 	<body>
-		<div id="gameContainer" class="container">
+		<div id="gameContainer">
 			<noscript id="nojs">
 				<p>No JS, no game.</p>
 				<small>(This site requires javascript)</small>
 			</noscript>
-			<div class="row">
-				<div class="col-sm-4" id="col1">
-					<div id="lightbulbListContainer">
-						<p class="large fond">Lightbulbs</p>
-					</div>
+			<div id="col1">
+				<div id="lightbulbListContainer">
+					<h1>Lightbulbs</h1>
 				</div>
-				<div class="col-sm-4" id="col2">
-					<p class="medium no-margin" id="factNameDisplay"></p>
-					<p class="large fond" id="count"></p>
-					<p id="vps"></p>
-					<div id="bulbContainer">
-						<div id="bulb"></div>
-					</div>
-					<div id="levelContainer"></div>
-					<div id="page"></div>
-					<div id="options">
-						<p>
-							<span id="saveG" class="btn btn-primary">Save Game</span>
-							<span id="importG" class="btn btn-primary">Import Game</span>
-							<span id="exportG" class="btn btn-primary">Export Game</span>
-						</p>
-						<p>
-							<span id="resetG" class="btn btn-primary"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Reset Game</span>
-							<span class="btn btn-primary"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Options</span>
-						</p>
-						<p>
-							<span class="btn btn-primary"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Statistics</span>
-						</p>
-						<p>
-							<span role="button" class="btn btn-primary" id="job">Job Management</span>
-						</p>
-					</div>
+			</div>
+			<div id="col2">
+				<div id="menu">
+					<div id="menu-main">Main</div>
+					<div id="menu-options">Options</div>
+					<div id="menu-stats">Stats</div>
+					<div id="menu-changelog">Changelog</div>
 				</div>
-				<div class="col-sm-4" id="col3">
-					<div id="upgradeListContainer">
-						<p class="large fond">Upgrades</p>
-					</div>
+				<div id="page"></div>
+			</div>
+			<div id="col3">
+				<div id="upgradeListContainer">
+					<h1>Upgrades</h1>
 				</div>
 			</div>
 		</div>
@@ -62,11 +39,15 @@ Lightbulb Clicker 1.3b
 		<div id="particles"></div>
 		<div id="crystal"></div>
 		<div id="timer"></div>
+		<div id="tooltip"></div>
+		<div id="overlay" style="display:none"></div>
+		<div id="prompt" style="display:none">
+			<div id="closePrompt"></div>
+			<div id="promptContent"></div>
+			<div id="promptButtons"></div>
+		</div>
 		
 		<script src="js/lib/jquery.js"></script>
-		<script src="js/lib/bootstrap.min.js"></script>
-		<script src="js/lib/bootbox.min.js"></script>
-		<script src="js/lib/tooltip.js"></script>
 		<script src="js/script.js"></script>
 	</body>
 </html>
